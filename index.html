@@ -2565,6 +2565,137 @@ header .fund-text::after,
   }
 }
 
+
+/* 모바일 사업소개 최종 강제 수정 - 실제 #guideView 기준 */
+@media(max-width:768px){
+  #guideView{
+    width:100%!important;
+    max-width:100%!important;
+    padding:0 10px 24px!important;
+    box-sizing:border-box!important;
+    overflow-x:hidden!important;
+  }
+
+  #guideView .service-grid{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    gap:14px!important;
+  }
+
+  #guideView .service-card,
+  #guideView .service-card.featured{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+    margin:0!important;
+    padding:18px 16px!important;
+    grid-column:auto!important;
+    overflow:visible!important;
+  }
+
+  #guideView .service-no{
+    width:42px!important;
+    height:42px!important;
+    margin:0 0 10px!important;
+  }
+
+  #guideView .service-card > div:not(.service-no){
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+
+  #guideView .service-card h3{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0 0 12px!important;
+    font-size:1.34rem!important;
+    line-height:1.35!important;
+    word-break:keep-all!important;
+    overflow-wrap:normal!important;
+    white-space:normal!important;
+  }
+
+  #guideView .service-card h4,
+  #guideView .service-item b,
+  #guideView .service-card p,
+  #guideView .service-item p{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    white-space:normal!important;
+    word-break:keep-all!important;
+    overflow-wrap:break-word!important;
+  }
+
+  #guideView .service-card h4{
+    font-size:1.08rem!important;
+    line-height:1.45!important;
+  }
+
+  #guideView .service-card p,
+  #guideView .service-item p{
+    font-size:1rem!important;
+    line-height:1.72!important;
+  }
+
+  #guideView .service-item{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    padding:12px 0!important;
+    border-left:0!important;
+    border-right:0!important;
+  }
+
+  #guideView .alt-materials,
+  #guideView .device-examples{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:8px!important;
+    width:100%!important;
+    max-width:100%!important;
+  }
+
+  #guideView .alt-materials span,
+  #guideView .device-examples span{
+    display:inline-block!important;
+    width:auto!important;
+    max-width:100%!important;
+    white-space:normal!important;
+    word-break:keep-all!important;
+    overflow-wrap:break-word!important;
+    padding:7px 10px!important;
+  }
+
+  #guideView .contact-grid,
+  #guideView .center-contact{
+    display:block!important;
+    width:100%!important;
+  }
+}
+
+@media(max-width:430px){
+  #guideView{
+    padding-left:8px!important;
+    padding-right:8px!important;
+  }
+  #guideView .service-card,
+  #guideView .service-card.featured{
+    padding:16px 13px!important;
+  }
+  #guideView .service-card h3{
+    font-size:1.26rem!important;
+  }
+  #guideView .service-card p,
+  #guideView .service-item p{
+    font-size:.97rem!important;
+  }
+}
+
 </style>
 <style>
 .apply-inline p{margin:.65rem 0; line-height:1.55}
