@@ -2898,6 +2898,29 @@ header .fund-text::after,
   }
 }
 
+
+/* 01번 카드 번호 원형 크기 복원 */
+@media screen and (max-width:900px){
+  #guideView .service-grid > .service-card:first-child .service-no,
+  #guideView .service-card:first-child .service-no{
+    display:grid!important;
+    place-items:center!important;
+    width:44px!important;
+    height:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+    flex:0 0 44px!important;
+    padding:0!important;
+    margin:0 0 12px!important;
+    border-radius:50%!important;
+    aspect-ratio:1 / 1!important;
+    justify-self:start!important;
+    align-self:start!important;
+  }
+}
+
 </style>
 <style>
 .apply-inline p{margin:.65rem 0; line-height:1.55}
