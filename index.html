@@ -2851,6 +2851,53 @@ header .fund-text::after,
   }
 }
 
+
+/* 모바일 사업소개 01번 카드 폭만 02~05와 동일하게 최종 보정 */
+@media screen and (max-width:900px){
+  #guideView .service-grid > .service-card:first-child,
+  #guideView .service-card:first-child,
+  #guideView .service-card.featured:first-child{
+    display:block!important;
+    grid-column:1 / -1!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    justify-self:stretch!important;
+    align-self:stretch!important;
+    flex:none!important;
+    box-sizing:border-box!important;
+  }
+
+  #guideView .service-grid > .service-card:first-child > div,
+  #guideView .service-card:first-child .service-content,
+  #guideView .service-card:first-child .service-body{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+
+  #guideView .service-card:first-child h3,
+  #guideView .service-card:first-child h4,
+  #guideView .service-card:first-child p{
+    width:100%!important;
+    max-width:100%!important;
+    white-space:normal!important;
+    word-break:keep-all!important;
+    overflow-wrap:break-word!important;
+  }
+
+  #guideView .service-card:first-child .alt-materials{
+    width:100%!important;
+    max-width:100%!important;
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:wrap!important;
+    align-items:center!important;
+    gap:8px!important;
+  }
+}
+
 </style>
 <style>
 .apply-inline p{margin:.65rem 0; line-height:1.55}
