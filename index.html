@@ -1191,6 +1191,145 @@ kbd{
   #recordsView .card{font-size:.98rem!important}
 }
 
+
+/* 운영체제/브라우저 고대비(Forced Colors) 모드 호환 */
+@media (forced-colors: active){
+  *{
+    forced-color-adjust:auto;
+  }
+
+  body,
+  header,
+  main,
+  section,
+  .view{
+    background:Canvas!important;
+    color:CanvasText!important;
+  }
+
+  nav,
+  nav button,
+  .hero,
+  .lesson,
+  .card,
+  .practice,
+  .side,
+  .record,
+  .panel,
+  .result,
+  .answer-panel,
+  .metric,
+  .service-card,
+  .service-item,
+  .center-head,
+  .contact-item,
+  .spelling-panel,
+  .spelling-option,
+  .mobile-notice-box{
+    background:Canvas!important;
+    color:CanvasText!important;
+    border-color:CanvasText!important;
+  }
+
+  nav button.active,
+  button:focus,
+  button:focus-visible,
+  .lesson:focus,
+  .lesson:focus-visible,
+  .typed:focus,
+  .typed:focus-visible{
+    outline:3px solid Highlight!important;
+    outline-offset:2px!important;
+  }
+
+  button,
+  .go,
+  .answer-view-btn,
+  .spelling-options button{
+    background:ButtonFace!important;
+    color:ButtonText!important;
+    border-color:ButtonText!important;
+  }
+
+  button:hover,
+  button:focus,
+  .lesson:hover,
+  .lesson:focus{
+    background:Highlight!important;
+    color:HighlightText!important;
+  }
+
+  .num,
+  .label,
+  .badge,
+  .chip,
+  .pill,
+  .alt-materials span{
+    background:Canvas!important;
+    color:CanvasText!important;
+    border:1px solid CanvasText!important;
+  }
+
+  .prompt,
+  .typed,
+  .answer-dots,
+  #practiceView .panel > .label,
+  #recordsView .record b,
+  #recordsView .record .v,
+  #recordsView .record small{
+    color:CanvasText!important;
+  }
+
+  .typed{
+    background:Field!important;
+    color:FieldText!important;
+    border:2px solid CanvasText!important;
+  }
+
+  .bar{
+    background:Canvas!important;
+    border:1px solid CanvasText!important;
+  }
+  .bar > span{
+    background:Highlight!important;
+  }
+
+  a{
+    color:LinkText!important;
+  }
+
+  /* 색상만으로 정·오답을 구분하지 않도록 텍스트/기호 유지 */
+  .result,
+  .result.correct,
+  .result.wrong{
+    color:CanvasText!important;
+    border-color:CanvasText!important;
+  }
+
+  img{
+    forced-color-adjust:none;
+  }
+}
+
+/* 사용자가 더 높은 대비를 선호할 때 경계와 텍스트를 조금 강화 */
+@media (prefers-contrast: more){
+  body{color:#142f3d}
+  .lesson,
+  .card,
+  .practice,
+  .record,
+  .service-card{
+    border-color:#718b94!important;
+  }
+  .lesson h3,
+  .lesson p,
+  #practiceView .panel > .label,
+  #recordsView .record b,
+  #recordsView .record small{
+    color:#173b4b!important;
+  }
+}
+
 </style>
 <style>
 .apply-inline p{margin:.65rem 0; line-height:1.55}
