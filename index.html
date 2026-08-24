@@ -547,6 +547,650 @@ nav button{
   #practiceView[data-category="문장부호"] .punct-name{font-size:.92rem!important}
 }
 
+
+/* 모바일: 사업소개(센터 소개) 페이지 반응형 보정 */
+@media(max-width:768px){
+  #aboutView,
+  #centerView,
+  .about-view,
+  .center-view,
+  .business-page,
+  .center-page{
+    width:100%!important;
+    max-width:100%!important;
+    padding:0 12px 24px!important;
+    box-sizing:border-box!important;
+    overflow-x:hidden!important;
+  }
+
+  #aboutView .business-grid,
+  #centerView .business-grid,
+  .about-view .business-grid,
+  .center-view .business-grid,
+  .business-page .business-grid,
+  .center-page .business-grid,
+  #aboutView .center-grid,
+  #centerView .center-grid,
+  .about-view .center-grid,
+  .center-view .center-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:12px!important;
+    width:100%!important;
+  }
+
+  #aboutView .business-card,
+  #centerView .business-card,
+  .about-view .business-card,
+  .center-view .business-card,
+  .business-page .business-card,
+  .center-page .business-card,
+  #aboutView .card,
+  #centerView .card{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    padding:18px 16px!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+
+  #aboutView h1, #centerView h1,
+  .about-view h1, .center-view h1,
+  .business-page h1, .center-page h1{
+    font-size:1.65rem!important;
+    line-height:1.35!important;
+    word-break:keep-all!important;
+  }
+
+  #aboutView h2, #centerView h2,
+  .about-view h2, .center-view h2,
+  .business-page h2, .center-page h2{
+    font-size:1.28rem!important;
+    line-height:1.4!important;
+    word-break:keep-all!important;
+  }
+
+  #aboutView h3, #centerView h3,
+  .about-view h3, .center-view h3,
+  .business-page h3, .center-page h3{
+    font-size:1.08rem!important;
+    line-height:1.45!important;
+    word-break:keep-all!important;
+  }
+
+  #aboutView p, #centerView p,
+  #aboutView li, #centerView li,
+  .about-view p, .center-view p,
+  .about-view li, .center-view li,
+  .business-page p, .center-page p,
+  .business-page li, .center-page li{
+    font-size:.96rem!important;
+    line-height:1.75!important;
+    word-break:keep-all!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  #aboutView .tag-list,
+  #centerView .tag-list,
+  .about-view .tag-list,
+  .center-view .tag-list,
+  .business-page .tag-list,
+  .center-page .tag-list,
+  #aboutView .chips,
+  #centerView .chips{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:7px!important;
+  }
+
+  #aboutView .tag,
+  #centerView .tag,
+  .about-view .tag,
+  .center-view .tag,
+  .business-page .tag,
+  .center-page .tag,
+  #aboutView .chip,
+  #centerView .chip{
+    max-width:100%!important;
+    white-space:normal!important;
+    word-break:keep-all!important;
+  }
+
+  #aboutView .contact-grid,
+  #centerView .contact-grid,
+  .about-view .contact-grid,
+  .center-view .contact-grid,
+  .business-page .contact-grid,
+  .center-page .contact-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    width:100%!important;
+  }
+
+  #aboutView .contact-item,
+  #centerView .contact-item,
+  .about-view .contact-item,
+  .center-view .contact-item,
+  .business-page .contact-item,
+  .center-page .contact-item{
+    width:100%!important;
+    min-width:0!important;
+    word-break:break-word!important;
+  }
+
+  #aboutView img, #centerView img,
+  .about-view img, .center-view img,
+  .business-page img, .center-page img{
+    max-width:100%!important;
+    height:auto!important;
+  }
+
+  #aboutView table, #centerView table,
+  .about-view table, .center-view table,
+  .business-page table, .center-page table{
+    width:100%!important;
+    table-layout:fixed!important;
+  }
+}
+
+@media(max-width:420px){
+  #aboutView,
+  #centerView,
+  .about-view,
+  .center-view,
+  .business-page,
+  .center-page{
+    padding-left:9px!important;
+    padding-right:9px!important;
+  }
+
+  #aboutView .business-card,
+  #centerView .business-card,
+  .about-view .business-card,
+  .center-view .business-card,
+  .business-page .business-card,
+  .center-page .business-card,
+  #aboutView .card,
+  #centerView .card{
+    padding:16px 13px!important;
+  }
+
+  #aboutView h1, #centerView h1,
+  .about-view h1, .center-view h1,
+  .business-page h1, .center-page h1{
+    font-size:1.45rem!important;
+  }
+}
+
+
+/* 단계별 학습하기 카드 가독성 개선 */
+.lesson{
+  border:1.5px solid #c9d8dc!important;
+  box-shadow:0 2px 8px rgba(20,55,70,.05);
+  padding:18px 14px!important;
+}
+.lesson h3{
+  margin:10px 0 7px!important;
+  font-size:1.18rem!important;
+  font-weight:800!important;
+  line-height:1.4!important;
+  color:#062b4d!important;
+  letter-spacing:-.01em;
+}
+.lesson p{
+  margin:0!important;
+  color:#344b5a!important;
+  font-size:.94rem!important;
+  font-weight:600!important;
+  line-height:1.55!important;
+  word-break:keep-all!important;
+}
+.lesson .num{
+  width:40px!important;
+  height:40px!important;
+  font-size:1rem!important;
+  font-weight:900!important;
+}
+.lesson .go{
+  margin-top:12px!important;
+  padding:8px 7px!important;
+  font-size:.96rem!important;
+  font-weight:800!important;
+  color:#006f69!important;
+  background:#e8f5f3!important;
+}
+#selectView>p{
+  color:#405766!important;
+  font-size:1rem!important;
+  font-weight:600!important;
+}
+
+@media(max-width:768px){
+  .lesson{
+    min-height:0!important;
+    padding:17px 14px!important;
+  }
+  .lesson h3{font-size:1.12rem!important}
+  .lesson p{font-size:.92rem!important;line-height:1.5!important}
+  .lesson .go{font-size:.94rem!important}
+}
+
+
+/* 단계별 학습하기 글자 크기 추가 확대 */
+#homeGrid .lesson h3,
+#selectGrid .lesson h3{
+  font-size:1.42rem!important;
+  font-weight:900!important;
+  line-height:1.4!important;
+}
+#homeGrid .lesson p,
+#selectGrid .lesson p{
+  font-size:1.08rem!important;
+  font-weight:650!important;
+  line-height:1.65!important;
+}
+#homeGrid .lesson .num,
+#selectGrid .lesson .num{
+  width:44px!important;
+  height:44px!important;
+  font-size:1.1rem!important;
+}
+#homeGrid .lesson .go,
+#selectGrid .lesson .go{
+  font-size:1.08rem!important;
+  padding:9px 8px!important;
+}
+#homeView > .title,
+#selectView > .title{
+  font-size:1.75rem!important;
+  font-weight:900!important;
+}
+
+@media(max-width:768px){
+  #homeGrid .lesson h3,
+  #selectGrid .lesson h3{font-size:1.28rem!important}
+  #homeGrid .lesson p,
+  #selectGrid .lesson p{font-size:1rem!important;line-height:1.6!important}
+  #homeGrid .lesson .go,
+  #selectGrid .lesson .go{font-size:1rem!important}
+}
+
+
+/* 저시력 사용자를 위한 메뉴/카드 경계선 대비 강화 */
+.lesson,
+.tile,
+.card,
+.business-card,
+.service-card,
+.contact-card,
+.info-card,
+.menu-card,
+.stat-card,
+.quiz-card{
+  border-width:2px!important;
+  border-style:solid!important;
+  border-color:#78939b!important;
+}
+
+/* 단계별 학습하기 카드 */
+#homeGrid .lesson,
+#selectGrid .lesson{
+  border:2px solid #607f89!important;
+  box-shadow:0 2px 7px rgba(20,45,55,.10)!important;
+}
+
+/* 사업소개 영역의 각 박스 */
+.service-grid > *,
+.business-grid > *,
+.contact-grid > *,
+.center-grid > *{
+  border-color:#78939b!important;
+  border-width:2px!important;
+}
+
+/* 메뉴 안의 작은 태그/칩도 경계가 보이도록 */
+.tag,
+.chip,
+.pill,
+.badge{
+  border-color:#78939b!important;
+  border-width:1.5px!important;
+}
+
+/* 입력/선택 박스의 경계선도 조금 더 선명하게 */
+input,
+select,
+textarea{
+  border-color:#718b94!important;
+  border-width:1.5px!important;
+}
+
+/* 모바일에서도 동일한 대비 유지 */
+@media(max-width:768px){
+  .lesson,
+  .tile,
+  .card,
+  .business-card,
+  .service-card,
+  .contact-card,
+  .info-card,
+  .menu-card,
+  .stat-card,
+  .quiz-card{
+    border-color:#657f88!important;
+    border-width:2px!important;
+  }
+}
+
+
+/* 사이트 전체 경계선 고대비 보정 — 모든 메뉴/박스/버튼/입력 영역 */
+:root{
+  --line:#607b85!important;
+}
+
+/* 상단 내비게이션: 홈 / 점자 타자 연습 / 나의 기록 / 센터소개 */
+nav{
+  border-color:#536f79!important;
+}
+nav button{
+  border:2px solid #607b85!important;
+  border-right-width:1px!important;
+}
+nav button:last-child{
+  border-right-width:2px!important;
+}
+nav button.active{
+  border-color:#315f69!important;
+  box-shadow:inset 0 0 0 1px #315f69!important;
+}
+
+/* 사이트 내 주요 박스 전체 */
+.hero,
+.board,
+.lesson,
+.card,
+.practice,
+.side,
+.record,
+.panel,
+.result,
+.answer-panel,
+.metric,
+.spelling-panel,
+.spelling-option,
+.service-card,
+.service-item,
+.center-head,
+.center-contact,
+.contact-box,
+.contact-item,
+.alt-materials span,
+.info-card,
+.business-card,
+.menu-card,
+.quiz-card,
+.stat-card,
+.tile{
+  border-color:#607b85!important;
+  border-width:2px!important;
+  border-style:solid!important;
+}
+
+/* 버튼류 전체 */
+button,
+.answer-view-btn,
+.spelling-options button,
+.mobile-notice-box button{
+  border-color:#536f79!important;
+  border-width:2px!important;
+}
+
+/* 입력/선택 영역 */
+input,
+select,
+textarea,
+.typed{
+  border:2px solid #536f79!important;
+}
+
+/* 진행 막대와 키보드 키 표시 */
+.bar{
+  border:1.5px solid #607b85!important;
+}
+kbd{
+  border-color:#536f79!important;
+  border-width:1.5px!important;
+  border-bottom-width:3px!important;
+}
+
+/* 태그·칩 */
+.tag,
+.chip,
+.pill,
+.badge,
+.alt-materials span{
+  border-color:#607b85!important;
+  border-width:1.5px!important;
+}
+
+/* 팝업 */
+#mobilePracticeModal .mobile-notice-box{
+  border:2px solid #536f79!important;
+}
+
+/* 모바일에서도 같은 대비 */
+@media(max-width:768px){
+  nav,
+  nav button,
+  .hero,
+  .board,
+  .lesson,
+  .card,
+  .practice,
+  .side,
+  .record,
+  .panel,
+  .result,
+  .answer-panel,
+  .metric,
+  .service-card,
+  .service-item,
+  .center-head,
+  .center-contact,
+  .contact-box,
+  .contact-item{
+    border-color:#526e78!important;
+  }
+}
+
+
+/* 각 학습 연습화면의 '문제 / 점자 입력' 제목 가독성 확대 */
+#practiceView .panel > .label{
+  font-size:1.22rem!important;
+  font-weight:900!important;
+  line-height:1.4!important;
+  color:#123f55!important;
+  letter-spacing:-.01em!important;
+}
+
+/* 문제 자체도 조금 더 또렷하게 */
+#practiceView .prompt{
+  font-weight:700!important;
+}
+
+/* 모바일에서도 제목 크기 유지 */
+@media(max-width:768px){
+  #practiceView .panel > .label{
+    font-size:1.16rem!important;
+    font-weight:900!important;
+  }
+}
+
+
+/* 전체 테두리 과강조 완화: 영역 위계가 보이도록 대비를 단계별로 조정 */
+:root{
+  --line:#c8d5d9!important;
+}
+
+/* 상단 메인 메뉴: 구분은 확실하게, 선은 과하지 않게 */
+nav{
+  border:1.5px solid #6f8891!important;
+}
+nav button{
+  border:0!important;
+  border-right:1px solid rgba(255,255,255,.42)!important;
+}
+nav button:last-child{
+  border-right:0!important;
+}
+nav button.active{
+  border:0!important;
+  box-shadow:inset 0 -3px 0 #0a7f78!important;
+}
+
+/* 큰 영역 카드: 중간 강도의 테두리 */
+.hero,
+.lesson,
+.card,
+.practice,
+.record,
+.service-card,
+.business-card,
+.contact-card,
+.info-card,
+.menu-card,
+.quiz-card,
+.stat-card,
+.tile{
+  border:1.5px solid #9fb3ba!important;
+  box-shadow:0 2px 7px rgba(20,45,55,.045)!important;
+}
+
+/* 연습 화면 안쪽 구획: 굵은 테두리 대신 얇은 구분선 */
+.exercise{
+  border:1.5px solid #9fb3ba!important;
+}
+.exercise .panel,
+.panel,
+.result,
+.answer-panel,
+.metric,
+.side{
+  border-color:#c1cfd3!important;
+  border-width:1px!important;
+}
+
+/* 사업소개 내부 항목은 바깥 카드보다 연하게 */
+.service-item,
+.contact-item,
+.alt-materials span,
+.device-examples span{
+  border-color:#c4d1d5!important;
+  border-width:1px!important;
+}
+
+/* 버튼과 입력 요소 */
+button,
+.answer-view-btn,
+.spelling-options button{
+  border-width:1.5px!important;
+  border-color:#8ca3ab!important;
+}
+input,
+select,
+textarea{
+  border:1.5px solid #8ca3ab!important;
+}
+
+/* 태그와 키보드 안내 */
+.tag,
+.chip,
+.pill,
+.badge{
+  border-width:1px!important;
+  border-color:#aebfc4!important;
+}
+kbd{
+  border-color:#849aa2!important;
+  border-width:1px!important;
+  border-bottom-width:3px!important;
+}
+
+/* 모바일도 같은 위계 유지 */
+@media(max-width:768px){
+  nav{border-color:#728991!important}
+  .hero,
+  .lesson,
+  .card,
+  .practice,
+  .record,
+  .service-card,
+  .business-card,
+  .contact-card,
+  .info-card,
+  .menu-card,
+  .quiz-card,
+  .stat-card,
+  .tile{
+    border-color:#9aafb6!important;
+  }
+}
+
+
+/* 학습 화면 '답안보기' 버튼 글자 확대 */
+#practiceView .answer-view-btn{
+  font-size:1.12rem!important;
+  font-weight:800!important;
+  line-height:1.4!important;
+  padding:10px 18px!important;
+}
+@media(max-width:768px){
+  #practiceView .answer-view-btn{
+    font-size:1.08rem!important;
+  }
+}
+
+
+/* 나의 기록 탭 전체 글자 가독성 확대 */
+#recordsView > .title{
+  font-size:1.9rem!important;
+  font-weight:900!important;
+}
+#recordsView .record{
+  padding:20px 16px!important;
+}
+#recordsView .record b{
+  font-size:1.18rem!important;
+  font-weight:900!important;
+  line-height:1.45!important;
+}
+#recordsView .record .v{
+  font-size:1.7rem!important;
+  font-weight:900!important;
+  line-height:1.35!important;
+  margin:7px 0 3px!important;
+}
+#recordsView .record small{
+  font-size:1rem!important;
+  font-weight:650!important;
+  line-height:1.5!important;
+}
+#recordsView .card{
+  font-size:1.02rem!important;
+  font-weight:600!important;
+  line-height:1.65!important;
+}
+
+@media(max-width:768px){
+  #recordsView > .title{font-size:1.65rem!important}
+  #recordsView .record b{font-size:1.1rem!important}
+  #recordsView .record .v{font-size:1.55rem!important}
+  #recordsView .record small{font-size:.96rem!important}
+  #recordsView .card{font-size:.98rem!important}
+}
+
 </style>
 <style>
 .apply-inline p{margin:.65rem 0; line-height:1.55}
