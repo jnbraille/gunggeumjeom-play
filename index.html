@@ -1330,6 +1330,89 @@ kbd{
   }
 }
 
+
+@media(max-width:768px){}
+@media(forced-colors:active){}
+
+
+/* 로마자 문제: 로마자가 중심이 되도록 괄호 속 한글 명칭 축소 */
+#practiceView[data-category="로마자"] .prompt{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:baseline!important;
+  justify-content:center!important;
+  gap:.38em!important;
+}
+#practiceView[data-category="로마자"] .roman-symbol{
+  font-family:"Times New Roman",Arial,sans-serif!important;
+  font-size:3rem!important;
+  font-weight:700!important;
+  line-height:1.15!important;
+  letter-spacing:.04em!important;
+}
+#practiceView[data-category="로마자"] .roman-name{
+  font-family:"함초롬바탕","HCR Batang","Noto Serif KR","Batang","바탕",serif!important;
+  font-size:1rem!important;
+  font-weight:600!important;
+  line-height:1.35!important;
+  color:#596b79!important;
+  white-space:nowrap;
+}
+@media(max-width:600px){
+  #practiceView[data-category="로마자"] .roman-symbol{font-size:2.6rem!important}
+  #practiceView[data-category="로마자"] .roman-name{font-size:.9rem!important}
+}
+@media(forced-colors:active){
+  #practiceView[data-category="로마자"] .roman-symbol,
+  #practiceView[data-category="로마자"] .roman-name{color:CanvasText!important}
+}
+
+
+/* 실시간 정확도·입력속도를 문제 제목 줄 우측에 배치 */
+.problem-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  width:100%;
+  margin-bottom:8px;
+}
+#practiceView .problem-head>.label{
+  flex:0 0 auto;
+  margin:0!important;
+}
+.live-metrics-top{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:18px;
+  flex-wrap:wrap;
+  color:#334f5d;
+  font-size:.96rem;
+  font-weight:700;
+  line-height:1.35;
+}
+.live-metrics-top>span{
+  display:inline-flex;
+  align-items:baseline;
+  gap:6px;
+  white-space:nowrap;
+}
+.live-metrics-top strong{
+  color:#075e66;
+  font-size:1.12rem;
+  font-weight:900;
+}
+@media(max-width:768px){
+  .problem-head{gap:8px;align-items:flex-start}
+  .live-metrics-top{gap:10px;font-size:.82rem}
+  .live-metrics-top strong{font-size:.94rem}
+}
+@media(forced-colors:active){
+  .live-metrics-top,.live-metrics-top strong{color:CanvasText!important}
+}
+
 </style>
 <style>
 .apply-inline p{margin:.65rem 0; line-height:1.55}
@@ -1604,7 +1687,13 @@ footer{background:#07837b!important;color:#fff!important;margin-top:22px!importa
     <h2><span id="practiceName">초성 연습</span><span class="count"><span id="pIndex">1</span> / <span id="pTotal">100</span></span></h2>
     <div class="exercise">
       <div class="panel sep">
-        <span class="label">문제</span>
+        <div class="problem-head">
+          <span class="label">문제</span>
+          <div class="live-metrics-top" aria-label="실시간 입력 현황">
+            <span>정확도 <strong id="liveAccuracy">0%</strong></span>
+            <span>입력속도 <strong><span id="liveSpeed">0</span> 칸/분</strong></span>
+          </div>
+        </div>
         <div id="spellingPanel" class="spelling-panel">
 <div>두 표현 중 맞는 표기를 선택하세요.</div>
 <div id="spellingQ" class="spelling-q"></div>
@@ -1626,10 +1715,6 @@ footer{background:#07837b!important;color:#fff!important;margin-top:22px!importa
       <div id="answerPanel" class="answer-panel" hidden>
         <span class="answer-label">정답 점형</span>
         <div id="answerDots" class="answer-dots" aria-label="정답 점형"></div>
-      </div>
-      <div class="metrics">
-        <div class="metric">현재 정확도<strong id="liveAccuracy">0%</strong></div>
-        <div class="metric">입력 속도<strong><span id="liveSpeed">0</span> 칸/분</strong></div>
       </div>
     </div>
   </div>
@@ -1784,6 +1869,7 @@ function openPractice(c){
     nextQuestion();
   }
 }
+
 function nextQuestion(){
   q=DATA[cat][queue[round]];
   document.getElementById("practiceName").textContent=cat+" 연습";
@@ -1804,6 +1890,19 @@ function nextQuestion(){
       name.className="punct-name";
       name.textContent="("+mm[2]+")";
       pe.append(sym,name);
+    }else{
+      pe.textContent=q.prompt;
+    }
+  }else if(cat==="로마자"){
+    const rm=q.prompt.match(/^(.+?) \((.+)\)$/);
+    if(rm){
+      const roman=document.createElement("span");
+      roman.className="roman-symbol";
+      roman.textContent=rm[1];
+      const name=document.createElement("span");
+      name.className="roman-name";
+      name.textContent="("+rm[2]+")";
+      pe.append(roman,name);
     }else{
       pe.textContent=q.prompt;
     }
@@ -2036,5 +2135,4 @@ function nextSpellingV17(){
     box.appendChild(btn);
   });
 }
-
 </script></body></html>
