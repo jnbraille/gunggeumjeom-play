@@ -2696,6 +2696,161 @@ header .fund-text::after,
   }
 }
 
+
+/* ===== 모바일 사업소개: 나의 기록처럼 한 카드씩 세로 1열 ===== */
+@media screen and (max-width: 900px){
+  body{
+    overflow-x:hidden!important;
+  }
+
+  #guideView{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    padding:0 12px 26px!important;
+    box-sizing:border-box!important;
+    overflow-x:hidden!important;
+  }
+
+  #guideView .service-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-auto-flow:row!important;
+    gap:14px!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+
+  #guideView .service-grid > .service-card,
+  #guideView .service-card,
+  #guideView .service-card.featured{
+    grid-column:1 / -1!important;
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:18px 16px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+
+  #guideView .service-card > *{
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+
+  #guideView .service-no{
+    display:grid!important;
+    place-items:center!important;
+    width:44px!important;
+    height:44px!important;
+    margin:0 0 12px!important;
+  }
+
+  #guideView .service-card h3{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin:0 0 14px!important;
+    font-size:1.34rem!important;
+    line-height:1.4!important;
+    white-space:normal!important;
+    word-break:keep-all!important;
+    overflow-wrap:break-word!important;
+  }
+
+  #guideView .service-card h4,
+  #guideView .service-item b,
+  #guideView .service-card p,
+  #guideView .service-item p,
+  #guideView .contact-row,
+  #guideView .contact-row span,
+  #guideView .contact-row a{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    white-space:normal!important;
+    word-break:keep-all!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  #guideView .service-card p,
+  #guideView .service-item p{
+    font-size:1rem!important;
+    line-height:1.72!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+
+  #guideView .service-item{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    padding:13px 0!important;
+    margin:0!important;
+    border-left:0!important;
+    border-right:0!important;
+    box-sizing:border-box!important;
+  }
+
+  #guideView .alt-materials,
+  #guideView .device-examples{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    gap:8px!important;
+  }
+
+  #guideView .alt-materials span,
+  #guideView .device-examples span{
+    flex:0 1 auto!important;
+    width:auto!important;
+    max-width:100%!important;
+    white-space:normal!important;
+    word-break:keep-all!important;
+    overflow-wrap:break-word!important;
+  }
+
+  /* 이용문의 전화번호·전자우편이 세로 한 글자씩 떨어지지 않도록 */
+  #guideView .contact-row,
+  #guideView .contact-item,
+  #guideView .center-contact{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+
+  #guideView a[href^="mailto:"],
+  #guideView a[href^="tel:"],
+  #guideView .contact-row span{
+    word-break:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+}
+
+@media screen and (max-width: 430px){
+  #guideView{
+    padding-left:9px!important;
+    padding-right:9px!important;
+  }
+  #guideView .service-card,
+  #guideView .service-card.featured{
+    padding:16px 14px!important;
+  }
+  #guideView .service-card h3{
+    font-size:1.25rem!important;
+  }
+}
+
 </style>
 <style>
 .apply-inline p{margin:.65rem 0; line-height:1.55}
