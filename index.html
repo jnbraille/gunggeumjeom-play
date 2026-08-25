@@ -4184,7 +4184,12 @@ function startSpellingMode(){
   clearTimeout(spellingTimer);
   spellingTimer=null;
   const fb=document.getElementById("spellingFb");
-  if(fb){fb.replaceChildren();fb.textContent="";}
+  if(fb){
+    fb.replaceChildren();
+    fb.textContent="";
+    fb.hidden=true;
+    fb.style.display="none";
+  }
   spellingOrder=[...Array(DATA["맞춤법"].length).keys()].sort(()=>Math.random()-.5);
   spellingPos=0;
   nextSpellingV17();
@@ -4220,6 +4225,8 @@ function nextSpellingV17(){
     fb.className="spelling-fb";
     fb.removeAttribute("data-state");
     fb.setAttribute("aria-live","polite");
+    fb.hidden=true;
+    fb.style.display="none";
   }
   if(box){
     box.replaceChildren();
@@ -4242,6 +4249,11 @@ function nextSpellingV17(){
       [...box.children].forEach(x=>x.disabled=true);
       const isCorrect=(opt===spellingCurrent.answer);
       playFeedbackSound(isCorrect);
+      const fb=document.getElementById("spellingFb");
+      if(fb){
+        fb.hidden=false;
+        fb.style.display="block";
+      }
       if(isCorrect){
         btn.classList.add("correct");
         document.getElementById("spellingFb").innerHTML="<strong>정답!</strong> "+spellingCurrent.answer;
@@ -4263,7 +4275,12 @@ function nextSpellingV17(){
       clearTimeout(spellingTimer);
       spellingTimer=setTimeout(()=>{
         const fb=document.getElementById("spellingFb");
-        if(fb){fb.replaceChildren();fb.textContent="";}
+        if(fb){
+          fb.replaceChildren();
+          fb.textContent="";
+          fb.hidden=true;
+          fb.style.display="none";
+        }
         nextSpellingV17();
       },1400);
     };
