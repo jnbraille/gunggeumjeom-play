@@ -4325,4 +4325,29 @@ window.addEventListener("hashchange",()=>{
 });
 
 </script></body></html>
-<style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
+<style>.practice-card .sub, .menu-card .sub{white-space:nowrap}
+/* 고대비 모드: 상단 메인 탭 hover/focus 글자 대비 보정 */
+@media (forced-colors: active){
+  nav button:hover,
+  nav button:focus,
+  nav button:focus-visible{
+    background:Highlight!important;
+    color:HighlightText!important;
+    -webkit-text-fill-color:HighlightText!important;
+    border-color:Highlight!important;
+  }
+
+  nav button:hover *,
+  nav button:focus *,
+  nav button:focus-visible *{
+    color:HighlightText!important;
+    -webkit-text-fill-color:HighlightText!important;
+  }
+
+  nav button.active:not(:hover):not(:focus):not(:focus-visible){
+    background:Canvas!important;
+    color:CanvasText!important;
+    -webkit-text-fill-color:CanvasText!important;
+  }
+}
+</style>
