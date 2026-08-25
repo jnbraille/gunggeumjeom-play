@@ -3002,6 +3002,68 @@ header .fund-text::after,
   }
 }
 
+
+/* 모바일 센터 소개 제목: 의미 단위로 줄바꿈해 한두 글자만 떨어지는 현상 방지 */
+@media (max-width:768px){
+  #guideView .center-head{
+    text-align:left!important;
+    padding:20px 18px!important;
+  }
+
+  #guideView .center-head h2{
+    text-align:left!important;
+    font-size:clamp(1.58rem,6.4vw,1.95rem)!important;
+    line-height:1.45!important;
+    letter-spacing:-.045em!important;
+    margin:0 0 18px!important;
+  }
+
+  #guideView .center-head h2 .intro-title-line,
+  #guideView .center-head h2 .intro-center-line{
+    display:block!important;
+    width:100%!important;
+    word-break:keep-all!important;
+    overflow-wrap:normal!important;
+  }
+
+  #guideView .center-head h2 em{
+    display:block!important;
+    margin-top:12px!important;
+    font-style:normal!important;
+  }
+
+  #guideView .center-head h2 .intro-center-line{
+    font-size:.92em!important;
+    line-height:1.5!important;
+  }
+
+  #guideView .center-head p{
+    text-align:left!important;
+    font-size:1.02rem!important;
+    line-height:1.78!important;
+    letter-spacing:-.025em!important;
+    word-break:keep-all!important;
+    overflow-wrap:break-word!important;
+    margin:12px 0!important;
+  }
+
+  #guideView .center-head p br{
+    display:none!important;
+  }
+}
+
+@media (max-width:430px){
+  #guideView .center-head{
+    padding:18px 15px!important;
+  }
+  #guideView .center-head h2{
+    font-size:clamp(1.48rem,6vw,1.78rem)!important;
+  }
+  #guideView .center-head h2 .intro-center-line{
+    font-size:.9em!important;
+  }
+}
+
 </style>
 <style>
 .apply-inline p{margin:.65rem 0; line-height:1.55}
@@ -3361,7 +3423,14 @@ function formatPunctuationPrompt(text){
 <section id="recordsView" class="view"><h2 class="title">나의 기록</h2><div id="recordsGrid" class="records"></div><div class="card" style="margin-top:14px">현재 접속 중인 페이지에서만 기록됩니다. 페이지를 종료하거나 새로 접속하면 초기화됩니다.</div></section>
 <section id="guideView" class="view center-intro">
   <div class="center-head">
-    <h2>더 넓은 세상으로 나아가는 길,<br><em>전남점자도서관 시각장애인학습지원센터가 함께 하겠습니다!</em></h2>
+    <h2>
+      <span class="intro-title-line">더 넓은 세상으로</span>
+      <span class="intro-title-line">나아가는 길,</span>
+      <em>
+        <span class="intro-center-line">전남점자도서관</span>
+        <span class="intro-center-line">시각장애인학습지원센터가 함께 하겠습니다!</span>
+      </em>
+    </h2>
     <p>시각장애인 학습권 보장과 정보 접근권 향상을 위해<br>
     맞춤형 대체자료 제작, 찾아가는 정보화 교육, 점자교실 등 지식의 장벽을 허물고 보편적 학습 환경을 조성합니다.</p>
     <p>차별 없이 꿈꾸고 성장의 기회를 누리는 세상,<br>
