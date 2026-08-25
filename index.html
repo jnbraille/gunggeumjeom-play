@@ -3696,6 +3696,27 @@ footer{background:#07837b!important;color:#fff!important;margin-top:22px!importa
   nav button{white-space:normal!important;line-height:1.35!important}
   img,svg{max-width:100%;height:auto}
 }
+
+
+/* 고대비 모드: 상단 메뉴 hover/focus에서도 글자색 흰색 유지 */
+@media (forced-colors: active){
+  nav button:hover,
+  nav button:focus,
+  nav button:focus-visible,
+  nav button.active:hover,
+  nav button.active:focus,
+  nav button.active:focus-visible{
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+  }
+
+  nav button:hover *,
+  nav button:focus *,
+  nav button:focus-visible *{
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+  }
+}
 </style>
 
 
@@ -4325,29 +4346,4 @@ window.addEventListener("hashchange",()=>{
 });
 
 </script></body></html>
-<style>.practice-card .sub, .menu-card .sub{white-space:nowrap}
-/* 고대비 모드: 상단 메인 탭 hover/focus 글자 대비 보정 */
-@media (forced-colors: active){
-  nav button:hover,
-  nav button:focus,
-  nav button:focus-visible{
-    background:Highlight!important;
-    color:HighlightText!important;
-    -webkit-text-fill-color:HighlightText!important;
-    border-color:Highlight!important;
-  }
-
-  nav button:hover *,
-  nav button:focus *,
-  nav button:focus-visible *{
-    color:HighlightText!important;
-    -webkit-text-fill-color:HighlightText!important;
-  }
-
-  nav button.active:not(:hover):not(:focus):not(:focus-visible){
-    background:Canvas!important;
-    color:CanvasText!important;
-    -webkit-text-fill-color:CanvasText!important;
-  }
-}
-</style>
+<style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
