@@ -3329,6 +3329,91 @@ header .fund-text::after,
   display:none!important;
 }
 
+
+/* 모바일 점자 타자연습: 1~9 PC 전용 / 맞춤법만 모바일 이용 가능 */
+.mobile-spelling-only{
+  display:inline-block;
+  margin-top:7px;
+  color:inherit;
+}
+@media(max-width:768px){
+  #selectGrid .lesson:not([data-category="맞춤법"]) .go::before{
+    content:"PC 전용 · ";
+    font-size:.86em;
+    font-weight:800;
+  }
+  #selectGrid .lesson[data-category="맞춤법"] .go{
+    font-weight:900!important;
+  }
+
+  /* 맞춤법은 모바일 터치 학습에 맞게 한 열로 안정적으로 표시 */
+  #practiceView[data-category="맞춤법"] .exercise{
+    display:block!important;
+  }
+  #practiceView[data-category="맞춤법"] .panel{
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+}
+
+
+/* ===== 점형 가독성 개선: 빈 점만 작게 ===== */
+/* 찍힌 점 크기는 유지하고, 빈 점은 약 68% 크기로 축소 */
+.input-dot,
+.board-dot,
+.dot{
+  transform-origin:center!important;
+}
+
+/* 기본 빈 점 */
+.input-dot:not(.on),
+.board-dot:not(.on),
+.dot:not(.on):not(.active):not(.filled){
+  transform:scale(.68)!important;
+  border-width:1.6px!important;
+  opacity:.9!important;
+}
+
+/* 찍힌 점은 기존 크기 유지 */
+.input-dot.on,
+.board-dot.on,
+.dot.on,
+.dot.active,
+.dot.filled{
+  transform:scale(1)!important;
+  opacity:1!important;
+}
+
+/* 정답 점형의 초록 점도 동일 크기 유지 */
+#answerDots .input-dot.on,
+.answer-panel .input-dot.on{
+  transform:scale(1)!important;
+}
+
+/* 오답 표시 시에도 실제 점 크기는 유지 */
+.input-cell.wrong .input-dot.on,
+.input-cell.error .input-dot.on{
+  transform:scale(1)!important;
+}
+
+@media(max-width:768px){
+  .input-dot:not(.on),
+  .board-dot:not(.on),
+  .dot:not(.on):not(.active):not(.filled){
+    transform:scale(.66)!important;
+  }
+}
+
+/* 고대비 모드에서도 크기 차이는 유지 */
+@media(forced-colors:active){
+  .input-dot:not(.on),
+  .board-dot:not(.on),
+  .dot:not(.on):not(.active):not(.filled){
+    transform:scale(.68)!important;
+  }
+}
+
 </style>
 <style>
 .apply-inline p{margin:.65rem 0; line-height:1.55}
@@ -3820,7 +3905,7 @@ function liveMetrics(){
   if(typeof liveSpeed!=="undefined") liveSpeed.textContent=typedCells>0 ? lastSpeed : 0;
 }
 function stats(){liveMetrics();homeTotal.textContent=rec.total;homeRate.textContent=pct(rec.correct,rec.total)+"%";homeBar.style.width=pct(rec.correct,rec.total)+"%";allTotal.textContent=rec.total;allRate.textContent=pct(rec.correct,rec.total)+"%";allBar.style.width=pct(rec.correct,rec.total)+"%";recordsGrid.innerHTML="";CATS.forEach(c=>{let r=rec.cat[c]||{total:0,correct:0},e=document.createElement("div");e.className="record";e.innerHTML=`<b>${c}</b><div class="v">${r.total}</div><small>정답률 ${pct(r.correct,r.total)}%</small>`;recordsGrid.appendChild(e)})}
-function card(c,i){let b=document.createElement("button");b.className="lesson";b.innerHTML=`<div><div class="num">${String(i+1).padStart(2,"0")}</div><h3>${c} 연습</h3><p>${DESC[c]}</p></div><div class="go">연습하기 ›</div>`;b.onclick=()=>openPractice(c);return b}
+function card(c,i){let b=document.createElement("button");b.className="lesson";b.dataset.category=c;b.innerHTML=`<div><div class="num">${String(i+1).padStart(2,"0")}</div><h3>${c} 연습</h3><p>${DESC[c]}</p></div><div class="go">연습하기 ›</div>`;b.onclick=()=>openPractice(c);return b}
 CATS.forEach((c,i)=>{homeGrid.appendChild(card(c,i));selectGrid.appendChild(card(c,i))});
 
 function isMobilePractice(){return window.matchMedia("(max-width: 768px)").matches;}
@@ -3828,7 +3913,7 @@ function mobilePracticeNotice(){
   let m=document.getElementById("mobilePracticeModal");
   if(!m){
     m=document.createElement("div"); m.id="mobilePracticeModal";
-    m.innerHTML=`<div class="mobile-notice-box" role="dialog" aria-modal="true" aria-label="이용 안내"><strong>이용 안내</strong><p>점자 타자 연습은 PC에서 사용 가능합니다.</p><button type="button" id="mobileNoticeClose">확인</button></div>`;
+    m.innerHTML=`<div class="mobile-notice-box" role="dialog" aria-modal="true" aria-label="이용 안내"><strong>이용 안내</strong><p>점자 타자 연습은 PC에서 사용 가능합니다.<br><strong class="mobile-spelling-only">모바일에서는 맞춤법 연습만 가능합니다.</strong></p><button type="button" id="mobileNoticeClose">확인</button></div>`;
     document.body.appendChild(m);
     document.getElementById("mobileNoticeClose").onclick=()=>m.classList.remove("show");
     m.onclick=e=>{if(e.target===m)m.classList.remove("show")};
@@ -3837,11 +3922,11 @@ function mobilePracticeNotice(){
 }
 
 function show(n,push=true){Object.values(V).forEach(v=>v.classList.remove("active"));V[n].classList.add("active");document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===n));if(n==="records")stats();if(push)history.pushState({v:n},"","#"+n);window.scrollTo({top:0,behavior:"smooth"})}
-document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{if(b.dataset.view==="select"&&isMobilePractice()){mobilePracticeNotice();return;}show(b.dataset.view)});window.onpopstate=e=>show((e.state&&e.state.v)||"home",false);history.replaceState({v:"home"},"","#home");
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.view));window.onpopstate=e=>show((e.state&&e.state.v)||"home",false);history.replaceState({v:"home"},"","#home");
 function shuffle(n){let a=[...Array(n).keys()];for(let i=n-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function makeQueue(c){return shuffle(DATA[c].length)}
 function openPractice(c){
-  if(isMobilePractice()){mobilePracticeNotice();return;}
+  if(isMobilePractice() && c!=="맞춤법"){mobilePracticeNotice();return;}
   document.getElementById("practiceView").dataset.category=c;
   cat=c;round=0;queue=makeQueue(c);
   sessionStart=Date.now();
