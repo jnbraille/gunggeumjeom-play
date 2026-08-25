@@ -3414,6 +3414,30 @@ header .fund-text::after,
   }
 }
 
+
+/* 모바일 이용안내 팝업 문구 줄바꿈 개선 */
+@media(max-width:768px){
+  #mobilePracticeModal .modal-card,
+  #mobilePracticeModal .modal-content{
+    width:min(92vw, 520px)!important;
+    padding-left:24px!important;
+    padding-right:24px!important;
+    box-sizing:border-box!important;
+  }
+  #mobilePracticeModal p{
+    font-size:clamp(18px, 4.8vw, 23px)!important;
+    line-height:1.55!important;
+    word-break:keep-all!important;
+    overflow-wrap:normal!important;
+    letter-spacing:-.02em!important;
+  }
+  #mobilePracticeModal .mobile-spelling-only{
+    white-space:nowrap!important;
+    font-size:.92em!important;
+    letter-spacing:-.035em!important;
+  }
+}
+
 </style>
 <style>
 .apply-inline p{margin:.65rem 0; line-height:1.55}
