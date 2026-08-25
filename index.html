@@ -4019,7 +4019,7 @@ function nextQuestion(){
       pe.textContent=q.prompt;
     }
   }else pe.textContent=q.prompt;
-  document.getElementById("rule").textContent=(q.rule||"").replace(/\s*·?\s*PDF\s*\d+쪽/g,"");
+  document.getElementById("rule").textContent=q.rule ? "2024년 한글 점자 규정 " + (q.rule||"").replace(/\s*·?\s*PDF\s*\d+쪽/g,"") : "";
   input="";grading=false;pressed.clear();chord.clear();
   document.getElementById("typed").innerHTML="";
   document.getElementById("result").className="result";
