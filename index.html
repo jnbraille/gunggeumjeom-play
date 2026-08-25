@@ -3323,6 +3323,12 @@ header .fund-text::after,
   }
 }
 
+
+/* 맞춤법 연습에서는 타자용 지표/답안보기 미사용 */
+#practiceView[data-category="맞춤법"] .problem-head-actions{
+  display:none!important;
+}
+
 </style>
 <style>
 .apply-inline p{margin:.65rem 0; line-height:1.55}
@@ -3791,12 +3797,27 @@ const heroBraille=[
 board.setAttribute("aria-label","훈맹정음 점자");
 heroBraille.forEach(ds=>{let c=document.createElement("div");c.className="board-cell";[1,4,2,5,3,6].forEach(n=>{let d=document.createElement("span");d.className="board-dot"+(ds.includes(n)?" on":"");c.appendChild(d)});board.appendChild(c)});
 
-let rec={total:0,correct:0,cat:{}},cat="초성",round=0,q=null,input="",grading=false,queue=[],pressed=new Set(),chord=new Set(),timer,sessionStart=Date.now(),typedCells=0;
+let rec={total:0,correct:0,cat:{}},cat="초성",round=0,q=null,input="",grading=false,queue=[],pressed=new Set(),chord=new Set(),timer,sessionStart=Date.now(),typedCells=0,sessionTotal=0,sessionCorrect=0,activeTypingMs=0,typingStartedAt=null,lastSpeed=0;
 const pct=(c,t)=>t?Math.round(c/t*100):0;
+function beginTypingClock(){
+  if(typingStartedAt===null) typingStartedAt=Date.now();
+}
+function pauseTypingClock(){
+  if(typingStartedAt!==null){
+    activeTypingMs+=Date.now()-typingStartedAt;
+    typingStartedAt=null;
+  }
+}
+function calcTypingSpeed(){
+  const elapsed=activeTypingMs+(typingStartedAt!==null ? Date.now()-typingStartedAt : 0);
+  if(typedCells<=0 || elapsed<=0) return 0;
+  return Math.round(typedCells/(elapsed/60000));
+}
 function liveMetrics(){
-  if(typeof liveAccuracy!=="undefined") liveAccuracy.textContent=pct(rec.correct,rec.total)+"%";
-  const mins=Math.max((Date.now()-sessionStart)/60000,1/60);
-  if(typeof liveSpeed!=="undefined") liveSpeed.textContent=Math.round(typedCells/mins);
+  if(typeof liveAccuracy!=="undefined") liveAccuracy.textContent=pct(sessionCorrect,sessionTotal)+"%";
+  const current=calcTypingSpeed();
+  if(current>0) lastSpeed=current;
+  if(typeof liveSpeed!=="undefined") liveSpeed.textContent=typedCells>0 ? lastSpeed : 0;
 }
 function stats(){liveMetrics();homeTotal.textContent=rec.total;homeRate.textContent=pct(rec.correct,rec.total)+"%";homeBar.style.width=pct(rec.correct,rec.total)+"%";allTotal.textContent=rec.total;allRate.textContent=pct(rec.correct,rec.total)+"%";allBar.style.width=pct(rec.correct,rec.total)+"%";recordsGrid.innerHTML="";CATS.forEach(c=>{let r=rec.cat[c]||{total:0,correct:0},e=document.createElement("div");e.className="record";e.innerHTML=`<b>${c}</b><div class="v">${r.total}</div><small>정답률 ${pct(r.correct,r.total)}%</small>`;recordsGrid.appendChild(e)})}
 function card(c,i){let b=document.createElement("button");b.className="lesson";b.innerHTML=`<div><div class="num">${String(i+1).padStart(2,"0")}</div><h3>${c} 연습</h3><p>${DESC[c]}</p></div><div class="go">연습하기 ›</div>`;b.onclick=()=>openPractice(c);return b}
@@ -3822,7 +3843,16 @@ function makeQueue(c){return shuffle(DATA[c].length)}
 function openPractice(c){
   if(isMobilePractice()){mobilePracticeNotice();return;}
   document.getElementById("practiceView").dataset.category=c;
-  cat=c;round=0;queue=makeQueue(c);sessionStart=Date.now();typedCells=0;
+  cat=c;round=0;queue=makeQueue(c);
+  sessionStart=Date.now();
+  typedCells=0;
+  sessionTotal=0;
+  sessionCorrect=0;
+  activeTypingMs=0;
+  typingStartedAt=null;
+  lastSpeed=0;
+  if(typeof liveAccuracy!=="undefined") liveAccuracy.textContent="0%";
+  if(typeof liveSpeed!=="undefined") liveSpeed.textContent="0";
   show("practice");
   if(c==="맞춤법"){
     startSpellingMode();
@@ -3933,9 +3963,9 @@ function playFeedbackSound(ok){
     });
   }catch(e){}
 }
-function submit(){if(grading)return;grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{round++;if(round>=DATA[cat].length){round=0;queue=makeQueue(cat)}nextQuestion()},ok?1200:2000)}
-document.onkeydown=e=>{if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}if(e.key===" "){e.preventDefault();input+=" ";typedCells++;draw();liveMetrics();return}let k=e.key.toLowerCase();if(KD[k]){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
-document.onkeyup=e=>{if(!V.practice.classList.contains("active")||grading)return;let k=e.key.toLowerCase();if(!KD[k])return;pressed.delete(k);if(!pressed.size&&chord.size){input+=braille([...chord]);typedCells++;chord.clear();draw();liveMetrics()}};
+function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";sessionTotal++;if(ok)sessionCorrect++;rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{round++;if(round>=DATA[cat].length){round=0;queue=makeQueue(cat)}nextQuestion()},ok?1200:2000)}
+document.onkeydown=e=>{if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}if(e.key===" "){e.preventDefault();beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return}let k=e.key.toLowerCase();if(KD[k]){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
+document.onkeyup=e=>{if(!V.practice.classList.contains("active")||grading)return;let k=e.key.toLowerCase();if(!KD[k])return;pressed.delete(k);if(!pressed.size&&chord.size){beginTypingClock();input+=braille([...chord]);typedCells++;chord.clear();draw();liveMetrics()}};
 
 function validateAnswerBank(){
   const invalid=[];
