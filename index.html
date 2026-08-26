@@ -5275,3 +5275,54 @@ kbd{
   vertical-align:middle!important;
 }
 </style>
+
+
+<style id="soft-warm-gray-background-final">
+/* 장시간 학습 시 눈부심을 줄이기 위한 일반 모드 배경 */
+@media (forced-colors: none){
+  html,
+  body{
+    background:#F5F5F3!important;
+  }
+
+  main,
+  #app,
+  .app,
+  .page,
+  .page-wrap,
+  .content,
+  .content-wrap,
+  .practice-page,
+  #practiceView{
+    background:#F5F5F3!important;
+  }
+
+  /* 문제·학습 카드: 바탕보다 살짝 밝게 구분 */
+  #practiceView .card,
+  #practiceView .practice-card,
+  #practiceView .question-card,
+  #practiceView .problem-card,
+  #practiceView [class*="card"]{
+    background:#FAFAF8!important;
+  }
+
+  /* 점자 입력 및 답안 영역은 가독성을 위해 한 단계 더 밝게 */
+  #practiceView #typed,
+  #practiceView #answerDots,
+  #practiceView .answer-dots,
+  #practiceView .braille-input,
+  #practiceView [class*="braille-input"]{
+    background:#FCFCFA!important;
+  }
+}
+
+/* 사이트 자체 고대비 클래스에서는 기존 어두운 배경을 그대로 우선 */
+.high-contrast,
+.high-contrast body,
+.high-contrast #practiceView,
+.contrast,
+.contrast body,
+.contrast #practiceView{
+  background:#202020!important;
+}
+</style>
