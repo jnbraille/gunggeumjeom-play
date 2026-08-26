@@ -4974,6 +4974,10 @@ body:not(.high-contrast):not(.contrast) #practiceView #typed .input-dot.error{
 
     typed.querySelectorAll('.spacing-error-marker').forEach(el => el.remove());
 
+    /* 아무 점자도 입력하지 않은 상태에서는 정답의 공백 위치를 미리 표시하지 않음 */
+    const hasTypedBraille = typed.querySelector('.input-cell, .input-dot.on, .braille-cell, [data-dots], .space-gap:not(.spacing-error-marker)');
+    if(!hasTypedBraille && !typed.textContent.trim()) return;
+
     const tKids = Array.from(typed.children);
     const aKids = Array.from(answer.children);
     const max = Math.max(tKids.length, aKids.length);
