@@ -3821,7 +3821,7 @@ function formatPunctuationPrompt(text){
       <div class="panel sep">
         <span class="label">점자 입력</span>
         <div id="typed" class="typed" tabindex="0" aria-label="점자 입력"></div>
-        <div class="hint">F D S / J K L 입력 · Backspace/Delete 삭제 · Space 띄어쓰기 · Enter 제출</div>
+        <div class="hint">F D S / J K L 입력 · Backspace/Delete 삭제 · Space 띄어쓰기 · Enter 제출</div><div class="spacing-guide-notice" aria-label="띄어쓰기 표시 안내">띄어쓰기는 빨간 밑줄로 표시됩니다.</div>
       </div>
       <div class="feedback-column">
         <div id="result" class="result">
@@ -4899,4 +4899,375 @@ body:not(.high-contrast):not(.contrast) #practiceView #typed .input-dot.error{
   }
 }
 
+</style>
+
+<style id="spacing-error-underline">
+
+/* 띄어쓰기 오답 표시: 일반 모드에서는 빈칸 아래 빨간 밑줄 */
+@media (forced-colors: none){
+  #practiceView #typed .space-gap.wrong,
+  #practiceView #typed .space-gap.error,
+  #practiceView #typed .input-cell.space.wrong,
+  #practiceView #typed .input-cell.space.error,
+  #practiceView #typed .wrong.space-gap,
+  #practiceView #typed .error.space-gap{
+    position:relative!important;
+    background:transparent!important;
+    border:none!important;
+    outline:none!important;
+    box-shadow:none!important;
+  }
+
+  #practiceView #typed .space-gap.wrong::after,
+  #practiceView #typed .space-gap.error::after,
+  #practiceView #typed .input-cell.space.wrong::after,
+  #practiceView #typed .input-cell.space.error::after,
+  #practiceView #typed .wrong.space-gap::after,
+  #practiceView #typed .error.space-gap::after{
+    content:""!important;
+    position:absolute!important;
+    left:2px!important;
+    right:2px!important;
+    bottom:-4px!important;
+    height:3px!important;
+    border-radius:2px!important;
+    background:#ef4444!important;
+  }
+}
+
+/* 고대비에서는 기존 오답 체계에 맞춰 파란 밑줄 */
+@media (forced-colors: active){
+  #practiceView #typed .space-gap.wrong,
+  #practiceView #typed .space-gap.error,
+  #practiceView #typed .input-cell.space.wrong,
+  #practiceView #typed .input-cell.space.error{
+    forced-color-adjust:none!important;
+    position:relative!important;
+    background:transparent!important;
+    border:none!important;
+  }
+
+  #practiceView #typed .space-gap.wrong::after,
+  #practiceView #typed .space-gap.error::after,
+  #practiceView #typed .input-cell.space.wrong::after,
+  #practiceView #typed .input-cell.space.error::after{
+    content:""!important;
+    position:absolute!important;
+    left:2px!important;
+    right:2px!important;
+    bottom:-4px!important;
+    height:3px!important;
+    border-radius:2px!important;
+    background:#3b82f6!important;
+  }
+}
+
+</style>
+
+
+<script id="spacing-error-underline-logic">
+(function(){
+  function markSpacingErrors(){
+    const typed = document.querySelector('#practiceView #typed');
+    const answer = document.querySelector('#practiceView #answerDots');
+    if(!typed || !answer) return;
+
+    typed.querySelectorAll('.spacing-error-marker').forEach(el => el.remove());
+
+    const tKids = Array.from(typed.children);
+    const aKids = Array.from(answer.children);
+    const max = Math.max(tKids.length, aKids.length);
+
+    function isSpace(el){
+      if(!el) return false;
+      return el.classList.contains('space-gap') ||
+             el.classList.contains('space') ||
+             el.dataset?.space === 'true';
+    }
+
+    for(let i=0;i<max;i++){
+      const t = tKids[i], a = aKids[i];
+      const ts = isSpace(t), as = isSpace(a);
+      if(ts === as) continue;
+
+      if(ts && t){
+        t.classList.add('wrong');
+      } else if(as){
+        const marker = document.createElement('span');
+        marker.className = 'space-gap wrong spacing-error-marker';
+        marker.setAttribute('aria-label','띄어쓰기 오류');
+        if(t) typed.insertBefore(marker, t);
+        else typed.appendChild(marker);
+      }
+    }
+  }
+
+  const run = () => requestAnimationFrame(markSpacingErrors);
+  document.addEventListener('keyup', run, true);
+  document.addEventListener('click', run, true);
+
+  const obs = new MutationObserver(run);
+  window.addEventListener('DOMContentLoaded', function(){
+    const typed = document.querySelector('#practiceView #typed');
+    if(typed) obs.observe(typed,{childList:true,subtree:true,attributes:true});
+  });
+})();
+</script>
+
+
+
+<style id="spacing-guide-notice-style">
+#practiceView .spacing-guide-notice{
+  margin-top:8px;
+  font-size:.9rem;
+  line-height:1.5;
+  color:#ef4444;
+}
+.high-contrast #practiceView .spacing-guide-notice,
+.contrast #practiceView .spacing-guide-notice{
+  color:#fff!important;
+}
+@media (forced-colors: active){
+  #practiceView .spacing-guide-notice{
+    color:CanvasText!important;
+  }
+}
+</style>
+
+
+<style id="hc-spacing-underline-red-final">
+@media (forced-colors: active){
+  #practiceView #typed .space-gap.wrong::after,
+  #practiceView #typed .space-gap.error::after,
+  #practiceView #typed .input-cell.space.wrong::after,
+  #practiceView #typed .input-cell.space.error::after,
+  #practiceView #typed .wrong.space-gap::after,
+  #practiceView #typed .error.space-gap::after{
+    forced-color-adjust:none!important;
+    background:#ef4444!important;
+    background-color:#ef4444!important;
+  }
+}
+
+.high-contrast #practiceView #typed .space-gap.wrong::after,
+.high-contrast #practiceView #typed .space-gap.error::after,
+.high-contrast #practiceView #typed .input-cell.space.wrong::after,
+.high-contrast #practiceView #typed .input-cell.space.error::after,
+.high-contrast #practiceView #typed .wrong.space-gap::after,
+.high-contrast #practiceView #typed .error.space-gap::after,
+.contrast #practiceView #typed .space-gap.wrong::after,
+.contrast #practiceView #typed .space-gap.error::after,
+.contrast #practiceView #typed .input-cell.space.wrong::after,
+.contrast #practiceView #typed .input-cell.space.error::after,
+.contrast #practiceView #typed .wrong.space-gap::after,
+.contrast #practiceView #typed .error.space-gap::after{
+  background:#ef4444!important;
+  background-color:#ef4444!important;
+}
+</style>
+
+
+<style id="noto-sans-kr-font-only">
+html, body, button, input, textarea, select, option{
+  font-family:"Noto Sans KR","Noto Sans",Arial,sans-serif!important;
+}
+</style>
+
+<!--
+Font preference: Noto Sans KR
+License: SIL Open Font License 1.1 (OFL-1.1)
+This change only sets the font-family preference; all existing program behavior,
+braille styling, high-contrast styling, question data, and corrections are preserved.
+-->
+
+
+<style id="noto-sans-kr-sitewide-final">
+html,
+body,
+body *,
+body *::before,
+body *::after,
+button,
+input,
+textarea,
+select,
+option,
+label,
+a,
+span,
+div,
+p,
+h1,h2,h3,h4,h5,h6,
+table,thead,tbody,tr,th,td,
+nav,header,footer,main,section,article,
+[role="button"],
+[role="tab"],
+[role="menuitem"]{
+  font-family:"Noto Sans KR","Noto Sans",Arial,sans-serif!important;
+}
+
+/* 브라우저 기본 컨트롤에도 동일 폰트 상속 */
+button,
+input,
+textarea,
+select{
+  font:inherit!important;
+}
+</style>
+
+
+<style id="noto-sans-kr-problem-text-final">
+/* 문제 표시 영역까지 기존 개별 폰트 지정 위에 확실히 적용 */
+#practiceView #prompt,
+#practiceView .prompt,
+#practiceView #practiceName,
+#practiceView .practice-name,
+#practiceView #spellingQ,
+#practiceView .spelling-q,
+#practiceView #spellingOpts,
+#practiceView #spellingOpts *,
+#practiceView .spelling-options,
+#practiceView .spelling-options *,
+#practiceView .question-list,
+#practiceView .question-list *,
+#practiceView .problem-list,
+#practiceView .problem-list *,
+#practiceView [class*="question"],
+#practiceView [class*="question"] *,
+#practiceView [class*="prompt"],
+#practiceView [class*="prompt"] *,
+#practiceView [class*="problem"],
+#practiceView [class*="problem"] *{
+  font-family:"Noto Sans KR","Noto Sans","Malgun Gothic","맑은 고딕",Arial,sans-serif!important;
+}
+
+/* 카테고리별로 따로 지정돼 있던 문제 폰트도 강제 통일 */
+#practiceView[data-category] #prompt,
+#practiceView[data-category] .prompt,
+#practiceView[data-category="문장부호"] .prompt,
+#practiceView[data-category="옛글자"] .prompt,
+#practiceView[data-category="로마자"] .prompt,
+#practiceView[data-category="맞춤법"] #spellingQ,
+#practiceView[data-category="맞춤법"] .spelling-q,
+#practiceView[data-category="맞춤법"] .spelling-options button{
+  font-family:"Noto Sans KR","Noto Sans","Malgun Gothic","맑은 고딕",Arial,sans-serif!important;
+}
+</style>
+
+
+<style id="noto-sans-kr-punctuation-roman-final">
+/* 문장부호 / 로마자 문제 및 선택지, 예문, 설명 전체 */
+#practiceView[data-category="문장부호"],
+#practiceView[data-category="문장부호"] *,
+#practiceView[data-category="로마자"],
+#practiceView[data-category="로마자"] *,
+#practiceView[data-category="문장 부호"],
+#practiceView[data-category="문장 부호"] *,
+#practiceView[data-category="로마자·영어"],
+#practiceView[data-category="로마자·영어"] *,
+#practiceView .punctuation-question,
+#practiceView .punctuation-question *,
+#practiceView .roman-question,
+#practiceView .roman-question *,
+#practiceView [class*="punct"],
+#practiceView [class*="punct"] *,
+#practiceView [class*="roman"],
+#practiceView [class*="roman"] *,
+#practiceView [id*="punct"],
+#practiceView [id*="punct"] *,
+#practiceView [id*="roman"],
+#practiceView [id*="roman"] *{
+  font-family:"Noto Sans KR","Noto Sans","Malgun Gothic","맑은 고딕",Arial,sans-serif!important;
+}
+
+/* 문제 본문/문항 버튼 등에서 style 속성으로 폰트를 지정해도 덮어쓰기 */
+#practiceView[data-category="문장부호"] [style],
+#practiceView[data-category="로마자"] [style],
+#practiceView[data-category="문장 부호"] [style],
+#practiceView[data-category="로마자·영어"] [style]{
+  font-family:"Noto Sans KR","Noto Sans","Malgun Gothic","맑은 고딕",Arial,sans-serif!important;
+}
+</style>
+
+
+<style id="noto-sans-kr-parenthetical-korean-final">
+/* 문장부호·로마자 문제의 괄호 안 한글/읽기 표기/보조 설명까지 동일 폰트 */
+#practiceView .paren,
+#practiceView .paren *,
+#practiceView .parenthesis,
+#practiceView .parenthesis *,
+#practiceView .parenthetical,
+#practiceView .parenthetical *,
+#practiceView .korean,
+#practiceView .korean *,
+#practiceView .hangul,
+#practiceView .hangul *,
+#practiceView .reading,
+#practiceView .reading *,
+#practiceView .pronunciation,
+#practiceView .pronunciation *,
+#practiceView .annotation,
+#practiceView .annotation *,
+#practiceView .example,
+#practiceView .example *,
+#practiceView small,
+#practiceView em,
+#practiceView strong,
+#practiceView b,
+#practiceView i,
+#practiceView ruby,
+#practiceView rt,
+#practiceView rp{
+  font-family:"Noto Sans KR","Noto Sans","Malgun Gothic","맑은 고딕",Arial,sans-serif!important;
+}
+
+/* 문제 영역 전체의 자식 요소를 최종적으로 한 번 더 통일 */
+#practiceView #prompt *,
+#practiceView .prompt *,
+#practiceView #practiceName *,
+#practiceView .practice-name *,
+#practiceView .question *,
+#practiceView .problem *,
+#practiceView .question-text *,
+#practiceView .problem-text *,
+#practiceView .choice *,
+#practiceView .option *,
+#practiceView button *{
+  font-family:"Noto Sans KR","Noto Sans","Malgun Gothic","맑은 고딕",Arial,sans-serif!important;
+}
+</style>
+
+
+<style id="input-guide-line-spacing-final">
+/* 입력 방법 안내가 두 줄로 내려갈 때 버튼/글자가 겹치지 않도록 줄간격 확보 */
+.input-guide,
+.input-method,
+.keyboard-guide,
+.key-guide,
+[class*="input-guide"],
+[class*="input-method"],
+[class*="keyboard-guide"],
+[class*="key-guide"]{
+  line-height:2.05!important;
+}
+
+/* 입력 방법 영역 내부 텍스트도 동일한 여유 적용 */
+.input-guide *,
+.input-method *,
+.keyboard-guide *,
+.key-guide *,
+[class*="input-guide"] *,
+[class*="input-method"] *,
+[class*="keyboard-guide"] *,
+[class*="key-guide"] *{
+  line-height:2.05!important;
+}
+
+/* 키 모양 요소의 위아래 간격 확보 */
+kbd{
+  display:inline-block;
+  margin-top:3px!important;
+  margin-bottom:3px!important;
+  vertical-align:middle!important;
+}
 </style>
