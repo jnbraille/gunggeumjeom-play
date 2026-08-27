@@ -3840,7 +3840,21 @@ function formatPunctuationPrompt(text){
 </div>
 </section>
 
-<section id="recordsView" class="view"><h2 class="title">나의 기록</h2><div id="recordsGrid" class="records"></div><div class="card" style="margin-top:14px">현재 접속 중인 페이지에서만 기록됩니다. 페이지를 종료하거나 새로 접속하면 초기화됩니다.</div></section>
+<section id="recordsView" class="view">
+<h2 class="title">나의 기록</h2>
+<div id="recordsGrid" class="records"></div>
+<div id="wrongRecordsCard" class="card wrong-records-card" style="margin-top:18px">
+  <div class="wrong-records-head">
+    <h3>틀린 문제</h3>
+    <span id="wrongRecordsCount" class="wrong-records-count">0문제</span>
+  </div>
+  <p class="wrong-records-guide">연습 중 틀린 문제를 확인할 수 있습니다.</p>
+  <div id="wrongRecordsList" class="wrong-records-list">
+    <div class="wrong-records-empty">아직 틀린 문제가 없습니다.</div>
+  </div>
+</div>
+<div class="card" style="margin-top:14px">현재 접속 중인 페이지에서만 기록됩니다. 페이지를 종료하거나 새로 접속하면 초기화됩니다.</div>
+</section>
 <section id="guideView" class="view center-intro">
   <div class="center-head">
     <h2>
@@ -3952,7 +3966,7 @@ const heroBraille=[
 board.setAttribute("aria-label","훈맹정음 점자");
 heroBraille.forEach(ds=>{let c=document.createElement("div");c.className="board-cell";[1,4,2,5,3,6].forEach(n=>{let d=document.createElement("span");d.className="board-dot"+(ds.includes(n)?" on":"");c.appendChild(d)});board.appendChild(c)});
 
-let rec={total:0,correct:0,cat:{}},cat="초성",round=0,q=null,input="",grading=false,queue=[],pressed=new Set(),chord=new Set(),timer,sessionStart=Date.now(),typedCells=0,sessionTotal=0,sessionCorrect=0,activeTypingMs=0,typingStartedAt=null,lastSpeed=0;
+let rec={total:0,correct:0,cat:{},wrong:{}},cat="초성",round=0,q=null,input="",grading=false,queue=[],pressed=new Set(),chord=new Set(),timer,sessionStart=Date.now(),typedCells=0,sessionTotal=0,sessionCorrect=0,activeTypingMs=0,typingStartedAt=null,lastSpeed=0;
 const pct=(c,t)=>t?Math.round(c/t*100):0;
 function beginTypingClock(){
   if(typingStartedAt===null) typingStartedAt=Date.now();
@@ -3974,7 +3988,85 @@ function liveMetrics(){
   if(current>0) lastSpeed=current;
   if(typeof liveSpeed!=="undefined") liveSpeed.textContent=typedCells>0 ? lastSpeed : 0;
 }
-function stats(){liveMetrics();homeTotal.textContent=rec.total;homeRate.textContent=pct(rec.correct,rec.total)+"%";homeBar.style.width=pct(rec.correct,rec.total)+"%";allTotal.textContent=rec.total;allRate.textContent=pct(rec.correct,rec.total)+"%";allBar.style.width=pct(rec.correct,rec.total)+"%";recordsGrid.innerHTML="";CATS.forEach(c=>{let r=rec.cat[c]||{total:0,correct:0},e=document.createElement("div");e.className="record";e.innerHTML=`<b>${c}</b><div class="v">${r.total}</div><small>정답률 ${pct(r.correct,r.total)}%</small>`;recordsGrid.appendChild(e)})}
+
+function recordWrongQuestion(category, question, typedAnswer){
+  if(!rec.wrong) rec.wrong={};
+  const prompt=(question&&question.prompt)?question.prompt:"문제";
+  const rule=(question&&question.rule)?question.rule:"";
+  const key=category+"||"+prompt;
+  if(!rec.wrong[key]){
+    rec.wrong[key]={
+      cat:category,
+      prompt:prompt,
+      rule:rule,
+      count:0,
+      lastInput:"",
+      correct:(question&&question.braille)?question.braille:""
+    };
+  }
+  rec.wrong[key].count++;
+  rec.wrong[key].lastInput=typedAnswer||"";
+}
+
+function renderWrongRecords(){
+  const list=document.getElementById("wrongRecordsList");
+  const countEl=document.getElementById("wrongRecordsCount");
+  if(!list||!countEl) return;
+
+  const items=Object.values(rec.wrong||{}).sort((a,b)=>
+    (b.count||0)-(a.count||0)
+  );
+  countEl.textContent=items.length+"문제";
+
+  list.innerHTML="";
+  if(!items.length){
+    const empty=document.createElement("div");
+    empty.className="wrong-records-empty";
+    empty.textContent="아직 틀린 문제가 없습니다.";
+    list.appendChild(empty);
+    return;
+  }
+
+  items.forEach((item,index)=>{
+    const row=document.createElement("div");
+    row.className="wrong-record-item";
+
+    const top=document.createElement("div");
+    top.className="wrong-record-top";
+
+    const no=document.createElement("span");
+    no.className="wrong-record-no";
+    no.textContent=String(index+1);
+
+    const catEl=document.createElement("span");
+    catEl.className="wrong-record-cat";
+    catEl.textContent=item.cat;
+
+    const times=document.createElement("span");
+    times.className="wrong-record-times";
+    times.textContent="오답 "+item.count+"회";
+
+    top.append(no,catEl,times);
+
+    const prompt=document.createElement("div");
+    prompt.className="wrong-record-prompt";
+    prompt.textContent=item.prompt;
+
+    row.append(top,prompt);
+
+    if(item.rule){
+      const rule=document.createElement("div");
+      rule.className="wrong-record-rule";
+      rule.textContent=/^제\d+회\s+점역·교정사/.test(item.rule)
+        ? item.rule
+        : "2024년 한글 점자 규정 "+String(item.rule).replace(/\s*·?\s*PDF\s*\d+쪽/g,"");
+      row.appendChild(rule);
+    }
+    list.appendChild(row);
+  });
+}
+
+function stats(){liveMetrics();homeTotal.textContent=rec.total;homeRate.textContent=pct(rec.correct,rec.total)+"%";homeBar.style.width=pct(rec.correct,rec.total)+"%";allTotal.textContent=rec.total;allRate.textContent=pct(rec.correct,rec.total)+"%";allBar.style.width=pct(rec.correct,rec.total)+"%";recordsGrid.innerHTML="";CATS.forEach(c=>{let r=rec.cat[c]||{total:0,correct:0},e=document.createElement("div");e.className="record";e.innerHTML=`<b>${c}</b><div class="v">${r.total}</div><small>정답률 ${pct(r.correct,r.total)}%</small>`;recordsGrid.appendChild(e)});renderWrongRecords()}
 function card(c,i){let b=document.createElement("button");b.className="lesson";b.dataset.category=c;b.innerHTML=`<div><div class="num">${String(i+1).padStart(2,"0")}</div><h3>${c} 연습</h3><p>${DESC[c]}</p></div><div class="go">연습하기 ›</div>`;b.onclick=()=>openPractice(c);return b}
 CATS.forEach((c,i)=>{homeGrid.appendChild(card(c,i));selectGrid.appendChild(card(c,i))});
 
@@ -4118,7 +4210,7 @@ function playFeedbackSound(ok){
     });
   }catch(e){}
 }
-function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";sessionTotal++;if(ok)sessionCorrect++;rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{round++;if(round>=DATA[cat].length){round=0;queue=makeQueue(cat)}nextQuestion()},ok?1200:2000)}
+function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";sessionTotal++;if(ok)sessionCorrect++;rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;if(!ok)recordWrongQuestion(cat,q,input);stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{round++;if(round>=DATA[cat].length){round=0;queue=makeQueue(cat)}nextQuestion()},ok?1200:2000)}
 document.onkeydown=e=>{if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}if(e.key===" "){e.preventDefault();beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return}let k=e.key.toLowerCase();if(KD[k]){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
 document.onkeyup=e=>{if(!V.practice.classList.contains("active")||grading)return;let k=e.key.toLowerCase();if(!KD[k])return;pressed.delete(k);if(!pressed.size&&chord.size){beginTypingClock();input+=braille([...chord]);typedCells++;chord.clear();draw();liveMetrics()}};
 
@@ -5596,3 +5688,118 @@ img.logo{
   new MutationObserver(function(){requestAnimationFrame(apply)}).observe(document.documentElement,{attributes:true,childList:true,subtree:true});
 })();
 </script>
+
+
+<style id="wrong-records-ui-final">
+#recordsView .wrong-records-card{
+  padding:20px!important;
+}
+.wrong-records-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.wrong-records-head h3{
+  margin:0!important;
+  color:var(--teal);
+  font-size:1.3rem;
+  font-weight:900;
+}
+.wrong-records-count{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:60px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:#e8f6f4;
+  color:var(--teal);
+  font-weight:900;
+}
+.wrong-records-guide{
+  margin:8px 0 14px;
+  color:var(--muted);
+}
+.wrong-records-list{
+  display:grid;
+  gap:10px;
+}
+.wrong-record-item{
+  border:1.5px solid #9aafb6;
+  border-radius:12px;
+  padding:13px 15px;
+  background:#fcfcfa;
+}
+.wrong-record-top{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:7px;
+}
+.wrong-record-no{
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:#e8f6f4;
+  color:var(--teal);
+  font-weight:900;
+}
+.wrong-record-cat{
+  font-weight:900;
+  color:#17364b;
+}
+.wrong-record-times{
+  margin-left:auto;
+  font-size:.92rem;
+  font-weight:800;
+  color:#c0392b;
+}
+.wrong-record-prompt{
+  font-size:1.06rem;
+  font-weight:750;
+  line-height:1.55;
+  color:#17364b;
+}
+.wrong-record-rule{
+  margin-top:5px;
+  color:#667985;
+  font-size:.9rem;
+  line-height:1.45;
+}
+.wrong-records-empty{
+  padding:22px 12px;
+  text-align:center;
+  color:var(--muted);
+  border:1.5px dashed #aebfc4;
+  border-radius:12px;
+}
+.high-contrast .wrong-record-item,
+.contrast .wrong-record-item{
+  background:#202020!important;
+  border-color:#fff!important;
+}
+.high-contrast .wrong-record-prompt,
+.high-contrast .wrong-record-cat,
+.high-contrast .wrong-record-rule,
+.high-contrast .wrong-record-times,
+.high-contrast .wrong-records-guide,
+.high-contrast .wrong-records-empty,
+.contrast .wrong-record-prompt,
+.contrast .wrong-record-cat,
+.contrast .wrong-record-rule,
+.contrast .wrong-record-times,
+.contrast .wrong-records-guide,
+.contrast .wrong-records-empty{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+@media(max-width:768px){
+  .wrong-record-top{flex-wrap:wrap}
+  .wrong-record-times{margin-left:0}
+  .wrong-record-prompt{font-size:1rem}
+}
+</style>
