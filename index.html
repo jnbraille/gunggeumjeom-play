@@ -8336,98 +8336,7 @@ body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
 </style>
 
 
-<style id="whale-high-contrast-braille-visibility-final">
-/*
- 네이버 웨일의 브라우저 자체 고대비/색상 대비처럼 페이지 색을 필터링·변환하는
- 환경에서도 점형의 '채운 점/빈 점'이 배경색만으로 구분되지 않도록 한다.
- 핵심은 모든 점에 명확한 테두리를 주고, 채운 점에는 내부 원형 + 외곽선을 함께 주는 것.
-*/
-#practiceView .input-dot,
-#practiceView .braille-dot,
-#practiceView .dot,
-#practiceView #typed .input-dot,
-#practiceView #answerDots .input-dot{
-  box-sizing:border-box!important;
-  border-width:2px!important;
-  border-style:solid!important;
-  border-color:#111!important;
-  opacity:1!important;
-  visibility:visible!important;
-  min-width:12px;
-  min-height:12px;
-}
 
-/* 빈 점 */
-#practiceView .input-dot:not(.on),
-#practiceView .braille-dot:not(.on),
-#practiceView .dot:not(.on),
-#practiceView #typed .input-dot:not(.on),
-#practiceView #answerDots .input-dot:not(.on){
-  background:#fff!important;
-  border-color:#111!important;
-  box-shadow:inset 0 0 0 1px #fff!important;
-}
-
-/* 찍힌 점: 브라우저가 색을 바꾸더라도 모양/외곽선이 남도록 */
-#practiceView .input-dot.on,
-#practiceView .braille-dot.on,
-#practiceView .dot.on,
-#practiceView #typed .input-dot.on,
-#practiceView #answerDots .input-dot.on{
-  background:#111!important;
-  border:2px solid #111!important;
-  box-shadow:
-    0 0 0 2px #fff,
-    0 0 0 4px #111!important;
-  opacity:1!important;
-}
-
-/* 브라우저/OS가 '대비 증가' 선호를 전달하는 경우 */
-@media (prefers-contrast: more){
-  #practiceView .input-dot,
-  #practiceView .braille-dot,
-  #practiceView .dot{
-    border-width:3px!important;
-  }
-  #practiceView .input-dot.on,
-  #practiceView .braille-dot.on,
-  #practiceView .dot.on{
-    forced-color-adjust:none!important;
-    background:#000!important;
-    border-color:#000!important;
-    box-shadow:0 0 0 2px #fff,0 0 0 4px #000!important;
-  }
-  #practiceView .input-dot:not(.on),
-  #practiceView .braille-dot:not(.on),
-  #practiceView .dot:not(.on){
-    forced-color-adjust:none!important;
-    background:#fff!important;
-    border-color:#000!important;
-  }
-}
-
-/* Windows/브라우저 강제 색상에서도 점 자체는 보존 */
-@media (forced-colors: active){
-  #practiceView .input-dot,
-  #practiceView .braille-dot,
-  #practiceView .dot{
-    forced-color-adjust:none!important;
-  }
-  #practiceView .input-dot.on,
-  #practiceView .braille-dot.on,
-  #practiceView .dot.on{
-    background:#000!important;
-    border-color:#000!important;
-    box-shadow:0 0 0 2px #fff,0 0 0 4px #000!important;
-  }
-  #practiceView .input-dot:not(.on),
-  #practiceView .braille-dot:not(.on),
-  #practiceView .dot:not(.on){
-    background:#fff!important;
-    border-color:#000!important;
-  }
-}
-</style>
 
 
 <style id="mobile-spelling-correct-circle-final">
@@ -8453,214 +8362,10 @@ body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
 </style>
 
 
-<style id="answer-braille-cell-layout-final">
-/* 답안 보기의 각 6점 셀을 정확한 2열×3행으로 고정 */
-#practiceView #answerDots .input-cell,
-#practiceView .answer-dots .input-cell{
-  display:grid!important;
-  grid-template-columns:repeat(2,12px)!important;
-  grid-template-rows:repeat(3,12px)!important;
-  grid-auto-flow:column!important;
-  gap:5px 7px!important;
-  width:31px!important;
-  min-width:31px!important;
-  height:46px!important;
-  min-height:46px!important;
-  padding:5px!important;
-  margin:0!important;
-  box-sizing:content-box!important;
-  align-items:center!important;
-  justify-items:center!important;
-  flex:none!important;
-}
-#practiceView #answerDots .input-dot,
-#practiceView .answer-dots .input-dot{
-  position:static!important;
-  display:block!important;
-  width:12px!important;
-  height:12px!important;
-  min-width:12px!important;
-  min-height:12px!important;
-  max-width:12px!important;
-  max-height:12px!important;
-  padding:0!important;
-  margin:0!important;
-  border-radius:50%!important;
-  box-sizing:border-box!important;
-  box-shadow:none!important;
-  transform:none!important;
-}
-#practiceView #answerDots .input-dot:not(.on),
-#practiceView .answer-dots .input-dot:not(.on){
-  background:#fff!important;
-  border:2px solid #8fa2aa!important;
-}
-#practiceView #answerDots .input-dot.on,
-#practiceView .answer-dots .input-dot.on{
-  background:#17354d!important;
-  border:2px solid #17354d!important;
-}
-#practiceView #answerDots,
-#practiceView .answer-dots{
-  display:flex!important;
-  flex-direction:row!important;
-  flex-wrap:wrap!important;
-  justify-content:center!important;
-  align-items:center!important;
-  align-content:center!important;
-  gap:12px!important;
-}
-@media(max-width:768px){
-  #practiceView #answerDots .input-cell,
-  #practiceView .answer-dots .input-cell{
-    grid-template-columns:repeat(2,11px)!important;
-    grid-template-rows:repeat(3,11px)!important;
-    width:29px!important;
-    min-width:29px!important;
-    height:43px!important;
-    min-height:43px!important;
-    gap:5px 7px!important;
-  }
-  #practiceView #answerDots .input-dot,
-  #practiceView .answer-dots .input-dot{
-    width:11px!important;height:11px!important;
-    min-width:11px!important;min-height:11px!important;
-    max-width:11px!important;max-height:11px!important;
-  }
-}
-@media(forced-colors:active), (prefers-contrast:more){
-  #practiceView #answerDots .input-dot,
-  #practiceView .answer-dots .input-dot{
-    forced-color-adjust:none!important;
-    box-shadow:none!important;
-  }
-  #practiceView #answerDots .input-dot.on,
-  #practiceView .answer-dots .input-dot.on{
-    background:#000!important;border-color:#000!important;
-  }
-  #practiceView #answerDots .input-dot:not(.on),
-  #practiceView .answer-dots .input-dot:not(.on){
-    background:#fff!important;border-color:#000!important;
-  }
-}
-</style>
 
 
-<style id="typed-braille-cell-layout-final">
-/* 타자 입력 점형도 각 셀을 정확한 2열×3행으로 고정 */
-#practiceView #typed .input-cell{
-  display:grid!important;
-  grid-template-columns:repeat(2,12px)!important;
-  grid-template-rows:repeat(3,12px)!important;
-  grid-auto-flow:column!important;
-  gap:5px 7px!important;
-  width:31px!important;
-  min-width:31px!important;
-  height:46px!important;
-  min-height:46px!important;
-  padding:5px!important;
-  margin:0!important;
-  box-sizing:content-box!important;
-  align-items:center!important;
-  justify-items:center!important;
-  flex:none!important;
-}
 
-/* 입력 중 점 자체 크기와 위치 고정 */
-#practiceView #typed .input-dot{
-  position:static!important;
-  display:block!important;
-  width:12px!important;
-  height:12px!important;
-  min-width:12px!important;
-  min-height:12px!important;
-  max-width:12px!important;
-  max-height:12px!important;
-  padding:0!important;
-  margin:0!important;
-  border-radius:50%!important;
-  box-sizing:border-box!important;
-  box-shadow:none!important;
-  transform:none!important;
-}
 
-/* 빈 점 */
-#practiceView #typed .input-dot:not(.on){
-  background:#fff!important;
-  border:2px solid #8fa2aa!important;
-  box-shadow:none!important;
-}
-
-/* 찍힌 점 */
-#practiceView #typed .input-dot.on{
-  background:#17354d!important;
-  border:2px solid #17354d!important;
-  box-shadow:none!important;
-}
-
-/* 여러 셀 입력 시 겹치지 않고 중앙 정렬 */
-#practiceView #typed{
-  display:flex!important;
-  flex-direction:row!important;
-  flex-wrap:wrap!important;
-  justify-content:center!important;
-  align-items:center!important;
-  align-content:center!important;
-  gap:12px!important;
-}
-
-/* 띄어쓰기 칸은 기존 의미 유지 */
-#practiceView #typed .space-gap{
-  flex:0 0 25px!important;
-  width:25px!important;
-  min-width:25px!important;
-  height:46px!important;
-  min-height:46px!important;
-}
-
-/* 오답 셀도 배치는 유지 */
-#practiceView #typed .input-cell.wrong,
-#practiceView #typed .input-cell.error{
-  display:grid!important;
-  grid-template-columns:repeat(2,12px)!important;
-  grid-template-rows:repeat(3,12px)!important;
-  grid-auto-flow:column!important;
-}
-
-/* 모바일 */
-@media(max-width:768px){
-  #practiceView #typed .input-cell{
-    grid-template-columns:repeat(2,11px)!important;
-    grid-template-rows:repeat(3,11px)!important;
-    width:29px!important;
-    min-width:29px!important;
-    height:43px!important;
-    min-height:43px!important;
-    gap:5px 7px!important;
-  }
-  #practiceView #typed .input-dot{
-    width:11px!important;height:11px!important;
-    min-width:11px!important;min-height:11px!important;
-    max-width:11px!important;max-height:11px!important;
-  }
-}
-
-/* 웨일/OS 고대비에서도 입력 점형 구조 보존 */
-@media(forced-colors:active), (prefers-contrast:more){
-  #practiceView #typed .input-dot{
-    forced-color-adjust:none!important;
-    box-shadow:none!important;
-  }
-  #practiceView #typed .input-dot.on{
-    background:#000!important;
-    border-color:#000!important;
-  }
-  #practiceView #typed .input-dot:not(.on){
-    background:#fff!important;
-    border-color:#000!important;
-  }
-}
-</style>
 
 
 <style id="spelling-ox-thick-symbol-final">
@@ -8781,6 +8486,195 @@ body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
     color:#E62314!important;
     -webkit-text-fill-color:#E62314!important;
     forced-color-adjust:none!important;
+  }
+}
+</style>
+
+
+<style id="braille-input-answer-clean-final">
+/*
+  sixDotCell()은 DOM을 1,4 / 2,5 / 3,6 순서로 생성한다.
+  따라서 grid-auto-flow를 사용하지 않고 기본 행 배치 그대로 써야
+  실제 누른 점 번호와 화면 점형이 정확히 일치한다.
+*/
+#practiceView #typed .input-cell,
+#practiceView #answerDots .input-cell,
+#practiceView .answer-dots .input-cell{
+  display:grid!important;
+  grid-template-columns:repeat(2,14px)!important;
+  grid-template-rows:repeat(3,14px)!important;
+  gap:6px!important;
+  grid-auto-flow:row!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:34px!important;
+  min-height:54px!important;
+  padding:4px!important;
+  margin:0!important;
+  box-sizing:content-box!important;
+  align-items:center!important;
+  justify-items:center!important;
+  flex:0 0 auto!important;
+}
+
+/* 점 자체 */
+#practiceView #typed .input-dot,
+#practiceView #answerDots .input-dot,
+#practiceView .answer-dots .input-dot{
+  position:static!important;
+  display:block!important;
+  width:14px!important;
+  height:14px!important;
+  min-width:14px!important;
+  min-height:14px!important;
+  max-width:14px!important;
+  max-height:14px!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:50%!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  opacity:1!important;
+}
+
+/* 빈 점 */
+#practiceView #typed .input-dot:not(.on),
+#practiceView #answerDots .input-dot:not(.on),
+#practiceView .answer-dots .input-dot:not(.on){
+  background:#ffffff!important;
+  border:2px solid #91a5ad!important;
+  box-shadow:none!important;
+}
+
+/* 입력한 점 / 정답 점 */
+#practiceView #typed .input-dot.on,
+#practiceView #answerDots .input-dot.on,
+#practiceView .answer-dots .input-dot.on{
+  background:#173f5f!important;
+  border:2px solid #173f5f!important;
+  box-shadow:none!important;
+}
+
+/* 오답으로 판정된 '입력 점'만 빨강 */
+#practiceView #typed .input-cell.wrong .input-dot.on,
+#practiceView #typed .input-cell.error .input-dot.on{
+  background:#ef4444!important;
+  border-color:#ef4444!important;
+}
+
+/* 입력/정답 셀은 겹치지 않고 가운데 정렬 */
+#practiceView #typed,
+#practiceView #answerDots,
+#practiceView .answer-dots{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:wrap!important;
+  justify-content:center!important;
+  align-items:center!important;
+  align-content:center!important;
+  gap:10px!important;
+}
+
+/* 띄어쓰기 */
+#practiceView #typed .space-gap{
+  flex:0 0 25px!important;
+  width:25px!important;
+  min-width:25px!important;
+  height:54px!important;
+}
+
+/*
+  사이트 고대비 / 브라우저 고대비에서도 점 색을 반전하지 않고 동일하게 고정.
+  채운 점=진한 남색, 빈 점=흰색+회색선, 오답=빨강.
+*/
+.high-contrast #practiceView #typed .input-dot,
+.high-contrast #practiceView #answerDots .input-dot,
+.high-contrast #practiceView .answer-dots .input-dot,
+.contrast #practiceView #typed .input-dot,
+.contrast #practiceView #answerDots .input-dot,
+.contrast #practiceView .answer-dots .input-dot{
+  forced-color-adjust:none!important;
+  filter:none!important;
+  box-shadow:none!important;
+}
+
+.high-contrast #practiceView #typed .input-dot:not(.on),
+.high-contrast #practiceView #answerDots .input-dot:not(.on),
+.high-contrast #practiceView .answer-dots .input-dot:not(.on),
+.contrast #practiceView #typed .input-dot:not(.on),
+.contrast #practiceView #answerDots .input-dot:not(.on),
+.contrast #practiceView .answer-dots .input-dot:not(.on){
+  background:#ffffff!important;
+  border-color:#91a5ad!important;
+}
+
+.high-contrast #practiceView #typed .input-dot.on,
+.high-contrast #practiceView #answerDots .input-dot.on,
+.high-contrast #practiceView .answer-dots .input-dot.on,
+.contrast #practiceView #typed .input-dot.on,
+.contrast #practiceView #answerDots .input-dot.on,
+.contrast #practiceView .answer-dots .input-dot.on{
+  background:#173f5f!important;
+  border-color:#173f5f!important;
+}
+
+.high-contrast #practiceView #typed .input-cell.wrong .input-dot.on,
+.high-contrast #practiceView #typed .input-cell.error .input-dot.on,
+.contrast #practiceView #typed .input-cell.wrong .input-dot.on,
+.contrast #practiceView #typed .input-cell.error .input-dot.on{
+  background:#ef4444!important;
+  border-color:#ef4444!important;
+}
+
+@media (forced-colors:active), (prefers-contrast:more){
+  #practiceView #typed .input-dot,
+  #practiceView #answerDots .input-dot,
+  #practiceView .answer-dots .input-dot{
+    forced-color-adjust:none!important;
+    filter:none!important;
+    box-shadow:none!important;
+  }
+  #practiceView #typed .input-dot:not(.on),
+  #practiceView #answerDots .input-dot:not(.on),
+  #practiceView .answer-dots .input-dot:not(.on){
+    background:#ffffff!important;
+    border-color:#91a5ad!important;
+  }
+  #practiceView #typed .input-dot.on,
+  #practiceView #answerDots .input-dot.on,
+  #practiceView .answer-dots .input-dot.on{
+    background:#173f5f!important;
+    border-color:#173f5f!important;
+  }
+  #practiceView #typed .input-cell.wrong .input-dot.on,
+  #practiceView #typed .input-cell.error .input-dot.on{
+    background:#ef4444!important;
+    border-color:#ef4444!important;
+  }
+}
+
+@media(max-width:768px){
+  #practiceView #typed .input-cell,
+  #practiceView #answerDots .input-cell,
+  #practiceView .answer-dots .input-cell{
+    grid-template-columns:repeat(2,13px)!important;
+    grid-template-rows:repeat(3,13px)!important;
+    gap:6px!important;
+    min-width:32px!important;
+    min-height:51px!important;
+  }
+  #practiceView #typed .input-dot,
+  #practiceView #answerDots .input-dot,
+  #practiceView .answer-dots .input-dot{
+    width:13px!important;
+    height:13px!important;
+    min-width:13px!important;
+    min-height:13px!important;
+    max-width:13px!important;
+    max-height:13px!important;
   }
 }
 </style>
