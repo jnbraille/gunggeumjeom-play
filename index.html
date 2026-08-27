@@ -8231,3 +8231,32 @@ body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
   }
 }
 </style>
+
+
+<style id="spelling-question-font-much-larger-final">
+/* 맞춤법 문제 문구를 확실히 크게 표시 */
+#spellingQ{
+  font-size:2rem!important;
+  line-height:1.4!important;
+  font-weight:900!important;
+}
+
+/* 문제 안에 별도 태그/스타일이 있어도 동일하게 크게 */
+#spellingQ *,
+#spellingQ strong,
+#spellingQ span,
+#spellingQ .question,
+#spellingQ .prompt{
+  font-size:inherit!important;
+  line-height:inherit!important;
+  font-weight:900!important;
+}
+
+/* 모바일에서도 문제 글씨가 충분히 크게 보이도록 */
+@media(max-width:700px){
+  #spellingQ{
+    font-size:1.7rem!important;
+    line-height:1.4!important;
+  }
+}
+</style>
