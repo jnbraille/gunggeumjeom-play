@@ -3873,21 +3873,37 @@ function formatPunctuationPrompt(text){
       <button type="button" id="stopBrailleCamera" class="scanner-secondary" disabled>카메라 종료</button>
     </div>
 
-    <div id="scannerResult" class="scanner-result" hidden>
-      <h3>점형 확인</h3>
-      <p>촬영한 점자를 보면서 아래 6점을 눌러 점형을 직접 확인하거나 수정할 수 있습니다.</p>
-      <div id="manualBrailleCell" class="manual-braille-cell" role="group" aria-label="6점 점형 수정">
-        <button type="button" data-dot="1" aria-pressed="false">1</button>
-        <button type="button" data-dot="4" aria-pressed="false">4</button>
-        <button type="button" data-dot="2" aria-pressed="false">2</button>
-        <button type="button" data-dot="5" aria-pressed="false">5</button>
-        <button type="button" data-dot="3" aria-pressed="false">3</button>
-        <button type="button" data-dot="6" aria-pressed="false">6</button>
-      </div>
-      <div class="scanner-pattern-line">선택한 점: <strong id="scannerDotPattern">없음</strong></div>
-      <button type="button" id="resetScannerDots" class="scanner-secondary">점형 초기화</button>
-    </div>
+    
+<div id="scannerResult" class="scanner-result" hidden>
+  <h3>인식된 점형 확인</h3>
+  <p>촬영한 사진에서 점자 후보를 찾아 6점 점형으로 표시합니다. 잘못 인식된 점은 해당 점을 눌러 직접 보정해 주세요.</p>
+
+  <div class="captured-preview-wrap">
+    <img id="capturedBraillePreview" alt="촬영한 점자 사진 미리보기">
   </div>
+
+  <div class="scanner-recognition-status" id="scannerRecognitionStatus" aria-live="polite">
+    촬영 후 점형 후보를 분석합니다.
+  </div>
+
+  <div id="recognizedCells" class="recognized-cells" aria-label="인식된 점형 목록"></div>
+
+  <div class="scanner-pattern-line">
+    인식된 점형:
+    <strong id="recognizedBrailleText">없음</strong>
+  </div>
+
+  <div class="scanner-result-actions">
+    <button type="button" id="addRecognizedCell" class="scanner-secondary">점형 한 칸 추가</button>
+    <button type="button" id="resetRecognizedCells" class="scanner-secondary">인식 결과 초기화</button>
+  </div>
+
+  <div class="scanner-next-step">
+    <strong>다음 확장 단계</strong>
+    <span>확정된 여러 점형을 연결해 2024년 한글 점자 규정에 따라 묵자로 판독하는 기능으로 확장할 수 있습니다.</span>
+  </div>
+</div>
+</div>
 </section>
 
 <section id="guideView" class="view center-intro">
@@ -6227,112 +6243,7 @@ img.logo{
 </style>
 
 
-<script id="mobile-braille-scanner-script">
-(function(){
-  let scannerStream=null;
-  const $=id=>document.getElementById(id);
 
-  function scannerElements(){
-    return {
-      video:$("brailleCamera"),
-      canvas:$("brailleCaptureCanvas"),
-      placeholder:$("cameraPlaceholder"),
-      start:$("startBrailleCamera"),
-      capture:$("captureBraillePhoto"),
-      stop:$("stopBrailleCamera"),
-      result:$("scannerResult"),
-      pattern:$("scannerDotPattern")
-    };
-  }
-
-  async function startCamera(){
-    const e=scannerElements();
-    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-      alert("이 브라우저에서는 카메라 기능을 사용할 수 없습니다.");
-      return;
-    }
-    try{
-      scannerStream=await navigator.mediaDevices.getUserMedia({
-        video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},
-        audio:false
-      });
-      e.video.srcObject=scannerStream;
-      await e.video.play();
-      e.video.style.display="block";
-      e.placeholder.style.display="none";
-      e.start.disabled=true;
-      e.capture.disabled=false;
-      e.stop.disabled=false;
-    }catch(err){
-      alert("카메라를 실행할 수 없습니다. 브라우저의 카메라 권한을 확인해 주세요.");
-    }
-  }
-
-  function stopCamera(){
-    const e=scannerElements();
-    if(scannerStream){
-      scannerStream.getTracks().forEach(t=>t.stop());
-      scannerStream=null;
-    }
-    if(e.video){
-      e.video.pause();
-      e.video.srcObject=null;
-      e.video.style.display="none";
-    }
-    if(e.placeholder)e.placeholder.style.display="";
-    if(e.start)e.start.disabled=false;
-    if(e.capture)e.capture.disabled=true;
-    if(e.stop)e.stop.disabled=true;
-  }
-
-  function capture(){
-    const e=scannerElements();
-    if(!scannerStream || !e.video.videoWidth)return;
-    e.canvas.width=e.video.videoWidth;
-    e.canvas.height=e.video.videoHeight;
-    e.canvas.getContext("2d").drawImage(e.video,0,0,e.canvas.width,e.canvas.height);
-    e.result.hidden=false;
-    e.result.scrollIntoView({behavior:"smooth",block:"nearest"});
-  }
-
-  function updateDots(){
-    const buttons=Array.from(document.querySelectorAll("#manualBrailleCell button"));
-    const active=buttons.filter(b=>b.getAttribute("aria-pressed")==="true")
-      .map(b=>Number(b.dataset.dot)).sort((a,b)=>a-b);
-    const p=$("scannerDotPattern");
-    if(p)p.textContent=active.length?active.join("·")+"점":"없음";
-  }
-
-  function init(){
-    const e=scannerElements();
-    if(!e.start)return;
-    e.start.addEventListener("click",startCamera);
-    e.capture.addEventListener("click",capture);
-    e.stop.addEventListener("click",stopCamera);
-
-    document.querySelectorAll("#manualBrailleCell button").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        const on=btn.getAttribute("aria-pressed")==="true";
-        btn.setAttribute("aria-pressed",String(!on));
-        updateDots();
-      });
-    });
-
-    const reset=$("resetScannerDots");
-    if(reset)reset.addEventListener("click",()=>{
-      document.querySelectorAll("#manualBrailleCell button").forEach(b=>b.setAttribute("aria-pressed","false"));
-      updateDots();
-    });
-
-    document.addEventListener("visibilitychange",()=>{
-      if(document.hidden)stopCamera();
-    });
-  }
-
-  window.addEventListener("DOMContentLoaded",init);
-  window.addEventListener("beforeunload",stopCamera);
-})();
-</script>
 
 
 <script id="scanner-navigation-bridge">
@@ -6563,3 +6474,418 @@ img.logo{
   });
 })();
 </script>
+
+
+<script id="mobile-braille-scanner-script">
+(function(){
+  let scannerStream=null;
+  let recognized=[];
+
+  const $=id=>document.getElementById(id);
+  const DOT_POS=[
+    {n:1,x:0,y:0},{n:4,x:1,y:0},
+    {n:2,x:0,y:1},{n:5,x:1,y:1},
+    {n:3,x:0,y:2},{n:6,x:1,y:2}
+  ];
+
+  function scannerElements(){
+    return {
+      video:$("brailleCamera"),
+      canvas:$("brailleCaptureCanvas"),
+      preview:$("capturedBraillePreview"),
+      placeholder:$("cameraPlaceholder"),
+      start:$("startBrailleCamera"),
+      capture:$("captureBraillePhoto"),
+      stop:$("stopBrailleCamera"),
+      result:$("scannerResult"),
+      status:$("scannerRecognitionStatus"),
+      cells:$("recognizedCells"),
+      braille:$("recognizedBrailleText")
+    };
+  }
+
+  async function startCamera(){
+    const e=scannerElements();
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      alert("이 브라우저에서는 카메라 기능을 사용할 수 없습니다.");
+      return;
+    }
+    try{
+      scannerStream=await navigator.mediaDevices.getUserMedia({
+        video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},
+        audio:false
+      });
+      e.video.srcObject=scannerStream;
+      await e.video.play();
+      e.video.style.display="block";
+      e.placeholder.style.display="none";
+      e.start.disabled=true;
+      e.capture.disabled=false;
+      e.stop.disabled=false;
+    }catch(err){
+      alert("카메라를 실행할 수 없습니다. 브라우저의 카메라 권한을 확인해 주세요.");
+    }
+  }
+
+  function stopCamera(){
+    const e=scannerElements();
+    if(scannerStream){
+      scannerStream.getTracks().forEach(t=>t.stop());
+      scannerStream=null;
+    }
+    if(e.video){
+      e.video.pause();
+      e.video.srcObject=null;
+      e.video.style.display="none";
+    }
+    if(e.placeholder)e.placeholder.style.display="";
+    if(e.start)e.start.disabled=false;
+    if(e.capture)e.capture.disabled=true;
+    if(e.stop)e.stop.disabled=true;
+  }
+
+  function brailleChar(dots){
+    let bits=0;
+    dots.forEach(n=>bits|=(1<<(n-1)));
+    return String.fromCodePoint(0x2800+bits);
+  }
+
+  function renderRecognized(){
+    const e=scannerElements();
+    if(!e.cells)return;
+    e.cells.innerHTML="";
+
+    recognized.forEach((dots,idx)=>{
+      const card=document.createElement("div");
+      card.className="recognized-cell-card";
+
+      const head=document.createElement("div");
+      head.className="recognized-cell-head";
+      head.innerHTML="<strong>"+(idx+1)+"번 점형</strong><span>"+brailleChar(dots)+"</span>";
+
+      const grid=document.createElement("div");
+      grid.className="recognized-dot-grid";
+
+      DOT_POS.forEach(pos=>{
+        const b=document.createElement("button");
+        b.type="button";
+        b.dataset.dot=pos.n;
+        b.setAttribute("aria-label",(idx+1)+"번 점형 "+pos.n+"점");
+        b.setAttribute("aria-pressed",String(dots.includes(pos.n)));
+        b.addEventListener("click",()=>{
+          const arr=recognized[idx];
+          const at=arr.indexOf(pos.n);
+          if(at>=0)arr.splice(at,1); else arr.push(pos.n);
+          arr.sort((a,b)=>a-b);
+          renderRecognized();
+        });
+        grid.appendChild(b);
+      });
+
+      const remove=document.createElement("button");
+      remove.type="button";
+      remove.className="recognized-remove";
+      remove.textContent="이 점형 삭제";
+      remove.addEventListener("click",()=>{
+        recognized.splice(idx,1);
+        renderRecognized();
+      });
+
+      card.append(head,grid,remove);
+      e.cells.appendChild(card);
+    });
+
+    e.braille.textContent=recognized.length
+      ? recognized.map(brailleChar).join(" ")
+      : "없음";
+  }
+
+  /* 브라우저 안에서 동작하는 1차 후보 인식.
+     중앙 가이드 영역의 명암/국소 대비를 분석해 점 후보를 찾고,
+     후보들을 2열×3행 셀로 근사한다. 실제 환경에 따라 오인식할 수 있으므로
+     반드시 사용자가 6점 버튼으로 보정하도록 설계한다. */
+  function detectCandidates(canvas){
+    const ctx=canvas.getContext("2d",{willReadFrequently:true});
+    const W=canvas.width,H=canvas.height;
+    const sx=Math.floor(W*0.08), sw=Math.floor(W*0.84);
+    const sy=Math.floor(H*0.38), sh=Math.floor(H*0.24);
+
+    const scale=Math.min(1,900/sw);
+    const tw=Math.max(240,Math.floor(sw*scale));
+    const th=Math.max(90,Math.floor(sh*scale));
+    const tmp=document.createElement("canvas");
+    tmp.width=tw;tmp.height=th;
+    const tctx=tmp.getContext("2d",{willReadFrequently:true});
+    tctx.drawImage(canvas,sx,sy,sw,sh,0,0,tw,th);
+
+    const im=tctx.getImageData(0,0,tw,th);
+    const gray=new Float32Array(tw*th);
+    let sum=0;
+    for(let i=0,p=0;i<im.data.length;i+=4,p++){
+      const g=.299*im.data[i]+.587*im.data[i+1]+.114*im.data[i+2];
+      gray[p]=g;sum+=g;
+    }
+    const mean=sum/gray.length;
+    let variance=0;
+    for(let i=0;i<gray.length;i++){const d=gray[i]-mean;variance+=d*d}
+    const sd=Math.sqrt(variance/gray.length);
+    if(sd<8)return [];
+
+    // 세로 방향 에지 에너지로 점자 셀 중심 후보 추정
+    const col=new Float32Array(tw);
+    for(let y=2;y<th-2;y++){
+      for(let x=2;x<tw-2;x++){
+        const gx=Math.abs(gray[y*tw+x+2]-gray[y*tw+x-2]);
+        const gy=Math.abs(gray[(y+2)*tw+x]-gray[(y-2)*tw+x]);
+        col[x]+=gx+gy;
+      }
+    }
+    // 에너지가 있는 x 구간을 묶음
+    const avg=Array.from(col).reduce((a,b)=>a+b,0)/tw;
+    const threshold=avg*1.18;
+    const bands=[];
+    let st=-1;
+    for(let x=0;x<tw;x++){
+      if(col[x]>threshold && st<0)st=x;
+      if((col[x]<=threshold || x===tw-1) && st>=0){
+        const en=x;
+        if(en-st>=2)bands.push([(st+en)/2,en-st]);
+        st=-1;
+      }
+    }
+    if(bands.length<2)return [];
+
+    // 인접한 두 열을 하나의 셀로 근사
+    const centers=bands.map(b=>b[0]).sort((a,b)=>a-b);
+    const gaps=[];
+    for(let i=1;i<centers.length;i++)gaps.push(centers[i]-centers[i-1]);
+    const sorted=gaps.slice().sort((a,b)=>a-b);
+    const base=sorted.length?sorted[Math.floor(sorted.length*.35)]:tw/12;
+    const cellGap=Math.max(12,base*1.9);
+
+    const groups=[];
+    let cur=[];
+    centers.forEach(x=>{
+      if(!cur.length || x-cur[cur.length-1]<cellGap)cur.push(x);
+      else{groups.push(cur);cur=[x]}
+    });
+    if(cur.length)groups.push(cur);
+
+    const cells=[];
+    groups.slice(0,12).forEach(group=>{
+      const cx=group.reduce((a,b)=>a+b,0)/group.length;
+      const cellW=Math.max(18,Math.min(tw*.12,cellGap));
+      const left=cx-cellW/2,right=cx+cellW/2;
+      const dots=[];
+
+      DOT_POS.forEach(pos=>{
+        const px=left+(pos.x?.72:.28)*cellW;
+        const py=(.2+pos.y*.3)*th;
+        const r=Math.max(3,Math.floor(Math.min(cellW/5,th/14)));
+        let local=0,n=0,ring=0,rn=0;
+        for(let yy=Math.max(1,Math.floor(py-r*2));yy<Math.min(th-1,Math.ceil(py+r*2));yy++){
+          for(let xx=Math.max(1,Math.floor(px-r*2));xx<Math.min(tw-1,Math.ceil(px+r*2));xx++){
+            const dist=Math.hypot(xx-px,yy-py);
+            const val=gray[yy*tw+xx];
+            if(dist<=r){local+=val;n++}
+            else if(dist<=r*2){ring+=val;rn++}
+          }
+        }
+        if(n&&rn && Math.abs(local/n-ring/rn)>Math.max(7,sd*.22))dots.push(pos.n);
+      });
+      if(dots.length)cells.push(dots);
+    });
+    return cells;
+  }
+
+  function capture(){
+    const e=scannerElements();
+    if(!scannerStream || !e.video.videoWidth)return;
+
+    e.canvas.width=e.video.videoWidth;
+    e.canvas.height=e.video.videoHeight;
+    const ctx=e.canvas.getContext("2d");
+    ctx.drawImage(e.video,0,0,e.canvas.width,e.canvas.height);
+
+    e.preview.src=e.canvas.toDataURL("image/jpeg",.9);
+    e.result.hidden=false;
+    e.status.textContent="점형 후보를 분석하고 있습니다…";
+
+    requestAnimationFrame(()=>{
+      try{
+        const found=detectCandidates(e.canvas);
+        recognized=found;
+        if(found.length){
+          e.status.textContent="점형 후보 "+found.length+"칸을 찾았습니다. 각 점을 눌러 실제 점형과 맞는지 확인해 주세요.";
+        }else{
+          e.status.textContent="자동으로 확실한 점형을 찾지 못했습니다. 점형 한 칸 추가를 눌러 촬영 사진을 보며 직접 표시해 주세요.";
+        }
+        renderRecognized();
+      }catch(err){
+        recognized=[];
+        e.status.textContent="자동 인식이 어려운 사진입니다. 점형 한 칸 추가를 눌러 직접 표시해 주세요.";
+        renderRecognized();
+      }
+      e.result.scrollIntoView({behavior:"smooth",block:"start"});
+    });
+  }
+
+  function init(){
+    const e=scannerElements();
+    if(!e.start)return;
+    e.start.addEventListener("click",startCamera);
+    e.capture.addEventListener("click",capture);
+    e.stop.addEventListener("click",stopCamera);
+
+    $("addRecognizedCell")?.addEventListener("click",()=>{
+      recognized.push([]);
+      renderRecognized();
+      scannerElements().status.textContent="새 점형을 추가했습니다. 사진을 보면서 해당 점을 눌러 주세요.";
+    });
+
+    $("resetRecognizedCells")?.addEventListener("click",()=>{
+      recognized=[];
+      renderRecognized();
+      scannerElements().status.textContent="인식 결과를 초기화했습니다.";
+    });
+
+    document.addEventListener("visibilitychange",()=>{if(document.hidden)stopCamera()});
+  }
+
+  window.addEventListener("DOMContentLoaded",init);
+  window.addEventListener("beforeunload",stopCamera);
+})();
+</script>
+
+
+<style id="scanner-recognition-correction-ui">
+.captured-preview-wrap{
+  margin:16px auto;
+  max-width:760px;
+  border:1.5px solid #80959d;
+  border-radius:12px;
+  overflow:hidden;
+  background:#111;
+}
+#capturedBraillePreview{
+  display:block;
+  width:100%;
+  max-height:330px;
+  object-fit:contain;
+}
+.scanner-recognition-status{
+  margin:12px 0;
+  padding:11px 13px;
+  border-radius:10px;
+  background:#eef7f6;
+  color:#17364b;
+  font-weight:750;
+  line-height:1.55;
+}
+.recognized-cells{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  padding:8px 2px 14px;
+  scroll-snap-type:x proximity;
+}
+.recognized-cell-card{
+  flex:0 0 155px;
+  scroll-snap-align:start;
+  border:1.5px solid #8ba0a7;
+  border-radius:12px;
+  padding:11px;
+  background:#fcfcfa;
+}
+.recognized-cell-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:10px;
+}
+.recognized-cell-head span{
+  font-size:2rem;
+  line-height:1;
+}
+.recognized-dot-grid{
+  display:grid;
+  grid-template-columns:repeat(2,42px);
+  grid-template-rows:repeat(3,42px);
+  gap:8px 20px;
+  justify-content:center;
+}
+.recognized-dot-grid button{
+  width:42px;height:42px;
+  padding:0;
+  border-radius:50%;
+  border:2.5px solid #718891;
+  background:transparent;
+  cursor:pointer;
+}
+.recognized-dot-grid button[aria-pressed="true"]{
+  background:#17364b;
+  border-color:#17364b;
+}
+.recognized-remove{
+  width:100%;
+  margin-top:10px;
+  min-height:34px;
+  border:1px solid #9aaeb4;
+  border-radius:8px;
+  background:#fff;
+  color:#6d2525;
+  font-family:inherit;
+  font-weight:800;
+}
+.scanner-result-actions{
+  display:flex;
+  justify-content:center;
+  gap:9px;
+  flex-wrap:wrap;
+  margin:12px 0;
+}
+.scanner-next-step{
+  margin-top:18px;
+  padding:13px;
+  border:1.5px dashed #7e979e;
+  border-radius:10px;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  text-align:left;
+  line-height:1.55;
+}
+.high-contrast .scanner-recognition-status,
+.contrast .scanner-recognition-status,
+.high-contrast .recognized-cell-card,
+.contrast .recognized-cell-card,
+.high-contrast .scanner-next-step,
+.contrast .scanner-next-step{
+  background:#202020!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border-color:#fff!important;
+}
+.high-contrast .recognized-dot-grid button,
+.contrast .recognized-dot-grid button{
+  border-color:#fff!important;
+  forced-color-adjust:none!important;
+}
+.high-contrast .recognized-dot-grid button[aria-pressed="true"],
+.contrast .recognized-dot-grid button[aria-pressed="true"]{
+  background:#fff!important;
+  border-color:#fff!important;
+}
+.high-contrast .recognized-remove,
+.contrast .recognized-remove{
+  background:#202020!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border-color:#fff!important;
+}
+@media(max-width:768px){
+  .recognized-cell-card{flex-basis:145px}
+  #capturedBraillePreview{max-height:280px}
+}
+</style>
