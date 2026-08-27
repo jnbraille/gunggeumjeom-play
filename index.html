@@ -5391,3 +5391,55 @@ img.logo{
   new MutationObserver(run).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
+
+
+<style id="square-a-inside-style">
+.square-a-inside{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:58px!important;
+  height:58px!important;
+  border:2px solid currentColor!important;
+  box-sizing:border-box!important;
+  font-family:"Noto Sans KR","Noto Sans",Arial,sans-serif!important;
+  font-size:42px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  vertical-align:middle!important;
+}
+</style>
+<script id="square-a-inside-script">
+(function(){
+  function fixSquareA(){
+    const root = document.querySelector('#practiceView') || document.body;
+    if(!root) return;
+
+    const labels = Array.from(root.querySelectorAll('*')).filter(el => {
+      const t = (el.textContent || '').trim();
+      return t === '(네모 에이)' || t === '네모 에이';
+    });
+
+    labels.forEach(label => {
+      const row = label.parentElement;
+      if(!row) return;
+
+      const kids = Array.from(row.children);
+      let symbol = kids.find(el => el !== label && (el.textContent || '').trim().includes('a'));
+      if(!symbol){
+        symbol = kids.find(el => el !== label);
+      }
+      if(!symbol) return;
+
+      symbol.textContent = 'a';
+      symbol.classList.add('square-a-inside');
+    });
+  }
+
+  const run = () => requestAnimationFrame(fixSquareA);
+  window.addEventListener('DOMContentLoaded', run);
+  document.addEventListener('click', run, true);
+  document.addEventListener('keyup', run, true);
+  new MutationObserver(run).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
