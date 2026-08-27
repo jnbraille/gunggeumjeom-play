@@ -4309,6 +4309,10 @@ function nextQuestion(){
     pe.appendChild(im);
 
   }else if(cat==="문장부호"){
+    if(q.prompt==="여는 드러냄표" || q.prompt==="닫는 드러냄표"){
+      pe.textContent=q.prompt;
+      pe.classList.add("reveal-mark-title-force-large");
+    }else{
     const mm=q.prompt.match(/^(.+?) \((.+)\)$/);
 
     if(mm){
@@ -4342,11 +4346,7 @@ function nextQuestion(){
 
     }else{
       pe.textContent=q.prompt;
-
-      // 여는/닫는 드러냄표는 문제명 자체를 크게 표시
-      if(q.prompt==="여는 드러냄표" || q.prompt==="닫는 드러냄표"){
-        pe.classList.add("reveal-mark-title-force-large");
-      }
+    }
     }
 
     // 6개 기호 규정 안내는 문제 전환 시 한 번만 갱신
