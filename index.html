@@ -7578,3 +7578,23 @@ img.logo{
   });
 })();
 </script>
+
+
+<script id="search-input-keyboard-isolation-fix">
+(function(){
+  function protectSearchInput(e){
+    const t=e.target;
+    if(!t) return;
+    if(t.id==="punctuationSearchInput" || t.id==="sentenceSearchInput"){
+      // 검색창에서는 브라우저의 기본 텍스트 편집 동작을 그대로 사용한다.
+      // 전역 점자 키보드 핸들러로 이벤트가 전달되는 것만 차단한다.
+      e.stopImmediatePropagation();
+    }
+  }
+
+  // capture 단계에서 먼저 처리하여 기존 document/window 키보드 핸들러보다 우선
+  document.addEventListener("keydown", protectSearchInput, true);
+  document.addEventListener("keyup", protectSearchInput, true);
+  document.addEventListener("keypress", protectSearchInput, true);
+})();
+</script>
