@@ -6657,40 +6657,116 @@ img.logo{
   }
   function decodeKoreanCells(cells){
     if(!cells.length)return {text:"",note:"점형을 먼저 확인해 주세요."};
-    const chars=cells.map(brailleChar),raw=chars.join(""),M=buildRuleMaps();
-    if(M.exact[raw])return {text:M.exact[raw],note:"궁금점 PLAY의 2024 규정 기반 학습 점형과 정확히 일치한 결과입니다."};
+
+    const chars=cells.map(brailleChar);
+    const raw=chars.join("");
+    const M=buildRuleMaps();
+
+    // 궁금점 PLAY에 검수된 단어/문장 점형과 완전히 일치하면 최우선 적용
+    if(M.exact[raw]){
+      return {
+        text:M.exact[raw],
+        note:"궁금점 PLAY의 2024 개정 한국 점자 규정 기반 학습 점형과 정확히 일치한 결과입니다."
+      };
+    }
 
     let out="",i=0,uncertain=0;
+
     while(i<chars.length){
       if(chars[i]==="⠀"){out+=" ";i++;continue;}
 
-      const ab=longestMatch(chars,i,M.abbr,4);
-      if(ab){out+=ab.value;i+=ab.len;continue;}
+      /*
+       * 핵심 수정:
+       * ㄴ/ㄷ/ㅁ/ㅂ/ㅈ/ㅋ/ㅌ/ㅍ/ㅎ 등의 초성 점형은
+       * '나/다/마/바/자/카/타/파/하' 약자와 같은 점형을 공유한다.
+       * 기존에는 약자를 먼저 읽어 'ㅎ+ㅘ'를 '하+...'처럼 오판독했다.
+       * 이제 뒤에 모음이 이어지면 반드시 초성+모음 음절을 우선 판독한다.
+       */
 
-      let ini=longestMatch(chars,i,M.initial,2),cho="",usedI=0;
+      let ini=longestMatch(chars,i,M.initial,2);
+      let cho="",usedI=0;
       if(ini){cho=ini.value;usedI=ini.len;}
-      let vp=i+usedI,vow=longestMatch(chars,vp,M.vowel,2);
-      if(!vow){cho="";usedI=0;vp=i;vow=longestMatch(chars,i,M.vowel,2);}
 
+      let vp=i+usedI;
+      let vow=longestMatch(chars,vp,M.vowel,2);
+
+      // 초성 없이 시작되는 모음(초성 ㅇ 생략)도 허용
+      if(!vow){
+        cho="";usedI=0;vp=i;
+        vow=longestMatch(chars,i,M.vowel,2);
+      }
+
+      // 실제 초성+모음 또는 모음으로 음절 구성이 가능하면 약자보다 우선
       if(vow){
-        let j=vp+vow.len,jong="",usedF=0;
+        let j=vp+vow.len;
+        let jong="",usedF=0;
+
         const fin=longestMatch(chars,j,M.final,2);
         if(fin){
           const after=j+fin.len;
-          const nextV=longestMatch(chars,after,M.vowel,2);
-          const nextI=longestMatch(chars,after,M.initial,2);
-          if(!(nextV&&!nextI)){jong=fin.value;usedF=fin.len;}
+
+          // 다음 위치가 명백히 새 음절의 초성+모음이면 현재 받침으로 먹지 않음
+          const ni=longestMatch(chars,after,M.initial,2);
+          const nv=ni ? longestMatch(chars,after+ni.len,M.vowel,2) : longestMatch(chars,after,M.vowel,2);
+
+          if(!(ni && nv)){
+            jong=fin.value;
+            usedF=fin.len;
+          }
         }
+
         out+=composeHangul(cho,vow.value,jong);
-        i=j+usedF;continue;
+        i=j+usedF;
+        continue;
       }
-      out+=chars[i];uncertain++;i++;
+
+      // 2칸 이상 약어/약자는 초성+모음으로 해석되지 않을 때 적용
+      let ab=null;
+      for(let n=Math.min(4,chars.length-i);n>=2;n--){
+        const seq=chars.slice(i,i+n).join("");
+        if(Object.prototype.hasOwnProperty.call(M.abbr,seq)){
+          ab={value:M.abbr[seq],len:n};
+          break;
+        }
+      }
+      if(ab){
+        out+=ab.value;
+        i+=ab.len;
+        continue;
+      }
+
+      // 단일 셀 약자는 마지막 후보로 사용
+      const one=chars[i];
+      if(Object.prototype.hasOwnProperty.call(M.abbr,one)){
+        out+=M.abbr[one];
+        i++;
+        continue;
+      }
+
+      // 독립적으로 확인 가능한 숫자/문장부호/기타 학습 데이터가 있으면 표시
+      let known=null;
+      for(const catName of ["숫자","문장부호","로마자"]){
+        const arr=DATA[catName]||[];
+        const item=arr.find(x=>x.braille===one);
+        if(item){known=item.prompt;break;}
+      }
+      if(known){
+        out+=known.replace(/\s*\(.+?\)\s*$/,"");
+        i++;
+        continue;
+      }
+
+      // 확정하지 못한 셀은 억지로 한글 자모로 바꾸지 않고 표시
+      out+="[확인]";
+      uncertain++;
+      i++;
     }
+
     return {
       text:out,
       note:uncertain
-       ?"2024 개정 한국 점자 규정의 초성·모음·종성·약자·약어와 프로그램 학습 데이터를 기준으로 판독했습니다. 점자 기호가 그대로 남은 부분은 문맥상 확정하지 못한 점형입니다."
-       :"2024 개정 한국 점자 규정의 초성·모음·종성·약자·약어와 프로그램 학습 데이터를 기준으로 판독했습니다."
+        ?"2024 개정 한국 점자 규정의 초성·모음·종성·약자·약어 순서를 기준으로 판독했습니다. [확인]으로 표시된 부분은 점형 또는 문맥을 다시 확인해 주세요."
+        :"2024 개정 한국 점자 규정의 초성·모음·종성·약자·약어 순서를 기준으로 판독했습니다."
     };
   }
 
