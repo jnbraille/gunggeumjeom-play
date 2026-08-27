@@ -4086,6 +4086,13 @@ function recordWrongQuestion(category, question, typedAnswer){
   rec.wrong[key].lastInput=typedAnswer||"";
 }
 
+function removeWrongQuestion(category, question){
+  if(!rec.wrong) return;
+  const prompt=(question&&question.prompt)?question.prompt:"문제";
+  const key=category+"||"+prompt;
+  if(rec.wrong[key]) delete rec.wrong[key];
+}
+
 function renderWrongRecords(){
   const list=document.getElementById("wrongRecordsList");
   const countEl=document.getElementById("wrongRecordsCount");
@@ -4486,7 +4493,7 @@ function playFeedbackSound(ok){
     });
   }catch(e){}
 }
-function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";sessionTotal++;if(ok)sessionCorrect++;rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;if(!ok)recordWrongQuestion(cat,q,input);stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{round++;if(round>=queue.length){round=0;queue=wrongOnlyMode?getWrongQueue(cat):makeQueue(cat)}nextQuestion()},ok?1200:2000)}
+function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";sessionTotal++;if(ok)sessionCorrect++;rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;if(!ok)recordWrongQuestion(cat,q,input);if(ok&&wrongOnlyMode)removeWrongQuestion(cat,q);stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{round++;if(round>=queue.length){round=0;queue=wrongOnlyMode?getWrongQueue(cat):makeQueue(cat)}if(wrongOnlyMode&&queue.length===0){show("records");return}nextQuestion()},ok?1200:2000)}
 document.onkeydown=e=>{
 if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput")) return;
 if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}if(e.key===" "){e.preventDefault();beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return}let k=e.key.toLowerCase();if(KD[k]){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
@@ -4695,6 +4702,14 @@ function nextSpellingV17(){
       if(isCorrect){
         btn.classList.add("correct","selected-answer");
         document.getElementById("spellingFb").innerHTML="<strong>정답!</strong> "+spellingCurrent.answer;
+        if(wrongOnlyMode){
+          removeWrongQuestion("맞춤법",spellingCurrent);
+          const currentOrderPos=spellingPos-1;
+          if(currentOrderPos>=0 && currentOrderPos<spellingOrder.length){
+            spellingOrder.splice(currentOrderPos,1);
+            spellingPos=currentOrderPos;
+          }
+        }
       }else{
         btn.classList.add("wrong","selected-answer");
         [...box.children].forEach(x=>{
@@ -4723,6 +4738,10 @@ function nextSpellingV17(){
           fb.textContent="";
           fb.hidden=true;
           fb.style.display="none";
+        }
+        if(wrongOnlyMode && getWrongQueue("맞춤법").length===0){
+          show("records");
+          return;
         }
         nextSpellingV17();
       },3200);
