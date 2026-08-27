@@ -4476,8 +4476,12 @@ function playFeedbackSound(ok){
   }catch(e){}
 }
 function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";sessionTotal++;if(ok)sessionCorrect++;rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;if(!ok)recordWrongQuestion(cat,q,input);stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{round++;if(round>=queue.length){round=0;queue=wrongOnlyMode?getWrongQueue(cat):makeQueue(cat)}nextQuestion()},ok?1200:2000)}
-document.onkeydown=e=>{if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}if(e.key===" "){e.preventDefault();beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return}let k=e.key.toLowerCase();if(KD[k]){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
-document.onkeyup=e=>{if(!V.practice.classList.contains("active")||grading)return;let k=e.key.toLowerCase();if(!KD[k])return;pressed.delete(k);if(!pressed.size&&chord.size){beginTypingClock();input+=braille([...chord]);typedCells++;chord.clear();draw();liveMetrics()}};
+document.onkeydown=e=>{
+if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput")) return;
+if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}if(e.key===" "){e.preventDefault();beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return}let k=e.key.toLowerCase();if(KD[k]){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
+document.onkeyup=e=>{
+if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput")) return;
+if(!V.practice.classList.contains("active")||grading)return;let k=e.key.toLowerCase();if(!KD[k])return;pressed.delete(k);if(!pressed.size&&chord.size){beginTypingClock();input+=braille([...chord]);typedCells++;chord.clear();draw();liveMetrics()}};
 
 function validateAnswerBank(){
   const invalid=[];
@@ -7825,36 +7829,27 @@ img.logo{
 </style>
 
 
-<script id="search-input-keyboard-final-fix">
+
+
+
+<script id="search-input-enter-only-fix">
 (function(){
-  function isSearchInput(el){
-    return !!el && (
-      el.id==="punctuationSearchInput" ||
-      el.id==="sentenceSearchInput"
-    );
+  function setup(id, buttonId){
+    const input=document.getElementById(id);
+    if(!input) return;
+
+    input.addEventListener("keydown", function(e){
+      if(e.key==="Enter"){
+        e.preventDefault();
+        document.getElementById(buttonId)?.click();
+      }
+      // Backspace/Delete/문자키는 절대 preventDefault/stopPropagation 하지 않음.
+    });
   }
 
-  // 검색창에서는 일반 텍스트 입력 동작을 그대로 유지한다.
-  // Backspace/Delete는 브라우저 기본 편집으로 처리하고,
-  // Enter만 해당 검색 버튼을 실행한다.
-  document.addEventListener("keydown", function(e){
-    if(!isSearchInput(e.target)) return;
-
-    if(e.key==="Enter"){
-      e.preventDefault();
-      const id=e.target.id==="punctuationSearchInput"
-        ? "punctuationSearchButton"
-        : "sentenceSearchButton";
-      document.getElementById(id)?.click();
-    }
-
-    // document에 등록된 기존 점자 입력 keydown까지 전달되지 않게 한다.
-    // 기본 브라우저 편집은 막지 않는다.
-    e.stopPropagation();
-  }, false);
-
-  document.addEventListener("keyup", function(e){
-    if(isSearchInput(e.target)) e.stopPropagation();
-  }, false);
+  document.addEventListener("DOMContentLoaded", function(){
+    setup("punctuationSearchInput","punctuationSearchButton");
+    setup("sentenceSearchInput","sentenceSearchButton");
+  });
 })();
 </script>
