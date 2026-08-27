@@ -8426,3 +8426,26 @@ body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
   }
 }
 </style>
+
+
+<style id="mobile-spelling-correct-circle-final">
+@media(max-width:768px){
+  #spellingOpts button.correct.selected-answer .spelling-choice-mark{
+    color:#0057b8!important;
+    -webkit-text-fill-color:#0057b8!important;
+    font-size:3.25rem!important;
+    font-weight:1000!important;
+    line-height:1!important;
+    width:52px!important;
+    min-width:52px!important;
+    opacity:1!important;
+    transform:translateY(-50%) scale(1.12)!important;
+    text-shadow:0 0 0 #0057b8!important;
+  }
+
+  /* 큰 동그라미와 선택지 글자가 겹치지 않도록 */
+  #spellingOpts button.correct.selected-answer{
+    padding-left:82px!important;
+  }
+}
+</style>
