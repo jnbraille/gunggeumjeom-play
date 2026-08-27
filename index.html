@@ -7864,3 +7864,61 @@ img.logo{
   });
 })();
 </script>
+
+
+<style id="six-symbol-rule-note-category-guard">
+#practiceView:not([data-category="문장부호"]) #sixSymbolRuleNote{
+  display:none!important;
+  visibility:hidden!important;
+}
+</style>
+
+
+<script id="six-symbol-rule-note-hard-reset">
+(function(){
+  const NOTE_ID="sixSymbolRuleNote";
+
+  function currentCategory(){
+    try{
+      if(typeof cat!=="undefined") return cat;
+    }catch(e){}
+    return document.getElementById("practiceView")?.dataset?.category || "";
+  }
+
+  function removePunctuationRuleResidue(){
+    const note=document.getElementById(NOTE_ID);
+    if(!note) return;
+
+    if(currentCategory()!=="문장부호"){
+      note.hidden=true;
+      note.style.setProperty("display","none","important");
+      note.setAttribute("aria-hidden","true");
+      note.innerHTML="";
+    }
+  }
+
+  // 카테고리 변경/화면 렌더 뒤에 반드시 한 번 더 정리
+  document.addEventListener("click", function(){
+    setTimeout(removePunctuationRuleResidue,0);
+    setTimeout(removePunctuationRuleResidue,50);
+  }, true);
+
+  document.addEventListener("keydown", function(){
+    setTimeout(removePunctuationRuleResidue,0);
+  }, true);
+
+  // practiceView의 data-category가 바뀌는 경우 즉시 반영
+  document.addEventListener("DOMContentLoaded", function(){
+    const pv=document.getElementById("practiceView");
+    if(pv){
+      new MutationObserver(removePunctuationRuleResidue).observe(pv,{
+        attributes:true,
+        attributeFilter:["data-category"],
+        childList:true,
+        subtree:false
+      });
+    }
+    removePunctuationRuleResidue();
+  });
+})();
+</script>
