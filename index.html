@@ -3861,6 +3861,16 @@ function formatPunctuationPrompt(text){
 <div class="practice-layout">
   <div class="practice">
     <h2><span id="practiceName">초성 연습</span><span class="count"><span id="pIndex">1</span> / <span id="pTotal">100</span></span></h2>
+    <div id="sentenceSearchBar" role="search" aria-label="문장 연습 문제 검색">
+      <div class="sentence-search-row">
+        <input id="sentenceSearchInput" type="search" placeholder="문장 검색 (예: 여름 방학, Lincoln, Open)" aria-label="문장 검색어">
+        <button id="sentenceSearchButton" type="button">검색</button>
+        <button id="sentenceSearchPrev" type="button">이전</button>
+        <button id="sentenceSearchNext" type="button">다음</button>
+        <button id="sentenceSearchClear" type="button">초기화</button>
+      </div>
+      <div id="sentenceSearchStatus" aria-live="polite"></div>
+    </div>
     <div id="punctuationSearchBar" role="search" aria-label="문장부호 문제 검색">
       <div class="punct-search-row">
         <input id="punctuationSearchInput" type="search" placeholder="기호·명칭 검색 (예: ©, 앰퍼샌드, 네모, 로마 숫자)" aria-label="문장부호 검색어">
@@ -7371,3 +7381,200 @@ img.logo{
   }
 }
 </style>
+
+
+<style id="sentence-search-style">
+#sentenceSearchBar{
+  display:none;
+  max-width:900px;
+  margin:12px auto 16px;
+  padding:0 18px;
+  box-sizing:border-box;
+}
+#practiceView[data-category="문장"] #sentenceSearchBar{
+  display:block!important;
+}
+#sentenceSearchBar .sentence-search-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+#sentenceSearchInput{
+  flex:1;
+  min-width:220px;
+  height:44px;
+  padding:0 14px;
+  border:1.5px solid #8da6ae;
+  border-radius:10px;
+  font:inherit;
+  font-size:16px;
+  color:#102b4e;
+  background:#fff;
+}
+#sentenceSearchButton,
+#sentenceSearchPrev,
+#sentenceSearchNext,
+#sentenceSearchClear{
+  min-height:44px;
+  padding:0 13px;
+  border:1.5px solid #178b83;
+  border-radius:10px;
+  background:#fff;
+  color:#087d76;
+  font:inherit;
+  font-weight:800;
+  cursor:pointer;
+}
+#sentenceSearchStatus{
+  min-height:1.4em;
+  margin-top:7px;
+  text-align:center;
+  color:#52697a;
+  font-size:14px;
+}
+
+/* 고대비: 메뉴와 동일하게 검정 배경 + 흰 글씨 + 흰 테두리 */
+.high-contrast #sentenceSearchButton,
+.high-contrast #sentenceSearchPrev,
+.high-contrast #sentenceSearchNext,
+.high-contrast #sentenceSearchClear,
+.high-contrast #sentenceSearchButton:hover,
+.high-contrast #sentenceSearchPrev:hover,
+.high-contrast #sentenceSearchNext:hover,
+.high-contrast #sentenceSearchClear:hover,
+.high-contrast #sentenceSearchButton:focus,
+.high-contrast #sentenceSearchPrev:focus,
+.high-contrast #sentenceSearchNext:focus,
+.high-contrast #sentenceSearchClear:focus,
+.high-contrast #sentenceSearchButton:active,
+.high-contrast #sentenceSearchPrev:active,
+.high-contrast #sentenceSearchNext:active,
+.high-contrast #sentenceSearchClear:active,
+.contrast #sentenceSearchButton,
+.contrast #sentenceSearchPrev,
+.contrast #sentenceSearchNext,
+.contrast #sentenceSearchClear,
+.contrast #sentenceSearchButton:hover,
+.contrast #sentenceSearchPrev:hover,
+.contrast #sentenceSearchNext:hover,
+.contrast #sentenceSearchClear:hover,
+.contrast #sentenceSearchButton:focus,
+.contrast #sentenceSearchPrev:focus,
+.contrast #sentenceSearchNext:focus,
+.contrast #sentenceSearchClear:focus{
+  background:#202020!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border-color:#fff!important;
+  box-shadow:none!important;
+  forced-color-adjust:none!important;
+}
+.high-contrast #sentenceSearchInput,
+.contrast #sentenceSearchInput{
+  background:#202020!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border-color:#fff!important;
+}
+.high-contrast #sentenceSearchStatus,
+.contrast #sentenceSearchStatus{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+
+@media(max-width:700px){
+  #sentenceSearchBar{padding:0 10px;}
+  #sentenceSearchBar .sentence-search-row{flex-wrap:wrap;}
+  #sentenceSearchInput{flex-basis:100%;width:100%;}
+  #sentenceSearchButton,
+  #sentenceSearchClear{flex:1;}
+}
+</style>
+
+
+<script id="sentence-search-script">
+(function(){
+  let sentenceResults=[];
+  let sentencePos=-1;
+
+  function norm(v){
+    return String(v||"").toLowerCase().replace(/\s+/g,"");
+  }
+
+  function performSentenceSearch(){
+    if(cat!=="문장") return;
+    const input=document.getElementById("sentenceSearchInput");
+    const status=document.getElementById("sentenceSearchStatus");
+    const term=norm(input.value);
+
+    if(!term){
+      sentenceResults=[];
+      sentencePos=-1;
+      status.textContent="검색어를 입력하세요.";
+      return;
+    }
+
+    sentenceResults=[];
+    DATA["문장"].forEach((item,idx)=>{
+      const hay=norm((item.prompt||"")+" "+(item.rule||""));
+      if(hay.includes(term)) sentenceResults.push(idx);
+    });
+
+    if(!sentenceResults.length){
+      sentencePos=-1;
+      status.textContent="일치하는 문장이 없습니다.";
+      return;
+    }
+
+    sentencePos=0;
+    goSentenceResult();
+  }
+
+  function goSentenceResult(){
+    if(cat!=="문장" || sentencePos<0 || !sentenceResults.length) return;
+
+    const targetIndex=sentenceResults[sentencePos];
+    wrongOnlyMode=false;
+    queue=DATA["문장"].map((_,i)=>i);
+    round=targetIndex;
+    nextQuestion();
+
+    const status=document.getElementById("sentenceSearchStatus");
+    status.textContent=
+      (sentencePos+1)+" / "+sentenceResults.length+"개 검색 결과 · 전체 "+(targetIndex+1)+"번 문항";
+  }
+
+  function moveSentenceResult(delta){
+    if(!sentenceResults.length){
+      performSentenceSearch();
+      return;
+    }
+    sentencePos=(sentencePos+delta+sentenceResults.length)%sentenceResults.length;
+    goSentenceResult();
+  }
+
+  function clearSentenceSearch(){
+    sentenceResults=[];
+    sentencePos=-1;
+    const input=document.getElementById("sentenceSearchInput");
+    const status=document.getElementById("sentenceSearchStatus");
+    if(input) input.value="";
+    if(status) status.textContent="";
+  }
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    const input=document.getElementById("sentenceSearchInput");
+    document.getElementById("sentenceSearchButton")?.addEventListener("click",performSentenceSearch);
+    document.getElementById("sentenceSearchPrev")?.addEventListener("click",()=>moveSentenceResult(-1));
+    document.getElementById("sentenceSearchNext")?.addEventListener("click",()=>moveSentenceResult(1));
+    document.getElementById("sentenceSearchClear")?.addEventListener("click",clearSentenceSearch);
+    input?.addEventListener("keydown",e=>{
+      if(e.key==="Enter"){
+        e.preventDefault();
+        e.stopPropagation();
+        performSentenceSearch();
+      }
+    });
+  });
+})();
+</script>
