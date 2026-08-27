@@ -5495,3 +5495,104 @@ img.logo{
   new MutationObserver(run).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
+
+
+<style id="hc-whale-final-fix">
+/* 고대비: 후원 표기 글씨도 흰색 */
+.high-contrast footer *,
+.high-contrast .support *,
+.high-contrast .sponsor *,
+.high-contrast .footer-support *,
+.contrast footer *,
+.contrast .support *,
+.contrast .sponsor *,
+.contrast .footer-support *{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+
+/* Whale/Chromium 강제 고대비에서 점형 색상 보존 */
+.high-contrast .dot,
+.high-contrast .braille-dot,
+.high-contrast [class*="dot"],
+.contrast .dot,
+.contrast .braille-dot,
+.contrast [class*="dot"]{
+  forced-color-adjust:none!important;
+  -webkit-print-color-adjust:exact!important;
+}
+
+/* 정상 채움점 */
+.high-contrast .dot.filled,
+.high-contrast .braille-dot.filled,
+.high-contrast .filled-dot,
+.contrast .dot.filled,
+.contrast .braille-dot.filled,
+.contrast .filled-dot{
+  background:#fff!important;
+  border-color:#fff!important;
+}
+
+/* 빈점 */
+.high-contrast .dot:not(.filled):not(.wrong),
+.high-contrast .braille-dot:not(.filled):not(.wrong),
+.contrast .dot:not(.filled):not(.wrong),
+.contrast .braille-dot:not(.filled):not(.wrong){
+  background:transparent!important;
+  border-color:#fff!important;
+}
+
+/* 오답점은 기존 빨강 유지 */
+.high-contrast .wrong-dot,
+.high-contrast .dot.wrong,
+.high-contrast .braille-dot.wrong,
+.high-contrast .incorrect-dot,
+.contrast .wrong-dot,
+.contrast .dot.wrong,
+.contrast .braille-dot.wrong,
+.contrast .incorrect-dot{
+  background:#ff4d4d!important;
+  border-color:transparent!important;
+  forced-color-adjust:none!important;
+}
+
+@media (forced-colors: active){
+  .dot,.braille-dot,[class*="dot"]{
+    forced-color-adjust:none!important;
+  }
+  .dot.filled,.braille-dot.filled,.filled-dot{
+    background:#fff!important;
+    border-color:#fff!important;
+  }
+  .dot:not(.filled):not(.wrong),
+  .braille-dot:not(.filled):not(.wrong){
+    background:transparent!important;
+    border-color:#fff!important;
+  }
+  .wrong-dot,.dot.wrong,.braille-dot.wrong,.incorrect-dot{
+    background:#ff4d4d!important;
+    border-color:transparent!important;
+  }
+}
+</style>
+<script id="hc-sponsor-text-final-fix">
+(function(){
+  function apply(){
+    const hc =
+      document.documentElement.classList.contains('high-contrast') ||
+      document.body.classList.contains('high-contrast') ||
+      document.documentElement.classList.contains('contrast') ||
+      document.body.classList.contains('contrast');
+    if(!hc) return;
+    document.querySelectorAll('footer *, .support *, .sponsor *, .footer-support *').forEach(function(el){
+      if(/지원|복권위원회|전남광주통합특별시/.test((el.textContent||'').trim())){
+        el.style.setProperty('color','#fff','important');
+        el.style.setProperty('-webkit-text-fill-color','#fff','important');
+      }
+    });
+  }
+  window.addEventListener('DOMContentLoaded',apply);
+  document.addEventListener('click',function(){requestAnimationFrame(apply)},true);
+  new MutationObserver(function(){requestAnimationFrame(apply)}).observe(document.documentElement,{attributes:true,childList:true,subtree:true});
+})();
+</script>
