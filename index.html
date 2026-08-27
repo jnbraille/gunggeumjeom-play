@@ -5803,3 +5803,24 @@ img.logo{
   .wrong-record-prompt{font-size:1rem}
 }
 </style>
+
+
+<style id="hc-sponsor-image-white-final">
+/* 후원 표기는 이미지 안에 글자가 포함되어 있으므로 고대비에서 이미지 자체를 흰색으로 변환 */
+.high-contrast img[alt="복권위원회 지원"],
+.contrast img[alt="복권위원회 지원"]{
+  filter:brightness(0) invert(1)!important;
+  -webkit-filter:brightness(0) invert(1)!important;
+  opacity:1!important;
+  forced-color-adjust:none!important;
+}
+
+@media (forced-colors: active){
+  img[alt="복권위원회 지원"]{
+    filter:brightness(0) invert(1)!important;
+    -webkit-filter:brightness(0) invert(1)!important;
+    opacity:1!important;
+    forced-color-adjust:none!important;
+  }
+}
+</style>
