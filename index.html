@@ -4589,8 +4589,9 @@ function startSpellingMode(){
   const answerPanel=document.getElementById("answerPanel");
   const metrics=document.querySelector("#practiceView .metrics");
 
-  document.getElementById("practiceName").textContent="맞춤법 연습";
-  document.getElementById("pTotal").textContent=DATA["맞춤법"].length;
+  document.getElementById("practiceName").textContent=wrongOnlyMode?"맞춤법 오답 연습":"맞춤법 연습";
+  const spellingPool=wrongOnlyMode ? queue.slice() : [...Array(DATA["맞춤법"].length).keys()];
+  document.getElementById("pTotal").textContent=spellingPool.length;
   if(promptEl) promptEl.style.display="none";
   if(ruleEl) ruleEl.style.display="none";
   if(panel) panel.style.display="block";
@@ -4608,7 +4609,8 @@ function startSpellingMode(){
     fb.hidden=true;
     fb.style.display="none";
   }
-  spellingOrder=[...Array(DATA["맞춤법"].length).keys()].sort(()=>Math.random()-.5);
+  spellingOrder=spellingPool.slice();
+  if(!wrongOnlyMode) spellingOrder.sort(()=>Math.random()-.5);
   spellingPos=0;
   nextSpellingV17();
 }
@@ -4629,9 +4631,14 @@ function stopSpellingMode(){
   if(metrics) metrics.style.display="";
 }
 function nextSpellingV17(){
+  if(!spellingOrder.length){
+    document.getElementById("spellingQ").textContent="다시 풀 오답이 없습니다.";
+    document.getElementById("spellingOpts").replaceChildren();
+    return;
+  }
   if(spellingPos>=spellingOrder.length){
-    spellingOrder=[...Array(DATA["맞춤법"].length).keys()].sort(()=>Math.random()-.5);
     spellingPos=0;
+    if(!wrongOnlyMode) spellingOrder.sort(()=>Math.random()-.5);
   }
 
   /* 새 문제를 그리기 전에 이전 문제의 피드백/정답 상태를 확실히 초기화 */
@@ -4672,13 +4679,24 @@ function nextSpellingV17(){
         fb.hidden=false;
         fb.style.display="block";
       }
+      const mark=document.createElement("span");
+      mark.className="spelling-choice-mark";
+      mark.setAttribute("aria-hidden","true");
+      mark.textContent=isCorrect?"○":"✕";
+      btn.prepend(mark);
+
       if(isCorrect){
-        btn.classList.add("correct");
+        btn.classList.add("correct","selected-answer");
         document.getElementById("spellingFb").innerHTML="<strong>정답!</strong> "+spellingCurrent.answer;
       }else{
-        btn.classList.add("wrong");
-        [...box.children].forEach(x=>{if(x.textContent===spellingCurrent.answer)x.classList.add("correct")});
+        btn.classList.add("wrong","selected-answer");
+        [...box.children].forEach(x=>{
+          if(x!==btn && x.textContent.trim()===spellingCurrent.answer){
+            x.classList.add("correct-answer");
+          }
+        });
         document.getElementById("spellingFb").innerHTML="<strong>오답.</strong> 정답은 ‘"+spellingCurrent.answer+"’입니다.";
+        recordWrongQuestion("맞춤법",spellingCurrent,opt);
       }
 
       // 맞춤법 퀴즈도 나의 기록에 포함
@@ -4700,7 +4718,7 @@ function nextSpellingV17(){
           fb.style.display="none";
         }
         nextSpellingV17();
-      },1400);
+      },3200);
     };
     box.appendChild(btn);
   });
@@ -7931,5 +7949,45 @@ header .fund-mainline strong,
   margin:0!important;
   background:transparent!important;
   border-radius:0!important;
+}
+</style>
+
+
+<style id="spelling-feedback-review-style">
+#spellingOpts button{
+  position:relative;
+}
+#spellingOpts button.selected-answer{
+  padding-left:52px!important;
+}
+#spellingOpts .spelling-choice-mark{
+  position:absolute;
+  left:18px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:1.65rem;
+  font-weight:950;
+  line-height:1;
+}
+#spellingOpts button.correct.selected-answer .spelling-choice-mark{
+  color:#087f78;
+}
+#spellingOpts button.wrong.selected-answer .spelling-choice-mark{
+  color:#d93636;
+}
+#spellingOpts button.correct-answer{
+  outline:3px solid #087f78!important;
+  outline-offset:-3px!important;
+}
+.high-contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+.contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+.high-contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+.high-contrast #spellingOpts button.correct-answer,
+.contrast #spellingOpts button.correct-answer{
+  outline-color:#fff!important;
 }
 </style>
