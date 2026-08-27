@@ -5344,3 +5344,50 @@ img.logo{
   }
 }
 </style>
+
+
+<style id="reveal-mark-text-only-style">
+  .reveal-mark-text-only{
+    font-family:'Noto Sans KR',sans-serif!important;
+    font-size:30px!important;
+    font-weight:700!important;
+    color:inherit!important;
+  }
+</style>
+<script id="reveal-mark-text-only-script">
+(function(){
+  function fixRevealMarkQuestion(){
+    const root = document.querySelector('#practiceView') || document.body;
+    if(!root) return;
+
+    const all = Array.from(root.querySelectorAll('*'));
+    const label = all.find(el => {
+      const t = (el.textContent || '').trim();
+      return t === '(여는 드러냄표)' || t === '(닫는 드러냄표)';
+    });
+    if(!label) return;
+
+    const name = label.textContent.includes('여는') ? '여는 드러냄표' : '닫는 드러냄표';
+
+    /* 같은 문제 표시 줄에서 동그라미 기호 요소를 찾아 숨김 */
+    const row = label.parentElement;
+    if(row){
+      Array.from(row.children).forEach(el => {
+        if(el !== label) el.style.display = 'none';
+      });
+      label.textContent = name;
+      label.classList.add('reveal-mark-text-only');
+      label.style.display = '';
+    } else {
+      label.textContent = name;
+      label.classList.add('reveal-mark-text-only');
+    }
+  }
+
+  const run = () => requestAnimationFrame(fixRevealMarkQuestion);
+  window.addEventListener('DOMContentLoaded', run);
+  document.addEventListener('click', run, true);
+  document.addEventListener('keyup', run, true);
+  new MutationObserver(run).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
