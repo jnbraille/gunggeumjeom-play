@@ -8730,3 +8730,57 @@ body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
   }
 }
 </style>
+
+
+<style id="spelling-ox-high-contrast-color-final">
+/* PC 고대비 클래스에서도 O/X 색상을 일반 모드와 동일하게 유지 */
+.high-contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+.high-contrast #spellingOpts button.correct.selected-answer .spelling-mark-svg,
+.contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+.contrast #spellingOpts button.correct.selected-answer .spelling-mark-svg{
+  color:#0057D9!important;
+  -webkit-text-fill-color:#0057D9!important;
+  forced-color-adjust:none!important;
+}
+
+.high-contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+.high-contrast #spellingOpts button.wrong.selected-answer .spelling-mark-svg,
+.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+.contrast #spellingOpts button.wrong.selected-answer .spelling-mark-svg{
+  color:#E62314!important;
+  -webkit-text-fill-color:#E62314!important;
+  forced-color-adjust:none!important;
+}
+
+/* Windows/브라우저 강제 고대비에서도 파랑 O / 빨강 X 보존 */
+@media (forced-colors: active){
+  #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+  #spellingOpts button.correct.selected-answer .spelling-mark-svg{
+    color:#0057D9!important;
+    -webkit-text-fill-color:#0057D9!important;
+    forced-color-adjust:none!important;
+  }
+  #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+  #spellingOpts button.wrong.selected-answer .spelling-mark-svg{
+    color:#E62314!important;
+    -webkit-text-fill-color:#E62314!important;
+    forced-color-adjust:none!important;
+  }
+}
+
+/* 대비 증가 환경에서도 동일 색상 */
+@media (prefers-contrast: more){
+  #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+  #spellingOpts button.correct.selected-answer .spelling-mark-svg{
+    color:#0057D9!important;
+    -webkit-text-fill-color:#0057D9!important;
+    forced-color-adjust:none!important;
+  }
+  #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+  #spellingOpts button.wrong.selected-answer .spelling-mark-svg{
+    color:#E62314!important;
+    -webkit-text-fill-color:#E62314!important;
+    forced-color-adjust:none!important;
+  }
+}
+</style>
