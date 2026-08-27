@@ -4141,8 +4141,8 @@ function stats(){
     title.textContent=c;
 
     const total=document.createElement("div");
-    total.className="v";
-    total.textContent=r.total;
+    total.className="v record-total-count";
+    total.innerHTML='<span class="record-total-label">푼 문제</span><span class="record-total-number">'+r.total+'</span>';
 
     const rate=document.createElement("small");
     rate.textContent="정답률 "+pct(r.correct,r.total)+"%";
@@ -6100,6 +6100,75 @@ img.logo{
     filter:none!important;
     -webkit-filter:none!important;
     forced-color-adjust:none!important;
+  }
+}
+</style>
+
+
+<style id="record-count-label-and-hc-button-fix">
+.record-total-count{
+  display:flex!important;
+  align-items:baseline;
+  gap:7px;
+  margin-top:5px;
+}
+.record-total-label{
+  font-size:.9rem;
+  font-weight:800;
+  color:var(--muted);
+}
+.record-total-number{
+  font-size:1.65rem;
+  font-weight:900;
+  color:inherit;
+}
+
+/* 고대비: 틀린 문제 확인 / 오답만 다시 풀기 hover·focus 가독성 */
+.high-contrast .wrong-list-toggle,
+.high-contrast .wrong-retry-btn,
+.contrast .wrong-list-toggle,
+.contrast .wrong-retry-btn{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+.high-contrast .wrong-list-toggle:hover,
+.high-contrast .wrong-list-toggle:focus,
+.high-contrast .wrong-list-toggle:focus-visible,
+.high-contrast .wrong-retry-btn:hover,
+.high-contrast .wrong-retry-btn:focus,
+.high-contrast .wrong-retry-btn:focus-visible,
+.contrast .wrong-list-toggle:hover,
+.contrast .wrong-list-toggle:focus,
+.contrast .wrong-list-toggle:focus-visible,
+.contrast .wrong-retry-btn:hover,
+.contrast .wrong-retry-btn:focus,
+.contrast .wrong-retry-btn:focus-visible{
+  background:#fff!important;
+  color:#000!important;
+  -webkit-text-fill-color:#000!important;
+  border-color:#fff!important;
+  outline:2px solid #69d7e7!important;
+  outline-offset:2px!important;
+}
+.high-contrast .record-total-label,
+.high-contrast .record-total-number,
+.contrast .record-total-label,
+.contrast .record-total-number{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+@media (forced-colors: active){
+  .wrong-list-toggle:hover,
+  .wrong-list-toggle:focus,
+  .wrong-list-toggle:focus-visible,
+  .wrong-retry-btn:hover,
+  .wrong-retry-btn:focus,
+  .wrong-retry-btn:focus-visible{
+    forced-color-adjust:none!important;
+    background:#fff!important;
+    color:#000!important;
+    -webkit-text-fill-color:#000!important;
+    border-color:#fff!important;
   }
 }
 </style>
