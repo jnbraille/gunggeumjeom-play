@@ -4385,6 +4385,7 @@ function nextQuestion(){
     const matched=sixTargets.some(x=>q.prompt.includes(x));
     if(matched){
       note.innerHTML='<strong>규정 안내</strong><span>한글과 혼동되는 앰퍼샌드, 섹션 기호, 문단 기호, 저작권 기호, 등록 상표, 상표 기호는 로마자표(356점)와 로마자 종료표(256점)를 사용하여 적는다.</span>';
+      note.style.display="";
       note.hidden=false;
     }else{
       note.hidden=true;
@@ -4417,6 +4418,16 @@ function nextQuestion(){
       ? q.rule
       : "2024년 한글 점자 규정 " + (q.rule||"").replace(/\s*·?\s*PDF\s*\d+쪽/g,""))
     : "";
+
+  // 문장부호 전용 6개 기호 규정 안내는 다른 학습으로 넘어가면 완전히 제거
+  if(cat!=="문장부호"){
+    const punctRuleNote=document.getElementById("sixSymbolRuleNote");
+    if(punctRuleNote){
+      punctRuleNote.hidden=true;
+      punctRuleNote.style.display="none";
+      punctRuleNote.innerHTML="";
+    }
+  }
 
   input="";
   grading=false;
