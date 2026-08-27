@@ -8678,3 +8678,173 @@ body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
   }
 }
 </style>
+
+
+<style id="hc-ox-braille-visibility-definitive-final">
+
+/* =========================
+   1. 맞춤법 O / X 고대비 색상 확정
+   ========================= */
+
+/* 정답 O = 파랑 */
+body.high-contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+body.high-contrast #spellingOpts button.correct.selected-answer .spelling-mark-svg,
+body.contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+body.contrast #spellingOpts button.correct.selected-answer .spelling-mark-svg,
+html.high-contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+html.high-contrast #spellingOpts button.correct.selected-answer .spelling-mark-svg,
+html.contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+html.contrast #spellingOpts button.correct.selected-answer .spelling-mark-svg,
+.high-contrast #practiceView #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+.high-contrast #practiceView #spellingOpts button.correct.selected-answer .spelling-mark-svg,
+.contrast #practiceView #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+.contrast #practiceView #spellingOpts button.correct.selected-answer .spelling-mark-svg{
+  color:#0057D9!important;
+  -webkit-text-fill-color:#0057D9!important;
+  stroke:#0057D9!important;
+  opacity:1!important;
+  filter:none!important;
+  forced-color-adjust:none!important;
+}
+
+/* 오답 X = 빨강 */
+body.high-contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+body.high-contrast #spellingOpts button.wrong.selected-answer .spelling-mark-svg,
+body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+body.contrast #spellingOpts button.wrong.selected-answer .spelling-mark-svg,
+html.high-contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+html.high-contrast #spellingOpts button.wrong.selected-answer .spelling-mark-svg,
+html.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+html.contrast #spellingOpts button.wrong.selected-answer .spelling-mark-svg,
+.high-contrast #practiceView #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+.high-contrast #practiceView #spellingOpts button.wrong.selected-answer .spelling-mark-svg,
+.contrast #practiceView #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+.contrast #practiceView #spellingOpts button.wrong.selected-answer .spelling-mark-svg{
+  color:#E62314!important;
+  -webkit-text-fill-color:#E62314!important;
+  stroke:#E62314!important;
+  opacity:1!important;
+  filter:none!important;
+  forced-color-adjust:none!important;
+}
+
+/* SVG 내부 stroke="currentColor"가 브라우저 고대비에서 흰색으로 바뀌는 것 방지 */
+#spellingOpts button.correct.selected-answer .spelling-mark-svg circle,
+#spellingOpts button.correct.selected-answer .spelling-mark-svg path{
+  stroke:#0057D9!important;
+}
+#spellingOpts button.wrong.selected-answer .spelling-mark-svg circle,
+#spellingOpts button.wrong.selected-answer .spelling-mark-svg path{
+  stroke:#E62314!important;
+}
+
+/* =========================
+   2. 점자 입력 점형 고대비 가시성 확정
+   ========================= */
+
+/* 입력 셀 자체는 배경을 투명하게 유지 */
+#practiceView #typed .input-cell,
+.high-contrast #practiceView #typed .input-cell,
+.contrast #practiceView #typed .input-cell{
+  background:transparent!important;
+  box-shadow:none!important;
+  filter:none!important;
+  forced-color-adjust:none!important;
+}
+
+/* 빈 점 = 흰색 + 흰/회색 테두리가 아니라 고대비 배경 위에서 확실히 보이는 밝은 테두리 */
+.high-contrast #practiceView #typed .input-dot:not(.on),
+.contrast #practiceView #typed .input-dot:not(.on),
+body.high-contrast #practiceView #typed .input-dot:not(.on),
+body.contrast #practiceView #typed .input-dot:not(.on){
+  background:#202020!important;
+  border:2px solid #D7E3E8!important;
+  box-shadow:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  forced-color-adjust:none!important;
+}
+
+/* 찍힌 점 = 밝은 하늘색으로 확실하게 표시 */
+.high-contrast #practiceView #typed .input-dot.on,
+.contrast #practiceView #typed .input-dot.on,
+body.high-contrast #practiceView #typed .input-dot.on,
+body.contrast #practiceView #typed .input-dot.on{
+  background:#37B9F1!important;
+  border:2px solid #37B9F1!important;
+  box-shadow:0 0 0 1px #37B9F1!important;
+  opacity:1!important;
+  visibility:visible!important;
+  forced-color-adjust:none!important;
+}
+
+/* 오답 점만 빨강 */
+.high-contrast #practiceView #typed .input-cell.wrong .input-dot.on,
+.high-contrast #practiceView #typed .input-cell.error .input-dot.on,
+.contrast #practiceView #typed .input-cell.wrong .input-dot.on,
+.contrast #practiceView #typed .input-cell.error .input-dot.on{
+  background:#FF3B30!important;
+  border-color:#FF3B30!important;
+  box-shadow:0 0 0 1px #FF3B30!important;
+}
+
+/* 답안 보기 점형: 입력 점과 구분되게 흰색/파랑 구조 유지 */
+.high-contrast #practiceView #answerDots .input-dot:not(.on),
+.high-contrast #practiceView .answer-dots .input-dot:not(.on),
+.contrast #practiceView #answerDots .input-dot:not(.on),
+.contrast #practiceView .answer-dots .input-dot:not(.on){
+  background:#202020!important;
+  border:2px solid #D7E3E8!important;
+  forced-color-adjust:none!important;
+}
+.high-contrast #practiceView #answerDots .input-dot.on,
+.high-contrast #practiceView .answer-dots .input-dot.on,
+.contrast #practiceView #answerDots .input-dot.on,
+.contrast #practiceView .answer-dots .input-dot.on{
+  background:#37B9F1!important;
+  border:2px solid #37B9F1!important;
+  forced-color-adjust:none!important;
+}
+
+/* 웨일/브라우저 강제색상에서도 동일 색 유지 */
+@media (forced-colors:active), (prefers-contrast:more){
+  #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+  #spellingOpts button.correct.selected-answer .spelling-mark-svg,
+  #spellingOpts button.correct.selected-answer .spelling-mark-svg circle,
+  #spellingOpts button.correct.selected-answer .spelling-mark-svg path{
+    color:#0057D9!important;
+    stroke:#0057D9!important;
+    forced-color-adjust:none!important;
+  }
+  #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+  #spellingOpts button.wrong.selected-answer .spelling-mark-svg,
+  #spellingOpts button.wrong.selected-answer .spelling-mark-svg circle,
+  #spellingOpts button.wrong.selected-answer .spelling-mark-svg path{
+    color:#E62314!important;
+    stroke:#E62314!important;
+    forced-color-adjust:none!important;
+  }
+
+  #practiceView #typed .input-dot:not(.on),
+  #practiceView #answerDots .input-dot:not(.on),
+  #practiceView .answer-dots .input-dot:not(.on){
+    background:#202020!important;
+    border-color:#D7E3E8!important;
+    forced-color-adjust:none!important;
+  }
+
+  #practiceView #typed .input-dot.on,
+  #practiceView #answerDots .input-dot.on,
+  #practiceView .answer-dots .input-dot.on{
+    background:#37B9F1!important;
+    border-color:#37B9F1!important;
+    forced-color-adjust:none!important;
+  }
+
+  #practiceView #typed .input-cell.wrong .input-dot.on,
+  #practiceView #typed .input-cell.error .input-dot.on{
+    background:#FF3B30!important;
+    border-color:#FF3B30!important;
+  }
+}
+</style>
