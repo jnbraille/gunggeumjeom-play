@@ -8073,3 +8073,83 @@ header .fund-mainline strong,
   -webkit-text-fill-color:#fff!important;
 }
 </style>
+
+
+<style id="spelling-high-contrast-final-override">
+/* 고대비에서 답 선택 후에도 선택지 텍스트는 절대 회색으로 흐려지지 않음 */
+html .high-contrast #spellingOpts button,
+html .high-contrast #spellingOpts button:disabled,
+html .high-contrast #spellingOpts button[disabled],
+html .high-contrast #spellingOpts.answered button,
+html .high-contrast #spellingOpts.answered button:disabled,
+html .contrast #spellingOpts button,
+html .contrast #spellingOpts button:disabled,
+html .contrast #spellingOpts button[disabled],
+html .contrast #spellingOpts.answered button,
+html .contrast #spellingOpts.answered button:disabled,
+body.high-contrast #spellingOpts button,
+body.high-contrast #spellingOpts button:disabled,
+body.high-contrast #spellingOpts button[disabled],
+body.contrast #spellingOpts button,
+body.contrast #spellingOpts button:disabled,
+body.contrast #spellingOpts button[disabled]{
+  opacity:1!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  font-weight:900!important;
+  filter:none!important;
+  text-shadow:none!important;
+}
+
+/* 버튼 안의 모든 텍스트 요소도 disabled 기본 회색 효과를 차단 */
+.high-contrast #spellingOpts button:disabled span:not(.spelling-choice-mark),
+.high-contrast #spellingOpts button:disabled strong,
+.contrast #spellingOpts button:disabled span:not(.spelling-choice-mark),
+.contrast #spellingOpts button:disabled strong{
+  opacity:1!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+}
+
+/* 고대비에서도 정답 O는 파란색 */
+.high-contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+.contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+body.high-contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+body.contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark{
+  color:#00a8ff!important;
+  -webkit-text-fill-color:#00a8ff!important;
+  opacity:1!important;
+  font-weight:950!important;
+}
+
+/* 고대비에서도 오답 X는 빨간색 */
+.high-contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+body.high-contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
+  color:#ff3b30!important;
+  -webkit-text-fill-color:#ff3b30!important;
+  opacity:1!important;
+  font-weight:950!important;
+}
+
+/* 강제 색상 모드에서도 O/X 지정색 유지 */
+@media (forced-colors: active){
+  #spellingOpts button,
+  #spellingOpts button:disabled{
+    opacity:1!important;
+    color:CanvasText!important;
+    -webkit-text-fill-color:CanvasText!important;
+  }
+  #spellingOpts button.correct.selected-answer .spelling-choice-mark{
+    forced-color-adjust:none!important;
+    color:#00a8ff!important;
+    -webkit-text-fill-color:#00a8ff!important;
+  }
+  #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
+    forced-color-adjust:none!important;
+    color:#ff3b30!important;
+    -webkit-text-fill-color:#ff3b30!important;
+  }
+}
+</style>
