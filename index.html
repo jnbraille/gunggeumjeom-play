@@ -7991,3 +7991,42 @@ header .fund-mainline strong,
   outline-color:#fff!important;
 }
 </style>
+
+
+<style id="spelling-feedback-strong-text-final">
+/* 답을 선택한 뒤에도 두 선택지의 글자를 진하고 선명하게 유지 */
+#spellingOpts.answered button,
+#spellingOpts.answered button:disabled,
+#spellingOpts button.correct,
+#spellingOpts button.wrong,
+#spellingOpts button.correct-answer{
+  opacity:1!important;
+  color:#102f4d!important;
+  -webkit-text-fill-color:#102f4d!important;
+  font-weight:800!important;
+}
+
+/* 선택한 오답 X도 선명하게 */
+#spellingOpts button.wrong.selected-answer .spelling-choice-mark{
+  color:#d52222!important;
+  -webkit-text-fill-color:#d52222!important;
+  opacity:1!important;
+}
+
+/* 선택한 정답 O도 선명하게 */
+#spellingOpts button.correct.selected-answer .spelling-choice-mark{
+  color:#087f78!important;
+  -webkit-text-fill-color:#087f78!important;
+  opacity:1!important;
+}
+
+/* 고대비에서는 선택 후에도 흰 글씨 유지 */
+.high-contrast #spellingOpts.answered button,
+.high-contrast #spellingOpts.answered button:disabled,
+.contrast #spellingOpts.answered button,
+.contrast #spellingOpts.answered button:disabled{
+  opacity:1!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+</style>
