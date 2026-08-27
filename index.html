@@ -6706,3 +6706,38 @@ img.logo{
 
 
 
+
+
+<style id="reveal-mark-title-size-style">
+.reveal-mark-large-title{
+  font-size:clamp(1.65rem,5vw,2.25rem)!important;
+  font-weight:900!important;
+  line-height:1.35!important;
+  color:var(--navy,#102b4e)!important;
+}
+.high-contrast .reveal-mark-large-title,
+.contrast .reveal-mark-large-title{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+</style>
+
+
+<script id="reveal-mark-title-size-script">
+(function(){
+  function enlargeRevealMarkTitles(){
+    document.querySelectorAll("*").forEach(function(el){
+      if(el.children.length) return;
+      const t=(el.textContent||"").trim();
+      if(t==="여는 드러냄표" || t==="닫는 드러냄표"){
+        el.classList.add("reveal-mark-large-title");
+      }
+    });
+  }
+  window.addEventListener("DOMContentLoaded", enlargeRevealMarkTitles);
+  const obs=new MutationObserver(enlargeRevealMarkTitles);
+  window.addEventListener("DOMContentLoaded", function(){
+    obs.observe(document.body,{childList:true,subtree:true,characterData:true});
+  });
+})();
+</script>
