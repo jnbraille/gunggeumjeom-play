@@ -7179,7 +7179,7 @@ img.logo{
 
     searchResults=[];
     DATA["문장부호"].forEach((item,idx)=>{
-      const hay=norm((item.prompt||"")+" "+(item.rule||""));
+      const hay=norm(item.prompt||"");
       if(hay.includes(term)) searchResults.push(idx);
     });
 
@@ -7922,3 +7922,14 @@ img.logo{
   });
 })();
 </script>
+
+
+<style id="fund-mainline-no-gap-final">
+header .fund-mainline strong,
+.fund-message .fund-mainline strong{
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+  border-radius:0!important;
+}
+</style>
