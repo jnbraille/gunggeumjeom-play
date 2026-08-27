@@ -4671,7 +4671,12 @@ function nextSpellingV17(){
     btn.onclick=()=>{
       if(spellingLocked)return;
       spellingLocked=true;
-      [...box.children].forEach(x=>x.disabled=true);
+      /* 맞춤법 버튼에는 실제 disabled를 주지 않음:
+         고대비 브라우저가 disabled 글자를 회색으로 강제하는 현상 방지 */
+      [...box.children].forEach(x=>{
+        x.disabled=false;
+        x.setAttribute("aria-disabled","true");
+      });
       const isCorrect=(opt===spellingCurrent.answer);
       playFeedbackSound(isCorrect);
       const fb=document.getElementById("spellingFb");
@@ -8150,6 +8155,79 @@ body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
     forced-color-adjust:none!important;
     color:#ff3b30!important;
     -webkit-text-fill-color:#ff3b30!important;
+  }
+}
+</style>
+
+
+<style id="spelling-hc-disabled-gray-root-fix">
+.high-contrast #spellingOpts.answered button,
+.high-contrast #spellingOpts button[aria-disabled="true"],
+.contrast #spellingOpts.answered button,
+.contrast #spellingOpts button[aria-disabled="true"]{
+  opacity:1!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  font-weight:900!important;
+}
+.high-contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark,
+.contrast #spellingOpts button.correct.selected-answer .spelling-choice-mark{
+  color:#00a8ff!important;
+  -webkit-text-fill-color:#00a8ff!important;
+}
+.high-contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark,
+.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
+  color:#ff3b30!important;
+  -webkit-text-fill-color:#ff3b30!important;
+}
+</style>
+
+
+<style id="spelling-font-ox-size-final">
+/* 맞춤법 문제 영역 글씨 확대 */
+#spellingQ{
+  font-size:1.45rem!important;
+  line-height:1.45!important;
+  font-weight:800!important;
+}
+#spellingQ strong,
+#spellingQ .question,
+#spellingQ .prompt{
+  font-size:inherit!important;
+  font-weight:900!important;
+}
+
+/* 맞춤법 선택지 글씨도 조금 더 크게 */
+#spellingOpts button{
+  font-size:1.28rem!important;
+  line-height:1.35!important;
+  font-weight:850!important;
+}
+
+/* O / X 표시를 더 크고 두껍게 */
+#spellingOpts .spelling-choice-mark{
+  font-size:2.35rem!important;
+  font-weight:1000!important;
+  line-height:1!important;
+  width:38px!important;
+  text-align:center!important;
+}
+
+/* 큰 O/X와 글씨가 겹치지 않도록 여백 확보 */
+#spellingOpts button.selected-answer{
+  padding-left:66px!important;
+}
+
+/* 모바일에서도 충분히 크게 */
+@media(max-width:700px){
+  #spellingQ{
+    font-size:1.32rem!important;
+  }
+  #spellingOpts button{
+    font-size:1.18rem!important;
+  }
+  #spellingOpts .spelling-choice-mark{
+    font-size:2.15rem!important;
   }
 }
 </style>
