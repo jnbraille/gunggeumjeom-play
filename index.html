@@ -3843,16 +3843,6 @@ function formatPunctuationPrompt(text){
 <section id="recordsView" class="view">
 <h2 class="title">나의 기록</h2>
 <div id="recordsGrid" class="records"></div>
-<div id="wrongRecordsCard" class="card wrong-records-card" style="margin-top:18px">
-  <div class="wrong-records-head">
-    <h3>틀린 문제</h3>
-    <span id="wrongRecordsCount" class="wrong-records-count">0문제</span>
-  </div>
-  <p class="wrong-records-guide">연습 중 틀린 문제를 확인할 수 있습니다.</p>
-  <div id="wrongRecordsList" class="wrong-records-list">
-    <div class="wrong-records-empty">아직 틀린 문제가 없습니다.</div>
-  </div>
-</div>
 <div class="card" style="margin-top:14px">현재 접속 중인 페이지에서만 기록됩니다. 페이지를 종료하거나 새로 접속하면 초기화됩니다.</div>
 </section>
 <section id="guideView" class="view center-intro">
@@ -3966,7 +3956,7 @@ const heroBraille=[
 board.setAttribute("aria-label","훈맹정음 점자");
 heroBraille.forEach(ds=>{let c=document.createElement("div");c.className="board-cell";[1,4,2,5,3,6].forEach(n=>{let d=document.createElement("span");d.className="board-dot"+(ds.includes(n)?" on":"");c.appendChild(d)});board.appendChild(c)});
 
-let rec={total:0,correct:0,cat:{},wrong:{}},cat="초성",round=0,q=null,input="",grading=false,queue=[],pressed=new Set(),chord=new Set(),timer,sessionStart=Date.now(),typedCells=0,sessionTotal=0,sessionCorrect=0,activeTypingMs=0,typingStartedAt=null,lastSpeed=0;
+let rec={total:0,correct:0,cat:{},wrong:{}},cat="초성",round=0,q=null,input="",grading=false,queue=[],wrongOnlyMode=false,pressed=new Set(),chord=new Set(),timer,sessionStart=Date.now(),typedCells=0,sessionTotal=0,sessionCorrect=0,activeTypingMs=0,typingStartedAt=null,lastSpeed=0;
 const pct=(c,t)=>t?Math.round(c/t*100):0;
 function beginTypingClock(){
   if(typingStartedAt===null) typingStartedAt=Date.now();
@@ -4066,7 +4056,130 @@ function renderWrongRecords(){
   });
 }
 
-function stats(){liveMetrics();homeTotal.textContent=rec.total;homeRate.textContent=pct(rec.correct,rec.total)+"%";homeBar.style.width=pct(rec.correct,rec.total)+"%";allTotal.textContent=rec.total;allRate.textContent=pct(rec.correct,rec.total)+"%";allBar.style.width=pct(rec.correct,rec.total)+"%";recordsGrid.innerHTML="";CATS.forEach(c=>{let r=rec.cat[c]||{total:0,correct:0},e=document.createElement("div");e.className="record";e.innerHTML=`<b>${c}</b><div class="v">${r.total}</div><small>정답률 ${pct(r.correct,r.total)}%</small>`;recordsGrid.appendChild(e)});renderWrongRecords()}
+
+function getWrongItemsByCategory(category){
+  return Object.values(rec.wrong||{}).filter(item=>item.cat===category);
+}
+function getWrongQueue(category){
+  const prompts=new Set(getWrongItemsByCategory(category).map(item=>item.prompt));
+  return DATA[category].map((item,index)=>prompts.has(item.prompt)?index:-1).filter(index=>index>=0);
+}
+function buildWrongListForCategory(category){
+  const box=document.createElement("div");
+  box.className="wrong-category-list";
+  box.hidden=true;
+
+  const items=getWrongItemsByCategory(category).sort((a,b)=>(b.count||0)-(a.count||0));
+  items.forEach((item,index)=>{
+    const row=document.createElement("div");
+    row.className="wrong-category-item";
+
+    const n=document.createElement("span");
+    n.className="wrong-category-no";
+    n.textContent=String(index+1);
+
+    const text=document.createElement("div");
+    text.className="wrong-category-text";
+
+    const prompt=document.createElement("strong");
+    prompt.textContent=item.prompt;
+
+    const meta=document.createElement("small");
+    meta.textContent="오답 "+item.count+"회";
+
+    text.append(prompt,meta);
+    row.append(n,text);
+    box.appendChild(row);
+  });
+  return box;
+}
+function openWrongPractice(category){
+  const wrongQueue=getWrongQueue(category);
+  if(!wrongQueue.length) return;
+
+  document.getElementById("practiceView").dataset.category=category;
+  cat=category;
+  round=0;
+  queue=wrongQueue;
+  wrongOnlyMode=true;
+  sessionStart=Date.now();
+  typedCells=0;
+  sessionTotal=0;
+  sessionCorrect=0;
+  activeTypingMs=0;
+  typingStartedAt=null;
+  lastSpeed=0;
+  if(typeof liveAccuracy!=="undefined") liveAccuracy.textContent="0%";
+  if(typeof liveSpeed!=="undefined") liveSpeed.textContent="0";
+  show("practice");
+
+  if(category==="맞춤법"){
+    startSpellingMode();
+  }else{
+    stopSpellingMode();
+    nextQuestion();
+  }
+}
+function stats(){
+  liveMetrics();
+  homeTotal.textContent=rec.total;
+  homeRate.textContent=pct(rec.correct,rec.total)+"%";
+  homeBar.style.width=pct(rec.correct,rec.total)+"%";
+  allTotal.textContent=rec.total;
+  allRate.textContent=pct(rec.correct,rec.total)+"%";
+  allBar.style.width=pct(rec.correct,rec.total)+"%";
+  recordsGrid.innerHTML="";
+
+  CATS.forEach(c=>{
+    const r=rec.cat[c]||{total:0,correct:0};
+    const wrongItems=getWrongItemsByCategory(c);
+
+    const e=document.createElement("div");
+    e.className="record category-record";
+
+    const title=document.createElement("b");
+    title.textContent=c;
+
+    const total=document.createElement("div");
+    total.className="v";
+    total.textContent=r.total;
+
+    const rate=document.createElement("small");
+    rate.textContent="정답률 "+pct(r.correct,r.total)+"%";
+
+    e.append(title,total,rate);
+
+    if(wrongItems.length){
+      const actions=document.createElement("div");
+      actions.className="wrong-category-actions";
+
+      const toggle=document.createElement("button");
+      toggle.type="button";
+      toggle.className="wrong-list-toggle";
+      toggle.textContent="틀린 문제 "+wrongItems.length+"개 확인";
+
+      const retry=document.createElement("button");
+      retry.type="button";
+      retry.className="wrong-retry-btn";
+      retry.textContent="오답만 다시 풀기";
+
+      const list=buildWrongListForCategory(c);
+
+      toggle.onclick=()=>{
+        list.hidden=!list.hidden;
+        toggle.textContent=list.hidden
+          ? "틀린 문제 "+wrongItems.length+"개 확인"
+          : "틀린 문제 접기";
+      };
+      retry.onclick=()=>openWrongPractice(c);
+
+      actions.append(toggle,retry);
+      e.append(actions,list);
+    }
+
+    recordsGrid.appendChild(e);
+  });
+}
 function card(c,i){let b=document.createElement("button");b.className="lesson";b.dataset.category=c;b.innerHTML=`<div><div class="num">${String(i+1).padStart(2,"0")}</div><h3>${c} 연습</h3><p>${DESC[c]}</p></div><div class="go">연습하기 ›</div>`;b.onclick=()=>openPractice(c);return b}
 CATS.forEach((c,i)=>{homeGrid.appendChild(card(c,i));selectGrid.appendChild(card(c,i))});
 
@@ -4090,6 +4203,7 @@ function makeQueue(c){return shuffle(DATA[c].length)}
 function openPractice(c){
   if(isMobilePractice() && c!=="맞춤법"){mobilePracticeNotice();return;}
   document.getElementById("practiceView").dataset.category=c;
+  wrongOnlyMode=false;
   cat=c;round=0;queue=makeQueue(c);
   sessionStart=Date.now();
   typedCells=0;
@@ -4111,9 +4225,9 @@ function openPractice(c){
 
 function nextQuestion(){
   q=DATA[cat][queue[round]];
-  document.getElementById("practiceName").textContent=cat+" 연습";
+  document.getElementById("practiceName").textContent=cat+(wrongOnlyMode?" 오답 연습":" 연습");
   document.getElementById("pIndex").textContent=round+1;
-  document.getElementById("pTotal").textContent=DATA[cat].length;
+  document.getElementById("pTotal").textContent=wrongOnlyMode?queue.length:DATA[cat].length;
   const pe=document.getElementById("prompt");
   pe.innerHTML="";
   if(q.promptImage){
@@ -4210,7 +4324,7 @@ function playFeedbackSound(ok){
     });
   }catch(e){}
 }
-function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";sessionTotal++;if(ok)sessionCorrect++;rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;if(!ok)recordWrongQuestion(cat,q,input);stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{round++;if(round>=DATA[cat].length){round=0;queue=makeQueue(cat)}nextQuestion()},ok?1200:2000)}
+function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";sessionTotal++;if(ok)sessionCorrect++;rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;if(!ok)recordWrongQuestion(cat,q,input);stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{round++;if(round>=queue.length){round=0;queue=wrongOnlyMode?getWrongQueue(cat):makeQueue(cat)}nextQuestion()},ok?1200:2000)}
 document.onkeydown=e=>{if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}if(e.key===" "){e.preventDefault();beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return}let k=e.key.toLowerCase();if(KD[k]){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
 document.onkeyup=e=>{if(!V.practice.classList.contains("active")||grading)return;let k=e.key.toLowerCase();if(!KD[k])return;pressed.delete(k);if(!pressed.size&&chord.size){beginTypingClock();input+=braille([...chord]);typedCells++;chord.clear();draw();liveMetrics()}};
 
@@ -5851,5 +5965,115 @@ img.logo{
     opacity:1!important;
     forced-color-adjust:none!important;
   }
+}
+</style>
+
+
+<style id="category-wrong-review-final">
+#recordsView .records{
+  align-items:start;
+}
+#recordsView .category-record{
+  overflow:hidden;
+}
+.wrong-category-actions{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+  flex-wrap:wrap;
+}
+.wrong-list-toggle,
+.wrong-retry-btn{
+  flex:1 1 135px;
+  min-height:40px;
+  padding:8px 10px;
+  border:1.5px solid #77939c;
+  border-radius:9px;
+  background:#f4faf9;
+  color:#075e66;
+  font-family:inherit;
+  font-size:.9rem;
+  font-weight:800;
+  cursor:pointer;
+}
+.wrong-retry-btn{
+  background:#075e66;
+  color:#fff;
+}
+.wrong-category-list{
+  margin-top:10px;
+  border-top:1px solid #c5d0d1;
+  padding-top:8px;
+  max-height:260px;
+  overflow-y:auto;
+}
+.wrong-category-list[hidden]{
+  display:none!important;
+}
+.wrong-category-item{
+  display:flex;
+  gap:9px;
+  align-items:flex-start;
+  padding:9px 4px;
+  border-bottom:1px solid #dce4e6;
+  text-align:left;
+}
+.wrong-category-item:last-child{
+  border-bottom:none;
+}
+.wrong-category-no{
+  flex:0 0 24px;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:#e8f6f4;
+  color:#075e66;
+  font-size:.78rem;
+  font-weight:900;
+}
+.wrong-category-text{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.wrong-category-text strong{
+  font-size:.94rem;
+  line-height:1.45;
+  overflow-wrap:anywhere;
+}
+.wrong-category-text small{
+  color:#c0392b!important;
+  font-size:.8rem!important;
+  font-weight:800!important;
+}
+.high-contrast .wrong-list-toggle,
+.high-contrast .wrong-retry-btn,
+.contrast .wrong-list-toggle,
+.contrast .wrong-retry-btn{
+  background:#202020!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border-color:#fff!important;
+}
+.high-contrast .wrong-category-list,
+.high-contrast .wrong-category-item,
+.contrast .wrong-category-list,
+.contrast .wrong-category-item{
+  border-color:#fff!important;
+}
+.high-contrast .wrong-category-text strong,
+.high-contrast .wrong-category-text small,
+.contrast .wrong-category-text strong,
+.contrast .wrong-category-text small{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+@media(max-width:768px){
+  .wrong-category-actions{flex-direction:column}
+  .wrong-list-toggle,.wrong-retry-btn{flex-basis:auto;width:100%}
 }
 </style>
