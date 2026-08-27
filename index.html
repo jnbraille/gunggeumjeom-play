@@ -7580,37 +7580,7 @@ img.logo{
 </script>
 
 
-<script id="search-input-keyboard-isolation-fix">
-(function(){
-  function protectSearchInput(e){
-    const t=e.target;
-    if(!t) return;
 
-    const isPunct=t.id==="punctuationSearchInput";
-    const isSentence=t.id==="sentenceSearchInput";
-    if(!isPunct && !isSentence) return;
-
-    // Enter를 누르면 즉시 해당 검색 실행
-    if(e.type==="keydown" && e.key==="Enter"){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      const btn=document.getElementById(
-        isPunct ? "punctuationSearchButton" : "sentenceSearchButton"
-      );
-      if(btn) btn.click();
-      return;
-    }
-
-    // 검색창의 일반 문자, Backspace, Delete 등은
-    // 전역 점자 입력 핸들러로 전달하지 않고 텍스트 편집만 수행
-    e.stopImmediatePropagation();
-  }
-
-  document.addEventListener("keydown",protectSearchInput,true);
-  document.addEventListener("keyup",protectSearchInput,true);
-  document.addEventListener("keypress",protectSearchInput,true);
-})();
-</script>
 
 
 <style id="mobile-high-contrast-final">
@@ -7723,91 +7693,168 @@ img.logo{
 </style>
 
 
-<style id="mobile-high-contrast-button-style">
-#mobileContrastBtn{
-  display:none;
-}
-@media(max-width:768px){
-  #mobileContrastBtn{
-    display:inline-flex!important;
-    align-items:center;
-    justify-content:center;
-    min-height:46px;
-    padding:8px 14px;
-    border:1px solid rgba(255,255,255,.65);
-    background:#0c8b82;
-    color:#fff;
-    font:inherit;
-    font-weight:800;
+
+
+
+
+
+
+<style id="mobile-device-high-contrast-final">
+/* 휴대폰/OS의 고대비·강제 색상 모드 사용 시 자동 적용 */
+@media (forced-colors: active){
+  html,
+  body,
+  header,
+  main,
+  section,
+  .view,
+  .practice,
+  .panel,
+  .card,
+  .exercise,
+  .side,
+  .record,
+  .answer-panel,
+  .result,
+  .service-card,
+  .service-item,
+  .contact-item{
+    background:Canvas!important;
+    color:CanvasText!important;
   }
-  .high-contrast #mobileContrastBtn{
-    background:#202020!important;
-    color:#fff!important;
-    -webkit-text-fill-color:#fff!important;
-    border-color:#fff!important;
+
+  /* 검색 입력창 */
+  #punctuationSearchInput,
+  #sentenceSearchInput{
+    background:Canvas!important;
+    color:CanvasText!important;
+    -webkit-text-fill-color:CanvasText!important;
+    border:1.5px solid CanvasText!important;
+    forced-color-adjust:auto!important;
+  }
+
+  /* 검색/이전/다음/초기화 버튼 */
+  #punctuationSearchButton,
+  #punctuationSearchPrev,
+  #punctuationSearchNext,
+  #punctuationSearchClear,
+  #sentenceSearchButton,
+  #sentenceSearchPrev,
+  #sentenceSearchNext,
+  #sentenceSearchClear{
+    background:Canvas!important;
+    color:CanvasText!important;
+    -webkit-text-fill-color:CanvasText!important;
+    border:1.5px solid CanvasText!important;
+    forced-color-adjust:auto!important;
+  }
+
+  #punctuationSearchButton:hover,
+  #punctuationSearchPrev:hover,
+  #punctuationSearchNext:hover,
+  #punctuationSearchClear:hover,
+  #sentenceSearchButton:hover,
+  #sentenceSearchPrev:hover,
+  #sentenceSearchNext:hover,
+  #sentenceSearchClear:hover,
+  #punctuationSearchButton:focus,
+  #punctuationSearchPrev:focus,
+  #punctuationSearchNext:focus,
+  #punctuationSearchClear:focus,
+  #sentenceSearchButton:focus,
+  #sentenceSearchPrev:focus,
+  #sentenceSearchNext:focus,
+  #sentenceSearchClear:focus{
+    background:Canvas!important;
+    color:CanvasText!important;
+    -webkit-text-fill-color:CanvasText!important;
+    border-color:CanvasText!important;
+    outline:2px solid Highlight!important;
+    outline-offset:2px!important;
+  }
+
+  /* 점자 점형 */
+  .dot,
+  .braille-dot,
+  [class*="dot"]{
+    forced-color-adjust:none!important;
+  }
+  .dot.filled,
+  .braille-dot.filled,
+  .input-dot.on,
+  .filled-dot{
+    background:CanvasText!important;
+    border-color:CanvasText!important;
+  }
+  .dot:not(.filled),
+  .braille-dot:not(.filled){
+    background:transparent!important;
+    border-color:CanvasText!important;
+  }
+
+  /* 네모/동그라미 기호 */
+  #practiceView .boxed-char,
+  #practiceView .square-symbol,
+  #practiceView .square-a-inside,
+  #practiceView .square-ga-inside{
+    color:CanvasText!important;
+    -webkit-text-fill-color:CanvasText!important;
+    border:0!important;
+    box-shadow:inset 0 0 0 2px CanvasText!important;
+    forced-color-adjust:none!important;
+  }
+  #practiceView .circle-hangul-force{
+    color:CanvasText!important;
+    -webkit-text-fill-color:CanvasText!important;
+    border:0!important;
+    box-shadow:inset 0 0 0 2px CanvasText!important;
+    forced-color-adjust:none!important;
+  }
+
+  /* 답안보기/오답복습 등 버튼 */
+  button,
+  .answer-view-btn,
+  .wrong-list-toggle,
+  .wrong-retry-btn{
+    background:Canvas!important;
+    color:CanvasText!important;
+    -webkit-text-fill-color:CanvasText!important;
+    border-color:CanvasText!important;
   }
 }
 </style>
 
 
-<script id="mobile-high-contrast-toggle-script">
+<script id="search-input-keyboard-final-fix">
 (function(){
-  function findExistingContrastControl(){
-    return document.querySelector(
-      '#contrastBtn,#highContrastBtn,.contrast-btn,.high-contrast-btn,[data-action="contrast"],[data-action="high-contrast"],[aria-label*="고대비"]'
+  function isSearchInput(el){
+    return !!el && (
+      el.id==="punctuationSearchInput" ||
+      el.id==="sentenceSearchInput"
     );
   }
 
-  function syncMobileContrastButton(btn){
-    const on=document.body.classList.contains("high-contrast") ||
-             document.body.classList.contains("contrast") ||
-             document.documentElement.classList.contains("high-contrast") ||
-             document.documentElement.classList.contains("contrast");
-    btn.setAttribute("aria-pressed",String(on));
-    btn.textContent=on ? "일반 화면" : "고대비";
-  }
+  // 검색창에서는 일반 텍스트 입력 동작을 그대로 유지한다.
+  // Backspace/Delete는 브라우저 기본 편집으로 처리하고,
+  // Enter만 해당 검색 버튼을 실행한다.
+  document.addEventListener("keydown", function(e){
+    if(!isSearchInput(e.target)) return;
 
-  function toggleMobileContrast(btn){
-    const currentlyOn=
-      document.body.classList.contains("high-contrast") ||
-      document.body.classList.contains("contrast") ||
-      document.documentElement.classList.contains("high-contrast") ||
-      document.documentElement.classList.contains("contrast");
-
-    document.body.classList.toggle("high-contrast",!currentlyOn);
-    document.documentElement.classList.toggle("high-contrast",!currentlyOn);
-    syncMobileContrastButton(btn);
-  }
-
-  function ensureMobileContrast(){
-    if(!window.matchMedia("(max-width:768px)").matches) return;
-
-    const existing=findExistingContrastControl();
-    if(existing){
-      existing.style.removeProperty("display");
-      existing.style.setProperty("display","inline-flex","important");
-      return;
+    if(e.key==="Enter"){
+      e.preventDefault();
+      const id=e.target.id==="punctuationSearchInput"
+        ? "punctuationSearchButton"
+        : "sentenceSearchButton";
+      document.getElementById(id)?.click();
     }
 
-    if(document.getElementById("mobileContrastBtn")) return;
+    // document에 등록된 기존 점자 입력 keydown까지 전달되지 않게 한다.
+    // 기본 브라우저 편집은 막지 않는다.
+    e.stopPropagation();
+  }, false);
 
-    const btn=document.createElement("button");
-    btn.type="button";
-    btn.id="mobileContrastBtn";
-    btn.className="mobile-contrast-btn";
-    btn.setAttribute("aria-label","고대비 전환");
-    btn.setAttribute("aria-pressed","false");
-    btn.textContent="고대비";
-    btn.addEventListener("click",()=>toggleMobileContrast(btn));
-
-    const nav=document.querySelector("header nav") || document.querySelector("nav");
-    if(nav){
-      nav.appendChild(btn);
-      syncMobileContrastButton(btn);
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded",ensureMobileContrast);
-  window.addEventListener("resize",ensureMobileContrast);
+  document.addEventListener("keyup", function(e){
+    if(isSearchInput(e.target)) e.stopPropagation();
+  }, false);
 })();
 </script>
