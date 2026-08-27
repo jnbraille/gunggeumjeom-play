@@ -8233,30 +8233,48 @@ body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
 </style>
 
 
-<style id="spelling-question-font-much-larger-final">
-/* 맞춤법 문제 문구를 확실히 크게 표시 */
+
+
+
+<style id="spelling-choice-font-much-larger-final">
+/* '올바른 표기를 고르세요' 안내문은 과도하게 키우지 않음 */
 #spellingQ{
-  font-size:2rem!important;
+  font-size:1.2rem!important;
+  line-height:1.4!important;
+  font-weight:800!important;
+}
+
+/* 실제로 고르는 두 맞춤법 문제 글씨를 크게 */
+#spellingOpts button{
+  font-size:1.75rem!important;
   line-height:1.4!important;
   font-weight:900!important;
+  min-height:78px!important;
 }
 
-/* 문제 안에 별도 태그/스타일이 있어도 동일하게 크게 */
-#spellingQ *,
-#spellingQ strong,
-#spellingQ span,
-#spellingQ .question,
-#spellingQ .prompt{
-  font-size:inherit!important;
-  line-height:inherit!important;
+/* 선택 후에도 같은 큰 크기 유지 */
+#spellingOpts.answered button,
+#spellingOpts button[aria-disabled="true"]{
+  font-size:1.75rem!important;
   font-weight:900!important;
 }
 
-/* 모바일에서도 문제 글씨가 충분히 크게 보이도록 */
+/* O/X는 기존처럼 크게 유지 */
+#spellingOpts .spelling-choice-mark{
+  font-size:2.35rem!important;
+  font-weight:1000!important;
+}
+
+/* 모바일 */
 @media(max-width:700px){
   #spellingQ{
-    font-size:1.7rem!important;
-    line-height:1.4!important;
+    font-size:1.1rem!important;
+  }
+  #spellingOpts button,
+  #spellingOpts.answered button,
+  #spellingOpts button[aria-disabled="true"]{
+    font-size:1.5rem!important;
+    min-height:70px!important;
   }
 }
 </style>
