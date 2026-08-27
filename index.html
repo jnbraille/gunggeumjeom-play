@@ -8332,3 +8332,97 @@ body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
   }
 }
 </style>
+
+
+<style id="whale-high-contrast-braille-visibility-final">
+/*
+ 네이버 웨일의 브라우저 자체 고대비/색상 대비처럼 페이지 색을 필터링·변환하는
+ 환경에서도 점형의 '채운 점/빈 점'이 배경색만으로 구분되지 않도록 한다.
+ 핵심은 모든 점에 명확한 테두리를 주고, 채운 점에는 내부 원형 + 외곽선을 함께 주는 것.
+*/
+#practiceView .input-dot,
+#practiceView .braille-dot,
+#practiceView .dot,
+#practiceView #typed .input-dot,
+#practiceView #answerDots .input-dot{
+  box-sizing:border-box!important;
+  border-width:2px!important;
+  border-style:solid!important;
+  border-color:#111!important;
+  opacity:1!important;
+  visibility:visible!important;
+  min-width:12px;
+  min-height:12px;
+}
+
+/* 빈 점 */
+#practiceView .input-dot:not(.on),
+#practiceView .braille-dot:not(.on),
+#practiceView .dot:not(.on),
+#practiceView #typed .input-dot:not(.on),
+#practiceView #answerDots .input-dot:not(.on){
+  background:#fff!important;
+  border-color:#111!important;
+  box-shadow:inset 0 0 0 1px #fff!important;
+}
+
+/* 찍힌 점: 브라우저가 색을 바꾸더라도 모양/외곽선이 남도록 */
+#practiceView .input-dot.on,
+#practiceView .braille-dot.on,
+#practiceView .dot.on,
+#practiceView #typed .input-dot.on,
+#practiceView #answerDots .input-dot.on{
+  background:#111!important;
+  border:2px solid #111!important;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px #111!important;
+  opacity:1!important;
+}
+
+/* 브라우저/OS가 '대비 증가' 선호를 전달하는 경우 */
+@media (prefers-contrast: more){
+  #practiceView .input-dot,
+  #practiceView .braille-dot,
+  #practiceView .dot{
+    border-width:3px!important;
+  }
+  #practiceView .input-dot.on,
+  #practiceView .braille-dot.on,
+  #practiceView .dot.on{
+    forced-color-adjust:none!important;
+    background:#000!important;
+    border-color:#000!important;
+    box-shadow:0 0 0 2px #fff,0 0 0 4px #000!important;
+  }
+  #practiceView .input-dot:not(.on),
+  #practiceView .braille-dot:not(.on),
+  #practiceView .dot:not(.on){
+    forced-color-adjust:none!important;
+    background:#fff!important;
+    border-color:#000!important;
+  }
+}
+
+/* Windows/브라우저 강제 색상에서도 점 자체는 보존 */
+@media (forced-colors: active){
+  #practiceView .input-dot,
+  #practiceView .braille-dot,
+  #practiceView .dot{
+    forced-color-adjust:none!important;
+  }
+  #practiceView .input-dot.on,
+  #practiceView .braille-dot.on,
+  #practiceView .dot.on{
+    background:#000!important;
+    border-color:#000!important;
+    box-shadow:0 0 0 2px #fff,0 0 0 4px #000!important;
+  }
+  #practiceView .input-dot:not(.on),
+  #practiceView .braille-dot:not(.on),
+  #practiceView .dot:not(.on){
+    background:#fff!important;
+    border-color:#000!important;
+  }
+}
+</style>
