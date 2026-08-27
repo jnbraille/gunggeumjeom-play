@@ -4156,7 +4156,7 @@ function stats(){
       const toggle=document.createElement("button");
       toggle.type="button";
       toggle.className="wrong-list-toggle";
-      toggle.textContent="틀린 문제 "+wrongItems.length+"개 확인";
+      toggle.innerHTML="틀린 문제<br>"+wrongItems.length+"개 확인";
 
       const retry=document.createElement("button");
       retry.type="button";
@@ -4167,9 +4167,9 @@ function stats(){
 
       toggle.onclick=()=>{
         list.hidden=!list.hidden;
-        toggle.textContent=list.hidden
-          ? "틀린 문제 "+wrongItems.length+"개 확인"
-          : "틀린 문제 접기";
+        toggle.innerHTML=list.hidden
+          ? "틀린 문제<br>"+wrongItems.length+"개 확인"
+          : "틀린 문제<br>접기";
       };
       retry.onclick=()=>openWrongPractice(c);
 
@@ -6170,5 +6170,13 @@ img.logo{
     -webkit-text-fill-color:#000!important;
     border-color:#fff!important;
   }
+}
+</style>
+
+<style id="wrong-toggle-two-lines-final">
+.wrong-list-toggle{
+  line-height:1.35!important;
+  text-align:center!important;
+  white-space:normal!important;
 }
 </style>
