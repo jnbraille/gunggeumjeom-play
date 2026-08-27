@@ -4296,42 +4296,80 @@ function nextQuestion(){
   document.getElementById("practiceName").textContent=cat+(wrongOnlyMode?" 오답 연습":" 연습");
   document.getElementById("pIndex").textContent=round+1;
   document.getElementById("pTotal").textContent=wrongOnlyMode?queue.length:DATA[cat].length;
+
   const pe=document.getElementById("prompt");
   pe.innerHTML="";
-  pe.classList.remove("reveal-mark-large-title");
+  pe.classList.remove("reveal-mark-large-title","reveal-mark-title-force-large");
+
   if(q.promptImage){
     const im=document.createElement("img");
-    im.src=q.promptImage;im.alt=q.prompt;im.className="old-prompt-image";pe.appendChild(im);
+    im.src=q.promptImage;
+    im.alt=q.prompt;
+    im.className="old-prompt-image";
+    pe.appendChild(im);
+
   }else if(cat==="문장부호"){
     const mm=q.prompt.match(/^(.+?) \((.+)\)$/);
+
     if(mm){
-      if(mm[1]==="여는 드러냄표" || mm[1]==="닫는 드러냄표"){
-        pe.classList.add("reveal-mark-large-title");
-      }
+      const symbolText=mm[1];
+      const labelText=mm[2];
+
       const sym=document.createElement("span");
       sym.className="punct-symbol";
 
-      /* 제64항: 네모 숫자·문자는 네모와 글자를 분리하지 않고 안에 넣어 표시 */
-      const boxed=mm[1].match(/^□(.+)$/);
-      if(boxed && /네모 (숫자|한글|자음|로마자)/.test(mm[2])){
+      // 네모 숫자·문자
+      const boxed=symbolText.match(/^□(.+)$/);
+      if(boxed && /네모 (숫자|한글|자음|로마자|에이|가)/.test(labelText)){
         sym.classList.add("boxed-char");
         sym.textContent=boxed[1];
-        sym.setAttribute("aria-label", mm[2]+" "+boxed[1]);
+        sym.setAttribute("aria-label",labelText+" "+boxed[1]);
+
+      // 동그라미 한글 '가'
+      }else if(labelText==="동그라미 한글" || labelText==="동그라미 가"){
+        sym.classList.add("circle-hangul-force");
+        sym.textContent="가";
+
       }else{
-        /* 동그라미 숫자·문자는 ① ㉮ ㉠ ⓐ 자체가 이미 내부 결합 기호 */
-        sym.textContent=mm[1];
+        sym.textContent=symbolText;
       }
 
       const name=document.createElement("span");
       name.className="punct-name";
-      name.textContent="("+mm[2]+")";
+      name.textContent="("+labelText+")";
+
       pe.append(sym,name);
+
     }else{
       pe.textContent=q.prompt;
+
+      // 여는/닫는 드러냄표는 문제명 자체를 크게 표시
       if(q.prompt==="여는 드러냄표" || q.prompt==="닫는 드러냄표"){
-        pe.classList.add("reveal-mark-large-title");
+        pe.classList.add("reveal-mark-title-force-large");
       }
     }
+
+    // 6개 기호 규정 안내는 문제 전환 시 한 번만 갱신
+    let note=document.getElementById("sixSymbolRuleNote");
+    if(!note){
+      note=document.createElement("div");
+      note.id="sixSymbolRuleNote";
+      note.className="six-symbol-rule-note";
+      const ruleEl=document.getElementById("rule");
+      ruleEl.insertAdjacentElement("afterend",note);
+    }
+    const sixTargets=[
+      "앰퍼샌드","섹션 기호","섹션기호","문단 기호","문단기호",
+      "저작권 기호","저작권기호","등록 상표","등록상표","상표 기호","상표기호"
+    ];
+    const matched=sixTargets.some(x=>q.prompt.includes(x));
+    if(matched){
+      note.innerHTML='<strong>규정 안내</strong><span>한글과 혼동되는 앰퍼샌드, 섹션 기호, 문단 기호, 저작권 기호, 등록 상표, 상표 기호는 로마자표(356점)와 로마자 종료표(256점)를 사용하여 적는다.</span>';
+      note.hidden=false;
+    }else{
+      note.hidden=true;
+    }
+
   }else if(cat==="로마자"){
     const rm=q.prompt.match(/^(.+?) \((.+)\)$/);
     if(rm){
@@ -4345,15 +4383,33 @@ function nextQuestion(){
     }else{
       pe.textContent=q.prompt;
     }
-  }else pe.textContent=q.prompt;
-  document.getElementById("rule").textContent=q.rule ? (/^제\d+회\s+점역·교정사/.test(q.rule) ? q.rule : "2024년 한글 점자 규정 " + (q.rule||"").replace(/\s*·?\s*PDF\s*\d+쪽/g,"")) : "";
-  input="";grading=false;pressed.clear();chord.clear();
+    const note=document.getElementById("sixSymbolRuleNote");
+    if(note)note.hidden=true;
+
+  }else{
+    pe.textContent=q.prompt;
+    const note=document.getElementById("sixSymbolRuleNote");
+    if(note)note.hidden=true;
+  }
+
+  document.getElementById("rule").textContent=q.rule
+    ? (/^제\d+회\s+점역·교정사/.test(q.rule)
+      ? q.rule
+      : "2024년 한글 점자 규정 " + (q.rule||"").replace(/\s*·?\s*PDF\s*\d+쪽/g,""))
+    : "";
+
+  input="";
+  grading=false;
+  pressed.clear();
+  chord.clear();
   document.getElementById("typed").innerHTML="";
   document.getElementById("result").className="result";
   document.getElementById("resultSymbol").textContent="·";
   document.getElementById("resultText").textContent="입력 대기";
-  const ap=document.getElementById("answerPanel");if(ap)ap.hidden=true;
-  const ad=document.getElementById("answerDots");if(ad)ad.innerHTML="";
+  const ap=document.getElementById("answerPanel");
+  if(ap)ap.hidden=true;
+  const ad=document.getElementById("answerDots");
+  if(ad)ad.innerHTML="";
   liveMetrics();
 }
 function draw(){document.getElementById("typed").innerHTML="";if(!input)return;const exp=[...q.braille];[...input].forEach((ch,i)=>document.getElementById("typed").appendChild(sixDotCell(ch,exp[i]!==ch)))}
@@ -5294,7 +5350,7 @@ body:not(.high-contrast):not(.contrast) #practiceView #typed .input-dot.error{
   const obs = new MutationObserver(run);
   window.addEventListener('DOMContentLoaded', function(){
     const typed = document.querySelector('#practiceView #typed');
-    if(typed) obs.observe(typed,{childList:true,subtree:true,attributes:true});
+    if(typed) obs.observe(typed,{childList:true,subtree:true});
   });
 })();
 </script>
@@ -5635,45 +5691,6 @@ img.logo{
     color:inherit!important;
   }
 </style>
-<script id="reveal-mark-text-only-script">
-(function(){
-  function fixRevealMarkQuestion(){
-    const root = document.querySelector('#practiceView') || document.body;
-    if(!root) return;
-
-    const all = Array.from(root.querySelectorAll('*'));
-    const label = all.find(el => {
-      const t = (el.textContent || '').trim();
-      return t === '(여는 드러냄표)' || t === '(닫는 드러냄표)';
-    });
-    if(!label) return;
-
-    const name = label.textContent.includes('여는') ? '여는 드러냄표' : '닫는 드러냄표';
-
-    /* 같은 문제 표시 줄에서 동그라미 기호 요소를 찾아 숨김 */
-    const row = label.parentElement;
-    if(row){
-      Array.from(row.children).forEach(el => {
-        if(el !== label) el.style.display = 'none';
-      });
-      if(label.textContent !== name) label.textContent = name;
-      label.classList.add('reveal-mark-text-only');
-      if(label.style.display === 'none') label.style.display = '';
-    } else {
-      if(label.textContent !== name) label.textContent = name;
-      label.classList.add('reveal-mark-text-only');
-    }
-  }
-
-  const run = () => requestAnimationFrame(fixRevealMarkQuestion);
-  window.addEventListener('DOMContentLoaded', run);
-  document.addEventListener('click', run, true);
-  document.addEventListener('keyup', run, true);
-  new MutationObserver(run).observe(document.documentElement,{childList:true,subtree:true});
-})();
-</script>
-
-
 <style id="square-a-inside-style">
 .square-a-inside{
   display:inline-flex!important;
@@ -5690,42 +5707,6 @@ img.logo{
   vertical-align:middle!important;
 }
 </style>
-<script id="square-a-inside-script">
-(function(){
-  function fixSquareA(){
-    const root = document.querySelector('#practiceView') || document.body;
-    if(!root) return;
-
-    const labels = Array.from(root.querySelectorAll('*')).filter(el => {
-      const t = (el.textContent || '').trim();
-      return t === '(네모 에이)' || t === '네모 에이';
-    });
-
-    labels.forEach(label => {
-      const row = label.parentElement;
-      if(!row) return;
-
-      const kids = Array.from(row.children);
-      let symbol = kids.find(el => el !== label && (el.textContent || '').trim().includes('a'));
-      if(!symbol){
-        symbol = kids.find(el => el !== label);
-      }
-      if(!symbol) return;
-
-      if(symbol.textContent !== 'a') symbol.textContent = 'a';
-      symbol.classList.add('square-a-inside');
-    });
-  }
-
-  const run = () => requestAnimationFrame(fixSquareA);
-  window.addEventListener('DOMContentLoaded', run);
-  document.addEventListener('click', run, true);
-  document.addEventListener('keyup', run, true);
-  new MutationObserver(run).observe(document.documentElement,{childList:true,subtree:true});
-})();
-</script>
-
-
 <style id="square-ga-inside-style">
 .square-ga-inside{
   display:inline-flex!important;
@@ -5742,42 +5723,6 @@ img.logo{
   vertical-align:middle!important;
 }
 </style>
-<script id="square-ga-inside-script">
-(function(){
-  function fixSquareGa(){
-    const root = document.querySelector('#practiceView') || document.body;
-    if(!root) return;
-
-    const labels = Array.from(root.querySelectorAll('*')).filter(el => {
-      const t = (el.textContent || '').trim();
-      return t === '(네모 가)' || t === '네모 가';
-    });
-
-    labels.forEach(label => {
-      const row = label.parentElement;
-      if(!row) return;
-
-      const kids = Array.from(row.children);
-      let symbol = kids.find(el => el !== label && (el.textContent || '').trim().includes('가'));
-      if(!symbol){
-        symbol = kids.find(el => el !== label);
-      }
-      if(!symbol) return;
-
-      if(symbol.textContent !== '가') symbol.textContent = '가';
-      symbol.classList.add('square-ga-inside');
-    });
-  }
-
-  const run = () => requestAnimationFrame(fixSquareGa);
-  window.addEventListener('DOMContentLoaded', run);
-  document.addEventListener('click', run, true);
-  document.addEventListener('keyup', run, true);
-  new MutationObserver(run).observe(document.documentElement,{childList:true,subtree:true});
-})();
-</script>
-
-
 <style id="hc-whale-final-fix">
 /* 고대비: 후원 표기 글씨도 흰색 */
 .high-contrast footer *,
@@ -5874,7 +5819,6 @@ img.logo{
   }
   window.addEventListener('DOMContentLoaded',apply);
   document.addEventListener('click',function(){requestAnimationFrame(apply)},true);
-  new MutationObserver(function(){requestAnimationFrame(apply)}).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
 
@@ -6767,54 +6711,6 @@ img.logo{
   }
 }
 </style>
-
-
-<script id="six-symbol-rule-note-script">
-(function(){
-  const targets = new Set([
-    "앰퍼샌드","섹션 기호","섹션기호","문단 기호","문단기호",
-    "저작권 기호","저작권기호","등록 상표","등록상표","상표 기호","상표기호"
-  ]);
-
-  function updateSixSymbolRuleNote(){
-    const prompt=document.getElementById("prompt");
-    if(!prompt)return;
-
-    let note=document.getElementById("sixSymbolRuleNote");
-    if(!note){
-      note=document.createElement("div");
-      note.id="sixSymbolRuleNote";
-      note.className="six-symbol-rule-note";
-      const ruleEl=document.getElementById("rule");
-      if(ruleEl && ruleEl.parentNode){
-        ruleEl.insertAdjacentElement("afterend",note);
-      }else{
-        prompt.insertAdjacentElement("afterend",note);
-      }
-    }
-
-    const text=(prompt.textContent||"").replace(/[()]/g," ").replace(/\s+/g," ").trim();
-    const matched=[...targets].some(x=>text.includes(x));
-
-    if(matched){
-      note.innerHTML='<strong>규정 안내</strong><span>한글과 혼동되는 앰퍼샌드, 섹션 기호, 문단 기호, 저작권 기호, 등록 상표, 상표 기호는 로마자표(356점)와 로마자 종료표(256점)를 사용하여 적는다.</span>';
-      note.hidden=false;
-    }else{
-      note.hidden=true;
-    }
-  }
-
-  window.addEventListener("DOMContentLoaded",()=>{
-    updateSixSymbolRuleNote();
-    const prompt=document.getElementById("prompt");
-    if(prompt){
-      new MutationObserver(updateSixSymbolRuleNote).observe(prompt,{childList:true,subtree:true,characterData:true});
-    }
-  });
-})();
-</script>
-
-
 <style id="square-symbol-border-fix">
 /* 네모 숫자·로마자·한글: 네 변이 모두 보이는 완전한 사각형 */
 #practiceView .punct-symbol.square-symbol,
@@ -6907,36 +6803,6 @@ img.logo{
   -webkit-text-fill-color:#fff!important;
 }
 </style>
-
-
-<script id="reveal-mark-title-size-script-v3">
-(function(){
-  function applyRevealSize(){
-    const root=document.getElementById("practiceView") || document.body;
-    root.querySelectorAll("*").forEach(function(el){
-      if(el.children.length!==0) return;
-      const t=(el.textContent||"").trim();
-      if(t==="여는 드러냄표" || t==="닫는 드러냄표"){
-        if(!el.classList.contains("reveal-mark-title-force-large")){
-          el.classList.add("reveal-mark-title-force-large");
-          el.style.setProperty("font-size","32px","important");
-          el.style.setProperty("font-weight","900","important");
-          el.style.setProperty("line-height","1.4","important");
-        }
-      }
-    });
-  }
-  document.addEventListener("DOMContentLoaded", applyRevealSize);
-  window.addEventListener("load", applyRevealSize);
-  const observer=new MutationObserver(function(){ applyRevealSize(); });
-  document.addEventListener("DOMContentLoaded",function(){
-    const root=document.getElementById("practiceView") || document.body;
-    observer.observe(root,{subtree:true,childList:true,characterData:true});
-  });
-})();
-</script>
-
-
 <style id="circle-hangul-border-restore-style">
 #practiceView .circle-hangul-force{
   display:inline-flex!important;
@@ -6963,51 +6829,6 @@ img.logo{
   }
 }
 </style>
-
-
-<script id="circle-hangul-border-restore-script">
-(function(){
-  function restoreCircleHangul(){
-    const root=document.getElementById("practiceView") || document.body;
-    root.querySelectorAll("*").forEach(function(label){
-      if(label.children.length!==0) return;
-      const t=(label.textContent||"").trim();
-      if(t==="(동그라미 한글)" || t==="동그라미 한글"){
-        const parent=label.parentElement;
-        if(!parent) return;
-        const kids=Array.from(parent.children);
-        const idx=kids.indexOf(label);
-        if(idx>0){
-          const sym=kids[idx-1];
-          if((sym.textContent||"").trim()==="가" && !sym.classList.contains("circle-hangul-force")){
-            sym.classList.add("circle-hangul-force");
-            sym.style.setProperty("display","inline-flex","important");
-            sym.style.setProperty("align-items","center","important");
-            sym.style.setProperty("justify-content","center","important");
-            sym.style.setProperty("width","1.55em","important");
-            sym.style.setProperty("height","1.55em","important");
-            sym.style.setProperty("box-sizing","border-box","important");
-            sym.style.setProperty("border","2px solid currentColor","important");
-            sym.style.setProperty("border-radius","50%","important");
-            sym.style.setProperty("line-height","1","important");
-            sym.style.setProperty("padding","0","important");
-          }
-        }
-      }
-    });
-  }
-  document.addEventListener("DOMContentLoaded",restoreCircleHangul);
-  window.addEventListener("load",restoreCircleHangul);
-  document.addEventListener("DOMContentLoaded",function(){
-    const root=document.getElementById("practiceView") || document.body;
-    new MutationObserver(restoreCircleHangul).observe(root,{
-      subtree:true,childList:true,characterData:true
-    });
-  });
-})();
-</script>
-
-
 <style id="six-symbol-rule-note-single-line-style">
 /* 6개 기호 규정 안내를 PC 화면에서 한 줄로 표시 */
 #practiceView .six-symbol-rule-note{
@@ -7145,6 +6966,61 @@ img.logo{
   #practiceView .square-ga-inside,
   #practiceView .boxed-char,
   #practiceView .square-symbol{
+    color:CanvasText!important;
+    -webkit-text-fill-color:CanvasText!important;
+    border:0!important;
+    outline:0!important;
+    box-shadow:inset 0 0 0 2px CanvasText!important;
+    forced-color-adjust:none!important;
+  }
+}
+</style>
+
+
+<style id="circle-hangul-definitive-border-fix">
+#practiceView .circle-hangul-force{
+  position:relative!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:1.6em!important;
+  height:1.6em!important;
+  min-width:1.6em!important;
+  min-height:1.6em!important;
+  box-sizing:border-box!important;
+  padding:0!important;
+  line-height:1!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:50%!important;
+  box-shadow:inset 0 0 0 2px currentColor!important;
+  background:transparent!important;
+  overflow:visible!important;
+  clip-path:none!important;
+  -webkit-clip-path:none!important;
+  forced-color-adjust:none!important;
+}
+
+.high-contrast #practiceView .circle-hangul-force,
+.contrast #practiceView .circle-hangul-force{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:50%!important;
+  box-shadow:inset 0 0 0 2px #fff!important;
+  background:transparent!important;
+  forced-color-adjust:none!important;
+}
+
+#practiceView .circle-hangul-force::before,
+#practiceView .circle-hangul-force::after{
+  content:none!important;
+  display:none!important;
+}
+
+@media (forced-colors:active){
+  #practiceView .circle-hangul-force{
     color:CanvasText!important;
     -webkit-text-fill-color:CanvasText!important;
     border:0!important;
