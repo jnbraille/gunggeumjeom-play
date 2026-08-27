@@ -7271,3 +7271,90 @@ img.logo{
   -webkit-text-fill-color:#fff!important;
 }
 </style>
+
+
+<style id="punct-search-hc-hover-text-definitive-fix">
+/* 고대비 선택 상태에서도 버튼 글씨를 흰색으로 고정 */
+body.high-contrast #punctuationSearchButton:hover,
+body.high-contrast #punctuationSearchButton:focus,
+body.high-contrast #punctuationSearchButton:focus-visible,
+body.high-contrast #punctuationSearchButton:active,
+body.high-contrast #punctuationSearchPrev:hover,
+body.high-contrast #punctuationSearchPrev:focus,
+body.high-contrast #punctuationSearchPrev:focus-visible,
+body.high-contrast #punctuationSearchPrev:active,
+body.high-contrast #punctuationSearchNext:hover,
+body.high-contrast #punctuationSearchNext:focus,
+body.high-contrast #punctuationSearchNext:focus-visible,
+body.high-contrast #punctuationSearchNext:active,
+body.high-contrast #punctuationSearchClear:hover,
+body.high-contrast #punctuationSearchClear:focus,
+body.high-contrast #punctuationSearchClear:focus-visible,
+body.high-contrast #punctuationSearchClear:active,
+
+html.high-contrast #punctuationSearchButton:hover,
+html.high-contrast #punctuationSearchPrev:hover,
+html.high-contrast #punctuationSearchNext:hover,
+html.high-contrast #punctuationSearchClear:hover,
+
+.high-contrast #practiceView #punctuationSearchButton:hover,
+.high-contrast #practiceView #punctuationSearchPrev:hover,
+.high-contrast #practiceView #punctuationSearchNext:hover,
+.high-contrast #practiceView #punctuationSearchClear:hover,
+
+body.contrast #punctuationSearchButton:hover,
+body.contrast #punctuationSearchPrev:hover,
+body.contrast #punctuationSearchNext:hover,
+body.contrast #punctuationSearchClear:hover,
+.contrast #practiceView #punctuationSearchButton:hover,
+.contrast #practiceView #punctuationSearchPrev:hover,
+.contrast #practiceView #punctuationSearchNext:hover,
+.contrast #practiceView #punctuationSearchClear:hover{
+  background:#69d7e7!important;
+  background-color:#69d7e7!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  text-shadow:none!important;
+  border-color:#fff!important;
+  opacity:1!important;
+  forced-color-adjust:none!important;
+}
+
+/* 키보드 포커스/클릭 상태까지 같은 색 유지 */
+.high-contrast #punctuationSearchButton:focus,
+.high-contrast #punctuationSearchButton:focus-visible,
+.high-contrast #punctuationSearchButton:active,
+.high-contrast #punctuationSearchPrev:focus,
+.high-contrast #punctuationSearchPrev:focus-visible,
+.high-contrast #punctuationSearchPrev:active,
+.high-contrast #punctuationSearchNext:focus,
+.high-contrast #punctuationSearchNext:focus-visible,
+.high-contrast #punctuationSearchNext:active,
+.high-contrast #punctuationSearchClear:focus,
+.high-contrast #punctuationSearchClear:focus-visible,
+.high-contrast #punctuationSearchClear:active,
+.contrast #punctuationSearchButton:focus,
+.contrast #punctuationSearchPrev:focus,
+.contrast #punctuationSearchNext:focus,
+.contrast #punctuationSearchClear:focus{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+
+@media (forced-colors:active){
+  #punctuationSearchButton:hover,
+  #punctuationSearchPrev:hover,
+  #punctuationSearchNext:hover,
+  #punctuationSearchClear:hover,
+  #punctuationSearchButton:focus,
+  #punctuationSearchPrev:focus,
+  #punctuationSearchNext:focus,
+  #punctuationSearchClear:focus{
+    forced-color-adjust:none!important;
+    background:#69d7e7!important;
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+    border-color:#fff!important;
+  }
+}
+</style>
