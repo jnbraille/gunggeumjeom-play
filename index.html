@@ -8236,45 +8236,66 @@ body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
 
 
 
-<style id="spelling-choice-font-much-larger-final">
-/* '올바른 표기를 고르세요' 안내문은 과도하게 키우지 않음 */
-#spellingQ{
-  font-size:1.2rem!important;
-  line-height:1.4!important;
-  font-weight:800!important;
-}
 
-/* 실제로 고르는 두 맞춤법 문제 글씨를 크게 */
-#spellingOpts button{
-  font-size:1.75rem!important;
-  line-height:1.4!important;
+
+
+<style id="spelling-title-level-font-final">
+/* '올바른 표기를 고르세요' */
+#practiceView #spellingPanel #spellingQ{
+  font-size:2rem!important;
+  line-height:1.35!important;
   font-weight:900!important;
-  min-height:78px!important;
+  letter-spacing:-0.02em!important;
+  margin:6px 0 18px!important;
 }
 
-/* 선택 후에도 같은 큰 크기 유지 */
-#spellingOpts.answered button,
-#spellingOpts button[aria-disabled="true"]{
-  font-size:1.75rem!important;
+/* 실제 고르는 두 문제: 도리어 / 도리여 등 */
+#practiceView #spellingPanel #spellingOpts > button,
+#practiceView #spellingPanel #spellingOpts > button:disabled,
+#practiceView #spellingPanel #spellingOpts.answered > button,
+#practiceView #spellingPanel #spellingOpts > button[aria-disabled="true"]{
+  font-size:2rem!important;
+  line-height:1.25!important;
+  font-weight:900!important;
+  min-height:94px!important;
+  letter-spacing:-0.02em!important;
+}
+
+/* 선택 후에도 글자 크기 그대로 유지 */
+#practiceView #spellingPanel #spellingOpts.answered > button,
+#practiceView #spellingPanel #spellingOpts > button.selected-answer,
+#practiceView #spellingPanel #spellingOpts > button.correct-answer{
+  font-size:2rem!important;
   font-weight:900!important;
 }
 
-/* O/X는 기존처럼 크게 유지 */
-#spellingOpts .spelling-choice-mark{
-  font-size:2.35rem!important;
+/* 위쪽 작은 설명은 그대로 작게 유지 */
+#practiceView #spellingPanel > div:first-child{
+  font-size:1rem!important;
+  line-height:1.4!important;
+}
+
+/* O/X는 선택지 글자에 맞춰 더 크게 */
+#practiceView #spellingPanel #spellingOpts .spelling-choice-mark{
+  font-size:2.7rem!important;
   font-weight:1000!important;
+  line-height:1!important;
 }
 
-/* 모바일 */
+/* 모바일에서도 충분히 크게 */
 @media(max-width:700px){
-  #spellingQ{
-    font-size:1.1rem!important;
+  #practiceView #spellingPanel #spellingQ{
+    font-size:1.65rem!important;
   }
-  #spellingOpts button,
-  #spellingOpts.answered button,
-  #spellingOpts button[aria-disabled="true"]{
-    font-size:1.5rem!important;
-    min-height:70px!important;
+  #practiceView #spellingPanel #spellingOpts > button,
+  #practiceView #spellingPanel #spellingOpts > button:disabled,
+  #practiceView #spellingPanel #spellingOpts.answered > button,
+  #practiceView #spellingPanel #spellingOpts > button[aria-disabled="true"]{
+    font-size:1.65rem!important;
+    min-height:82px!important;
+  }
+  #practiceView #spellingPanel #spellingOpts .spelling-choice-mark{
+    font-size:2.35rem!important;
   }
 }
 </style>
