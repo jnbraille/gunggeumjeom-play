@@ -6484,3 +6484,82 @@ img.logo{
   .scanner-actions .scanner-primary{grid-column:1/-1}
 }
 </style>
+
+
+<style id="scanner-mobile-only-final">
+/* PC/태블릿 큰 화면에서는 궁금점(점자 판독) 메뉴와 화면 숨김 */
+[data-view="scanner"],
+#scannerView{
+  display:none!important;
+}
+
+/* 스마트폰 화면에서만 점자 판독 메뉴/화면 사용 */
+@media (max-width:768px){
+  [data-view="scanner"]{
+    display:inline-flex!important;
+  }
+  #scannerView.view{
+    display:none!important;
+  }
+  #scannerView.view.active{
+    display:block!important;
+  }
+}
+</style>
+
+
+<style id="scanner-nav-active-final">
+@media (max-width:768px){
+  [data-view="scanner"].active,
+  [data-view="scanner"][aria-current="page"]{
+    background:#fff!important;
+    color:var(--teal)!important;
+    -webkit-text-fill-color:var(--teal)!important;
+  }
+  .high-contrast [data-view="scanner"].active,
+  .high-contrast [data-view="scanner"][aria-current="page"],
+  .contrast [data-view="scanner"].active,
+  .contrast [data-view="scanner"][aria-current="page"]{
+    background:#fff!important;
+    color:#000!important;
+    -webkit-text-fill-color:#000!important;
+    border-color:#fff!important;
+  }
+}
+</style>
+<script id="scanner-nav-active-script">
+(function(){
+  function setScannerNavActive(){
+    document.querySelectorAll("nav [data-view]").forEach(function(btn){
+      btn.classList.remove("active");
+      btn.removeAttribute("aria-current");
+    });
+    document.querySelectorAll('[data-view="scanner"]').forEach(function(btn){
+      btn.classList.add("active");
+      btn.setAttribute("aria-current","page");
+    });
+  }
+
+  function clearScannerNavActive(target){
+    if(target && target.closest && target.closest('[data-view="scanner"]')) return;
+    document.querySelectorAll('[data-view="scanner"]').forEach(function(btn){
+      btn.classList.remove("active");
+      btn.removeAttribute("aria-current");
+    });
+  }
+
+  window.addEventListener("DOMContentLoaded",function(){
+    document.querySelectorAll('[data-view="scanner"]').forEach(function(btn){
+      btn.addEventListener("click",function(){
+        requestAnimationFrame(setScannerNavActive);
+      },true);
+    });
+
+    document.querySelectorAll('nav [data-view]:not([data-view="scanner"])').forEach(function(btn){
+      btn.addEventListener("click",function(ev){
+        clearScannerNavActive(ev.target);
+      },true);
+    });
+  });
+})();
+</script>
