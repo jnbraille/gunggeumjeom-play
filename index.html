@@ -5824,3 +5824,32 @@ img.logo{
   }
 }
 </style>
+
+
+<style id="hc-sponsor-transparent-final">
+.high-contrast img[alt="복권위원회 지원"],
+.contrast img[alt="복권위원회 지원"]{
+  background:transparent!important;
+  filter:brightness(0) invert(1)!important;
+  -webkit-filter:brightness(0) invert(1)!important;
+  mix-blend-mode:screen!important;
+  opacity:1!important;
+  forced-color-adjust:none!important;
+}
+
+.high-contrast img[alt="복권위원회 지원"]::before,
+.contrast img[alt="복권위원회 지원"]::before{
+  background:transparent!important;
+}
+
+@media (forced-colors: active){
+  img[alt="복권위원회 지원"]{
+    background:transparent!important;
+    filter:brightness(0) invert(1)!important;
+    -webkit-filter:brightness(0) invert(1)!important;
+    mix-blend-mode:screen!important;
+    opacity:1!important;
+    forced-color-adjust:none!important;
+  }
+}
+</style>
