@@ -7104,3 +7104,53 @@ img.logo{
   }
 }
 </style>
+
+
+<style id="hc-square-inside-definitive-fix">
+#practiceView .square-a-inside,
+#practiceView .square-ga-inside{
+  position:relative!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:inset 0 0 0 2px currentColor!important;
+  border-radius:0!important;
+  overflow:visible!important;
+  forced-color-adjust:none!important;
+}
+.high-contrast #practiceView .square-a-inside,
+.high-contrast #practiceView .square-ga-inside,
+.contrast #practiceView .square-a-inside,
+.contrast #practiceView .square-ga-inside{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:inset 0 0 0 2px #fff!important;
+  background:transparent!important;
+  forced-color-adjust:none!important;
+}
+/* 네모 숫자/자음 등 기존 네모형도 같은 방식으로 네 변을 보장 */
+.high-contrast #practiceView .boxed-char,
+.high-contrast #practiceView .square-symbol,
+.contrast #practiceView .boxed-char,
+.contrast #practiceView .square-symbol{
+  border:0!important;
+  outline:0!important;
+  box-shadow:inset 0 0 0 2px #fff!important;
+  border-radius:0!important;
+  forced-color-adjust:none!important;
+}
+@media (forced-colors:active){
+  #practiceView .square-a-inside,
+  #practiceView .square-ga-inside,
+  #practiceView .boxed-char,
+  #practiceView .square-symbol{
+    color:CanvasText!important;
+    -webkit-text-fill-color:CanvasText!important;
+    border:0!important;
+    outline:0!important;
+    box-shadow:inset 0 0 0 2px CanvasText!important;
+    forced-color-adjust:none!important;
+  }
+}
+</style>
