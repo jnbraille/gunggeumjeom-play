@@ -8030,3 +8030,46 @@ header .fund-mainline strong,
   -webkit-text-fill-color:#fff!important;
 }
 </style>
+
+
+<style id="spelling-high-contrast-white-text-final">
+/* 고대비: 맞춤법 답 선택 후 disabled 상태에서도 회색으로 흐려지지 않게 */
+.high-contrast #spellingOpts button,
+.high-contrast #spellingOpts button:disabled,
+.high-contrast #spellingOpts button[disabled],
+.high-contrast #spellingOpts.answered button,
+.high-contrast #spellingOpts.answered button:disabled,
+.high-contrast #spellingOpts button.correct,
+.high-contrast #spellingOpts button.wrong,
+.high-contrast #spellingOpts button.correct-answer,
+.contrast #spellingOpts button,
+.contrast #spellingOpts button:disabled,
+.contrast #spellingOpts button[disabled],
+.contrast #spellingOpts.answered button,
+.contrast #spellingOpts.answered button:disabled,
+.contrast #spellingOpts button.correct,
+.contrast #spellingOpts button.wrong,
+.contrast #spellingOpts button.correct-answer{
+  opacity:1!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-weight:800!important;
+  border-color:#fff!important;
+}
+
+/* ○ / X도 고대비에서는 흰색으로 선명하게 */
+.high-contrast #spellingOpts .spelling-choice-mark,
+.contrast #spellingOpts .spelling-choice-mark{
+  opacity:1!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+
+/* 브라우저 disabled 기본 흐림 효과 차단 */
+.high-contrast #spellingOpts button:disabled *,
+.contrast #spellingOpts button:disabled *{
+  opacity:1!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+</style>
