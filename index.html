@@ -52,7 +52,7 @@ footer{background:var(--teal);color:#fff;margin-top:22px}.foot{display:flex;just
   min-height:105px!important;
   display:flex!important;
   align-items:center!important;
-  justify-content:flex-start!important;
+  justify-content:center!important;
   align-content:center!important;
   flex-wrap:wrap!important;
   gap:10px!important;
@@ -8296,6 +8296,39 @@ body.contrast #spellingOpts button.wrong.selected-answer .spelling-choice-mark{
   }
   #practiceView #spellingPanel #spellingOpts .spelling-choice-mark{
     font-size:2.35rem!important;
+  }
+}
+</style>
+
+
+<style id="braille-entry-center-alignment-final">
+/* 문제와 점자 입력이 같은 중앙 축을 기준으로 보이도록 정렬 */
+#practiceView #prompt{
+  justify-content:center!important;
+  text-align:center!important;
+}
+
+#practiceView #typed,
+#practiceView #answerDots,
+#practiceView .answer-dots{
+  justify-content:center!important;
+  align-content:center!important;
+}
+
+/* 여러 칸을 입력해 줄이 바뀌어도 각 줄이 가운데에서 시작 */
+#practiceView #typed{
+  width:100%!important;
+  box-sizing:border-box!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+/* 모바일에서도 동일한 정렬 원칙 유지 */
+@media(max-width:768px){
+  #practiceView #typed,
+  #practiceView #answerDots,
+  #practiceView .answer-dots{
+    justify-content:center!important;
   }
 }
 </style>
