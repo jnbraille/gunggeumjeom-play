@@ -5656,11 +5656,11 @@ img.logo{
       Array.from(row.children).forEach(el => {
         if(el !== label) el.style.display = 'none';
       });
-      label.textContent = name;
+      if(label.textContent !== name) label.textContent = name;
       label.classList.add('reveal-mark-text-only');
-      label.style.display = '';
+      if(label.style.display === 'none') label.style.display = '';
     } else {
-      label.textContent = name;
+      if(label.textContent !== name) label.textContent = name;
       label.classList.add('reveal-mark-text-only');
     }
   }
@@ -5712,7 +5712,7 @@ img.logo{
       }
       if(!symbol) return;
 
-      symbol.textContent = 'a';
+      if(symbol.textContent !== 'a') symbol.textContent = 'a';
       symbol.classList.add('square-a-inside');
     });
   }
@@ -5764,7 +5764,7 @@ img.logo{
       }
       if(!symbol) return;
 
-      symbol.textContent = '가';
+      if(symbol.textContent !== '가') symbol.textContent = '가';
       symbol.classList.add('square-ga-inside');
     });
   }
@@ -5874,7 +5874,7 @@ img.logo{
   }
   window.addEventListener('DOMContentLoaded',apply);
   document.addEventListener('click',function(){requestAnimationFrame(apply)},true);
-  new MutationObserver(function(){requestAnimationFrame(apply)}).observe(document.documentElement,{attributes:true,childList:true,subtree:true});
+  new MutationObserver(function(){requestAnimationFrame(apply)}).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
 
@@ -6886,46 +6886,7 @@ img.logo{
 </style>
 
 
-<script id="roman-numeral-case-label-script">
-(function(){
-  function markRomanNumeralCase(){
-    const prompt=document.getElementById("prompt");
-    if(!prompt) return;
 
-    // 기존에 붙인 안내 제거
-    prompt.querySelectorAll(".roman-case-label").forEach(el=>el.remove());
-
-    const text=(prompt.textContent||"").trim();
-
-    // 괄호 안 설명이나 화면의 로마 숫자를 기준으로 판별
-    const romanMatch=text.match(/\b([IVXLCDM]+|[ivxlcdm]+)\b/);
-    if(!romanMatch) return;
-
-    const roman=romanMatch[1];
-    const label=document.createElement("span");
-    label.className="roman-case-label";
-
-    if(roman===roman.toUpperCase()){
-      label.textContent="(대문자)";
-      label.setAttribute("aria-label","대문자 로마 숫자");
-    }else{
-      label.textContent="(소문자)";
-      label.setAttribute("aria-label","소문자 로마 숫자");
-    }
-    prompt.appendChild(label);
-  }
-
-  window.addEventListener("DOMContentLoaded", function(){
-    markRomanNumeralCase();
-    const prompt=document.getElementById("prompt");
-    if(prompt){
-      new MutationObserver(markRomanNumeralCase).observe(prompt,{
-        childList:true, subtree:true, characterData:true
-      });
-    }
-  });
-})();
-</script>
 
 
 <style id="reveal-mark-title-size-style-v3">
@@ -6956,10 +6917,12 @@ img.logo{
       if(el.children.length!==0) return;
       const t=(el.textContent||"").trim();
       if(t==="여는 드러냄표" || t==="닫는 드러냄표"){
-        el.classList.add("reveal-mark-title-force-large");
-        el.style.setProperty("font-size","32px","important");
-        el.style.setProperty("font-weight","900","important");
-        el.style.setProperty("line-height","1.4","important");
+        if(!el.classList.contains("reveal-mark-title-force-large")){
+          el.classList.add("reveal-mark-title-force-large");
+          el.style.setProperty("font-size","32px","important");
+          el.style.setProperty("font-weight","900","important");
+          el.style.setProperty("line-height","1.4","important");
+        }
       }
     });
   }
@@ -7016,7 +6979,7 @@ img.logo{
         const idx=kids.indexOf(label);
         if(idx>0){
           const sym=kids[idx-1];
-          if((sym.textContent||"").trim()==="가"){
+          if((sym.textContent||"").trim()==="가" && !sym.classList.contains("circle-hangul-force")){
             sym.classList.add("circle-hangul-force");
             sym.style.setProperty("display","inline-flex","important");
             sym.style.setProperty("align-items","center","important");
