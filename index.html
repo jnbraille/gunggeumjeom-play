@@ -7585,16 +7585,229 @@ img.logo{
   function protectSearchInput(e){
     const t=e.target;
     if(!t) return;
-    if(t.id==="punctuationSearchInput" || t.id==="sentenceSearchInput"){
-      // 검색창에서는 브라우저의 기본 텍스트 편집 동작을 그대로 사용한다.
-      // 전역 점자 키보드 핸들러로 이벤트가 전달되는 것만 차단한다.
+
+    const isPunct=t.id==="punctuationSearchInput";
+    const isSentence=t.id==="sentenceSearchInput";
+    if(!isPunct && !isSentence) return;
+
+    // Enter를 누르면 즉시 해당 검색 실행
+    if(e.type==="keydown" && e.key==="Enter"){
+      e.preventDefault();
       e.stopImmediatePropagation();
+      const btn=document.getElementById(
+        isPunct ? "punctuationSearchButton" : "sentenceSearchButton"
+      );
+      if(btn) btn.click();
+      return;
+    }
+
+    // 검색창의 일반 문자, Backspace, Delete 등은
+    // 전역 점자 입력 핸들러로 전달하지 않고 텍스트 편집만 수행
+    e.stopImmediatePropagation();
+  }
+
+  document.addEventListener("keydown",protectSearchInput,true);
+  document.addEventListener("keyup",protectSearchInput,true);
+  document.addEventListener("keypress",protectSearchInput,true);
+})();
+</script>
+
+
+<style id="mobile-high-contrast-final">
+@media(max-width:768px){
+  /* 고대비 전환 버튼/컨트롤을 모바일에서도 표시 */
+  #contrastBtn,
+  #highContrastBtn,
+  .contrast-btn,
+  .high-contrast-btn,
+  [data-action="contrast"],
+  [data-action="high-contrast"],
+  [aria-label*="고대비"]{
+    display:inline-flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    align-items:center!important;
+    justify-content:center!important;
+    pointer-events:auto!important;
+  }
+
+  /* 모바일 고대비 기본 배경/텍스트 */
+  body.high-contrast,
+  body.contrast,
+  html.high-contrast body,
+  html.contrast body{
+    background:#202020!important;
+    color:#fff!important;
+  }
+
+  .high-contrast .view,
+  .high-contrast .panel,
+  .high-contrast .card,
+  .high-contrast .practice,
+  .high-contrast .exercise,
+  .contrast .view,
+  .contrast .panel,
+  .contrast .card,
+  .contrast .practice,
+  .contrast .exercise{
+    background:#202020!important;
+    color:#fff!important;
+  }
+
+  .high-contrast input,
+  .high-contrast button,
+  .high-contrast select,
+  .high-contrast textarea,
+  .contrast input,
+  .contrast button,
+  .contrast select,
+  .contrast textarea{
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+    border-color:#fff!important;
+  }
+
+  /* 모바일 검색창도 고대비 */
+  .high-contrast #punctuationSearchInput,
+  .high-contrast #sentenceSearchInput,
+  .contrast #punctuationSearchInput,
+  .contrast #sentenceSearchInput{
+    background:#202020!important;
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+    border-color:#fff!important;
+  }
+
+  .high-contrast #punctuationSearchButton,
+  .high-contrast #punctuationSearchPrev,
+  .high-contrast #punctuationSearchNext,
+  .high-contrast #punctuationSearchClear,
+  .high-contrast #sentenceSearchButton,
+  .high-contrast #sentenceSearchPrev,
+  .high-contrast #sentenceSearchNext,
+  .high-contrast #sentenceSearchClear,
+  .contrast #punctuationSearchButton,
+  .contrast #punctuationSearchPrev,
+  .contrast #punctuationSearchNext,
+  .contrast #punctuationSearchClear,
+  .contrast #sentenceSearchButton,
+  .contrast #sentenceSearchPrev,
+  .contrast #sentenceSearchNext,
+  .contrast #sentenceSearchClear{
+    background:#202020!important;
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+    border-color:#fff!important;
+  }
+
+  /* 점형 가독성 유지 */
+  .high-contrast .dot,
+  .high-contrast .braille-dot,
+  .high-contrast [class*="dot"],
+  .contrast .dot,
+  .contrast .braille-dot,
+  .contrast [class*="dot"]{
+    forced-color-adjust:none!important;
+  }
+
+  .high-contrast .dot.filled,
+  .high-contrast .braille-dot.filled,
+  .high-contrast .input-dot.on,
+  .contrast .dot.filled,
+  .contrast .braille-dot.filled,
+  .contrast .input-dot.on{
+    background:#fff!important;
+    border-color:#fff!important;
+  }
+}
+</style>
+
+
+<style id="mobile-high-contrast-button-style">
+#mobileContrastBtn{
+  display:none;
+}
+@media(max-width:768px){
+  #mobileContrastBtn{
+    display:inline-flex!important;
+    align-items:center;
+    justify-content:center;
+    min-height:46px;
+    padding:8px 14px;
+    border:1px solid rgba(255,255,255,.65);
+    background:#0c8b82;
+    color:#fff;
+    font:inherit;
+    font-weight:800;
+  }
+  .high-contrast #mobileContrastBtn{
+    background:#202020!important;
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+    border-color:#fff!important;
+  }
+}
+</style>
+
+
+<script id="mobile-high-contrast-toggle-script">
+(function(){
+  function findExistingContrastControl(){
+    return document.querySelector(
+      '#contrastBtn,#highContrastBtn,.contrast-btn,.high-contrast-btn,[data-action="contrast"],[data-action="high-contrast"],[aria-label*="고대비"]'
+    );
+  }
+
+  function syncMobileContrastButton(btn){
+    const on=document.body.classList.contains("high-contrast") ||
+             document.body.classList.contains("contrast") ||
+             document.documentElement.classList.contains("high-contrast") ||
+             document.documentElement.classList.contains("contrast");
+    btn.setAttribute("aria-pressed",String(on));
+    btn.textContent=on ? "일반 화면" : "고대비";
+  }
+
+  function toggleMobileContrast(btn){
+    const currentlyOn=
+      document.body.classList.contains("high-contrast") ||
+      document.body.classList.contains("contrast") ||
+      document.documentElement.classList.contains("high-contrast") ||
+      document.documentElement.classList.contains("contrast");
+
+    document.body.classList.toggle("high-contrast",!currentlyOn);
+    document.documentElement.classList.toggle("high-contrast",!currentlyOn);
+    syncMobileContrastButton(btn);
+  }
+
+  function ensureMobileContrast(){
+    if(!window.matchMedia("(max-width:768px)").matches) return;
+
+    const existing=findExistingContrastControl();
+    if(existing){
+      existing.style.removeProperty("display");
+      existing.style.setProperty("display","inline-flex","important");
+      return;
+    }
+
+    if(document.getElementById("mobileContrastBtn")) return;
+
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.id="mobileContrastBtn";
+    btn.className="mobile-contrast-btn";
+    btn.setAttribute("aria-label","고대비 전환");
+    btn.setAttribute("aria-pressed","false");
+    btn.textContent="고대비";
+    btn.addEventListener("click",()=>toggleMobileContrast(btn));
+
+    const nav=document.querySelector("header nav") || document.querySelector("nav");
+    if(nav){
+      nav.appendChild(btn);
+      syncMobileContrastButton(btn);
     }
   }
 
-  // capture 단계에서 먼저 처리하여 기존 document/window 키보드 핸들러보다 우선
-  document.addEventListener("keydown", protectSearchInput, true);
-  document.addEventListener("keyup", protectSearchInput, true);
-  document.addEventListener("keypress", protectSearchInput, true);
+  document.addEventListener("DOMContentLoaded",ensureMobileContrast);
+  window.addEventListener("resize",ensureMobileContrast);
 })();
 </script>
