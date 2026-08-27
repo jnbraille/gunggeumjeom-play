@@ -3861,6 +3861,16 @@ function formatPunctuationPrompt(text){
 <div class="practice-layout">
   <div class="practice">
     <h2><span id="practiceName">초성 연습</span><span class="count"><span id="pIndex">1</span> / <span id="pTotal">100</span></span></h2>
+    <div id="punctuationSearchBar" role="search" aria-label="문장부호 문제 검색">
+      <div class="punct-search-row">
+        <input id="punctuationSearchInput" type="search" placeholder="기호·명칭 검색 (예: ©, 앰퍼샌드, 네모, 로마 숫자)" aria-label="문장부호 검색어">
+        <button id="punctuationSearchButton" type="button">검색</button>
+        <button id="punctuationSearchPrev" type="button">이전</button>
+        <button id="punctuationSearchNext" type="button">다음</button>
+        <button id="punctuationSearchClear" type="button">초기화</button>
+      </div>
+      <div id="punctuationSearchStatus" aria-live="polite"></div>
+    </div>
     <div class="exercise">
       <div class="panel sep">
         <div class="problem-head">
@@ -7032,23 +7042,31 @@ img.logo{
 </style>
 
 
-<style id="punctuation-search-style">
+
+
+
+
+
+
+<style id="punctuation-search-style-v2">
 #punctuationSearchBar{
   display:none;
-  max-width:760px;
-  margin:14px auto 4px;
+  max-width:900px;
+  margin:12px auto 16px;
   padding:0 18px;
   box-sizing:border-box;
+}
+#practiceView[data-category="문장부호"] #punctuationSearchBar{
+  display:block!important;
 }
 #punctuationSearchBar .punct-search-row{
   display:flex;
   gap:8px;
   align-items:center;
-  justify-content:center;
 }
 #punctuationSearchInput{
   flex:1;
-  min-width:0;
+  min-width:220px;
   height:44px;
   padding:0 14px;
   border:1.5px solid #8da6ae;
@@ -7063,7 +7081,7 @@ img.logo{
 #punctuationSearchNext,
 #punctuationSearchClear{
   min-height:44px;
-  padding:0 14px;
+  padding:0 13px;
   border:1.5px solid #178b83;
   border-radius:10px;
   background:#fff;
@@ -7072,24 +7090,15 @@ img.logo{
   font-weight:800;
   cursor:pointer;
 }
-#punctuationSearchPrev,
-#punctuationSearchNext{
-  min-width:48px;
-}
 #punctuationSearchStatus{
-  margin-top:7px;
   min-height:1.4em;
+  margin-top:7px;
   text-align:center;
-  font-size:14px;
   color:#52697a;
+  font-size:14px;
 }
 .high-contrast #punctuationSearchInput,
-.contrast #punctuationSearchInput{
-  background:#202020!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  border-color:#fff!important;
-}
+.contrast #punctuationSearchInput,
 .high-contrast #punctuationSearchButton,
 .high-contrast #punctuationSearchPrev,
 .high-contrast #punctuationSearchNext,
@@ -7108,149 +7117,103 @@ img.logo{
   color:#fff!important;
   -webkit-text-fill-color:#fff!important;
 }
-@media(max-width:640px){
+@media(max-width:700px){
   #punctuationSearchBar{padding:0 10px;}
-  #punctuationSearchBar .punct-search-row{gap:5px; flex-wrap:wrap;}
-  #punctuationSearchInput{flex-basis:100%; width:100%;}
+  #punctuationSearchBar .punct-search-row{flex-wrap:wrap;}
+  #punctuationSearchInput{flex-basis:100%;width:100%;}
   #punctuationSearchButton,
   #punctuationSearchClear{flex:1;}
 }
 </style>
 
 
-<script id="punctuation-search-script">
+<script id="punctuation-search-script-v2">
 (function(){
-  let results=[];
-  let resultPos=-1;
+  let searchResults=[];
+  let searchPos=-1;
 
-  function ensureSearchUI(){
-    if(document.getElementById("punctuationSearchBar")) return;
-    const title=document.getElementById("practiceName");
-    if(!title || !title.parentNode) return;
-
-    const bar=document.createElement("div");
-    bar.id="punctuationSearchBar";
-    bar.setAttribute("role","search");
-    bar.setAttribute("aria-label","문장부호 문제 검색");
-    bar.innerHTML=
-      '<div class="punct-search-row">'+
-        '<input id="punctuationSearchInput" type="search" placeholder="궁금한 기호·문제 검색 (예: ©, 앰퍼샌드, 네모, 로마 숫자)" aria-label="문장부호 검색어">'+
-        '<button id="punctuationSearchButton" type="button">검색</button>'+
-        '<button id="punctuationSearchPrev" type="button" aria-label="이전 검색 결과">이전</button>'+
-        '<button id="punctuationSearchNext" type="button" aria-label="다음 검색 결과">다음</button>'+
-        '<button id="punctuationSearchClear" type="button">초기화</button>'+
-      '</div>'+
-      '<div id="punctuationSearchStatus" aria-live="polite"></div>';
-
-    title.parentNode.insertBefore(bar,title.nextSibling);
-
-    document.getElementById("punctuationSearchButton").addEventListener("click",search);
-    document.getElementById("punctuationSearchPrev").addEventListener("click",function(){move(-1);});
-    document.getElementById("punctuationSearchNext").addEventListener("click",function(){move(1);});
-    document.getElementById("punctuationSearchClear").addEventListener("click",clearSearch);
-    document.getElementById("punctuationSearchInput").addEventListener("keydown",function(e){
-      if(e.key==="Enter"){ e.preventDefault(); search(); }
-    });
-  }
-
-  function normalize(v){
+  function norm(v){
     return String(v||"")
       .toLowerCase()
       .replace(/\s+/g,"")
       .replace(/[()]/g,"");
   }
 
-  function updateVisibility(){
-    ensureSearchUI();
-    const bar=document.getElementById("punctuationSearchBar");
-    if(!bar) return;
-    bar.style.display=(window.cat==="문장부호")?"block":"none";
-  }
-
-  function search(){
-    if(window.cat!=="문장부호" || !window.DATA || !DATA["문장부호"]) return;
+  function performSearch(){
+    if(cat!=="문장부호") return;
     const input=document.getElementById("punctuationSearchInput");
     const status=document.getElementById("punctuationSearchStatus");
-    const term=normalize(input.value);
+    const term=norm(input.value);
 
     if(!term){
-      results=[];
-      resultPos=-1;
+      searchResults=[];
+      searchPos=-1;
       status.textContent="검색어를 입력하세요.";
       return;
     }
 
-    results=[];
-    DATA["문장부호"].forEach(function(item,idx){
-      const hay=normalize((item.prompt||"")+" "+(item.rule||""));
-      if(hay.includes(term)) results.push(idx);
+    searchResults=[];
+    DATA["문장부호"].forEach((item,idx)=>{
+      const hay=norm((item.prompt||"")+" "+(item.rule||""));
+      if(hay.includes(term)) searchResults.push(idx);
     });
 
-    if(!results.length){
-      resultPos=-1;
+    if(!searchResults.length){
+      searchPos=-1;
       status.textContent="일치하는 문항이 없습니다.";
       return;
     }
 
-    resultPos=0;
-    goToResult();
+    searchPos=0;
+    goSearchResult();
   }
 
-  function move(delta){
-    if(!results.length){
-      search();
-      return;
-    }
-    resultPos=(resultPos+delta+results.length)%results.length;
-    goToResult();
-  }
+  function goSearchResult(){
+    if(cat!=="문장부호" || searchPos<0 || !searchResults.length) return;
 
-  function goToResult(){
-    if(resultPos<0 || !results.length) return;
-    const targetIndex=results[resultPos];
+    const targetIndex=searchResults[searchPos];
 
-    // 일반 학습 큐로 돌아가 검색된 원문항 번호를 찾아 이동
-    if(window.wrongOnlyMode){
-      window.wrongOnlyMode=false;
-      window.queue=DATA["문장부호"].map(function(_,i){return i;});
-    }
-    const pos=queue.indexOf(targetIndex);
-    if(pos<0) return;
-
-    window.round=pos;
+    // 검색 시 전체 문장부호 문제 기준으로 바로 이동
+    wrongOnlyMode=false;
+    queue=DATA["문장부호"].map((_,i)=>i);
+    round=targetIndex;
     nextQuestion();
 
-    const status=document.getElementById("punctuationSearchStatus");
-    status.textContent=(resultPos+1)+" / "+results.length+"개 검색 결과 · 전체 "+(targetIndex+1)+"번 문항";
+    document.getElementById("punctuationSearchStatus").textContent=
+      (searchPos+1)+" / "+searchResults.length+"개 검색 결과 · 전체 "+(targetIndex+1)+"번 문항";
+  }
+
+  function moveResult(delta){
+    if(!searchResults.length){
+      performSearch();
+      return;
+    }
+    searchPos=(searchPos+delta+searchResults.length)%searchResults.length;
+    goSearchResult();
   }
 
   function clearSearch(){
-    results=[];
-    resultPos=-1;
+    searchResults=[];
+    searchPos=-1;
     const input=document.getElementById("punctuationSearchInput");
     const status=document.getElementById("punctuationSearchStatus");
     if(input) input.value="";
     if(status) status.textContent="";
   }
 
-  document.addEventListener("DOMContentLoaded",function(){
-    ensureSearchUI();
-    updateVisibility();
-
-    // 기존 startPractice를 한 번만 감싸서 카테고리 전환 때 검색창 표시 여부 갱신
-    if(typeof window.startPractice==="function" && !window.startPractice.__punctSearchWrapped){
-      const original=window.startPractice;
-      const wrapped=function(){
-        const r=original.apply(this,arguments);
-        updateVisibility();
-        clearSearch();
-        return r;
-      };
-      wrapped.__punctSearchWrapped=true;
-      window.startPractice=wrapped;
-    }
+  document.addEventListener("DOMContentLoaded",()=>{
+    const input=document.getElementById("punctuationSearchInput");
+    document.getElementById("punctuationSearchButton")?.addEventListener("click",performSearch);
+    document.getElementById("punctuationSearchPrev")?.addEventListener("click",()=>moveResult(-1));
+    document.getElementById("punctuationSearchNext")?.addEventListener("click",()=>moveResult(1));
+    document.getElementById("punctuationSearchClear")?.addEventListener("click",clearSearch);
+    input?.addEventListener("keydown",e=>{
+      if(e.key==="Enter"){
+        e.preventDefault();
+        e.stopPropagation();
+        performSearch();
+      }
+    });
   });
-
-  window.updatePunctuationSearchVisibility=updateVisibility;
 })();
 </script>
