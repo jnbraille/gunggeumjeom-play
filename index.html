@@ -4042,11 +4042,7 @@ function sixDotCell(ch,wrong=false){
    */
    if(whale && !wrong && isOn){
      d.classList.add("whale-text-dot");
-     const mark=document.createElement("span");
-     mark.className="whale-dot-mark";
-     mark.textContent="●";
-     mark.setAttribute("aria-hidden","true");
-     d.appendChild(mark);
+     d.textContent="●";
    }
    el.appendChild(d)
  });return el
@@ -9055,44 +9051,38 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
 </style>
 
 
-<style id="whale-text-dot-test-14">
+<style id="whale-text-dot-test-11">
 /*
-  Whale 전용 입력 점 정렬:
-  셀 자체는 정확히 13x13 위치를 유지하고,
-  흰 점 문자만 내부 절대배치로 빈 점의 원 중심에 맞춘다.
+  점자세상처럼 '텍스트 렌더링'을 이용하는 웨일 전용 실험.
+  정답 채움점만 실제 문자 ●로 표시한다.
+  오답 빨강 / 빈 점 / 띄어쓰기 / 셀 배치 / 일반모드 / 일반고대비는 그대로.
 */
 #practiceView .input-dot.whale-text-dot{
-  position:relative!important;
   background:transparent!important;
   background-color:transparent!important;
   border-color:transparent!important;
-  overflow:visible!important;
-  box-shadow:none!important;
-  filter:none!important;
-  opacity:1!important;
-}
-#practiceView .input-dot.whale-text-dot .whale-dot-mark{
-  position:absolute!important;
-  left:50%!important;
-  top:50%!important;
-  width:13px!important;
-  height:13px!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
-  margin:0!important;
+  width:14px!important;
+  height:14px!important;
+  min-width:14px!important;
+  min-height:14px!important;
   padding:0!important;
-  color:#ffffff!important;
-  -webkit-text-fill-color:#ffffff!important;
-  font-family:"Segoe UI Symbol","Arial Unicode MS",sans-serif!important;
+  margin:0!important;
+  font-family:Arial,"Segoe UI Symbol",sans-serif!important;
   font-size:15px!important;
   font-weight:700!important;
-  line-height:13px!important;
+  line-height:14px!important;
   letter-spacing:0!important;
-  text-indent:0!important;
-  transform:translate(-50%,-50%)!important;
-  transform-origin:center center!important;
-  pointer-events:none!important;
+  text-indent:-1px!important;
+  overflow:visible!important;
+  transform:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+  opacity:1!important;
 }
 </style>
 
