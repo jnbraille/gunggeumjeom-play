@@ -9003,3 +9003,30 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
   forced-color-adjust:none!important;
 }
 </style>
+
+
+<style id="footer-support-logo-size-fix">
+/* 하단 지원 로고만 확대 */
+.foot-support{
+  flex:0 0 auto!important;
+  min-width:260px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.foot img.sponsor-logo-normal{
+  width:250px!important;
+  max-width:none!important;
+  height:auto!important;
+  object-fit:contain!important;
+  display:block!important;
+}
+@media(max-width:700px){
+  .foot-support{
+    min-width:210px!important;
+  }
+  .foot img.sponsor-logo-normal{
+    width:205px!important;
+  }
+}
+</style>
