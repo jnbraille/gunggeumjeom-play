@@ -117,7 +117,7 @@ footer{background:var(--teal);color:#fff;margin-top:22px}.foot{display:flex;just
 /* v12.4: 문장부호 식별성 강화 */
 .prompt{
   font-family:"한컴윤고딕","Hancom Yoon Gothic","윤고딕","Yoon Gothic","Malgun Gothic","맑은 고딕","Segoe UI",sans-serif!important;
-  font-weight:400!important;
+  font-weight:700!important;
   font-variant-ligatures:none;
   letter-spacing:.035em;
 }
@@ -9051,43 +9051,7 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
 </style>
 
 
-<style id="whale-text-dot-test-18">
-#practiceView .input-dot.whale-text-dot{
-  width:13px!important;
-  height:13px!important;
-  min-width:13px!important;
-  min-height:13px!important;
-  padding:0!important;
-  margin:0!important;
 
-  background:none!important;
-  background-color:transparent!important;
-  appearance:none!important;
-  -webkit-appearance:none!important;
-  border:0!important;
-  outline:0!important;
-  border-radius:0!important;
-
-  color:#ffffff!important;
-  -webkit-text-fill-color:#ffffff!important;
-
-  display:grid!important;
-  place-items:center!important;
-
-  font-family:Arial,sans-serif!important;
-  font-size:20px!important;
-  font-weight:700!important;
-  line-height:13px!important;
-  letter-spacing:0!important;
-  text-indent:0!important;
-
-  overflow:visible!important;
-  transform:none!important;
-  box-shadow:none!important;
-  filter:none!important;
-  opacity:1!important;
-}
-</style>
 
 
 <style id="whale-home-text-dot-test-13">
@@ -9135,3 +9099,44 @@ html.whale-browser #homeView .board-dot.whale-home-text-dot{
   window.addEventListener("pageshow", fixHomeBraille, {once:true});
 })();
 </script>
+
+
+<style id="whale-correct-dot-final-priority-test-21">
+html.whale-browser #practiceView #typed
+.input-cell:not(.wrong):not(.error)
+.input-dot.on.whale-text-dot{
+  /* 기존 남색 원 완전 제거 */
+  background:none!important;
+  background-color:transparent!important;
+  border:0!important;
+  border-color:transparent!important;
+  outline:0!important;
+  box-shadow:none!important;
+
+  /* 셀 위치/크기는 기존 8px 레이아웃 그대로 */
+  width:8px!important;
+  height:8px!important;
+  min-width:8px!important;
+  min-height:8px!important;
+  padding:0!important;
+  margin:0!important;
+
+  /* 흰 점 문자만 중앙 표시 */
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-family:Arial,"Segoe UI Symbol",sans-serif!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  line-height:8px!important;
+  letter-spacing:0!important;
+  text-indent:0!important;
+
+  overflow:visible!important;
+  transform:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+</style>
