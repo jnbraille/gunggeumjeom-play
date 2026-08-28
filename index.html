@@ -9231,12 +9231,16 @@ html.whale-browser #homeView .board{
 }
 </style>
 
-<script id="whale-braille-glyph-test-4-script">
+
+
+
+<script id="whale-braille-glyph-test-5-script">
 (function(){
   if(!/Whale/i.test(navigator.userAgent||"")) return;
   document.documentElement.classList.add("whale-browser");
 
   const order=[1,4,2,5,3,6];
+  let syncQueued=false;
 
   function charFromDots(ds){
     let n=0;
@@ -9245,7 +9249,9 @@ html.whale-browser #homeView .board{
   }
 
   function syncCell(cell,dotClass){
-    const dots=[...cell.children].filter(el=>el.classList && el.classList.contains(dotClass));
+    const dots=[...cell.children].filter(
+      el=>el.classList && el.classList.contains(dotClass)
+    );
     if(dots.length!==6) return;
 
     const ds=[];
@@ -9253,27 +9259,62 @@ html.whale-browser #homeView .board{
       if(dot.classList.contains("on")) ds.push(order[i]);
     });
 
+    const nextChar=charFromDots(ds);
     let glyph=cell.querySelector(":scope > .whale-braille-glyph");
+
     if(!glyph){
       glyph=document.createElement("span");
       glyph.className="whale-braille-glyph";
       glyph.setAttribute("aria-hidden","true");
+      glyph.textContent=nextChar;
       cell.appendChild(glyph);
+      return;
     }
-    glyph.textContent=charFromDots(ds);
+
+    if(glyph.textContent!==nextChar){
+      glyph.textContent=nextChar;
+    }
   }
 
   function sync(){
-    document.querySelectorAll("#practiceView .input-cell").forEach(cell=>syncCell(cell,"input-dot"));
-    document.querySelectorAll("#homeView .board-cell").forEach(cell=>syncCell(cell,"board-dot"));
+    syncQueued=false;
+    document.querySelectorAll("#practiceView .input-cell").forEach(
+      cell=>syncCell(cell,"input-dot")
+    );
+    document.querySelectorAll("#homeView .board-cell").forEach(
+      cell=>syncCell(cell,"board-dot")
+    );
   }
 
-  const obs=new MutationObserver(sync);
-  obs.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
-  window.addEventListener("load",sync);
-  window.addEventListener("pageshow",sync);
-  setTimeout(sync,0);
-  setTimeout(sync,150);
-  setTimeout(sync,600);
+  function requestSync(){
+    if(syncQueued) return;
+    syncQueued=true;
+    requestAnimationFrame(sync);
+  }
+
+  const obs=new MutationObserver(mutations=>{
+    for(const m of mutations){
+      if(m.type==="childList"){
+        requestSync();
+        break;
+      }
+    }
+  });
+
+  function start(){
+    sync();
+    obs.observe(document.body,{
+      subtree:true,
+      childList:true
+    });
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",start,{once:true});
+  }else{
+    start();
+  }
+
+  window.addEventListener("pageshow",requestSync);
 })();
 </script>
