@@ -9140,3 +9140,67 @@ html.whale-browser #practiceView #typed
   opacity:1!important;
 }
 </style>
+
+
+<style id="whale-answer-dot-match-test-23">
+/* Whale: 답안보기 정답 점형도 입력 점형과 동일하게 흰 점으로 표시 */
+html.whale-browser #practiceView #answerPanel .input-dot.on,
+html.whale-browser #practiceView #answerBox .input-dot.on,
+html.whale-browser #practiceView .answer-panel .input-dot.on,
+html.whale-browser #practiceView .answer-box .input-dot.on,
+html.whale-browser #practiceView .answer-wrap .input-dot.on{
+  background:none!important;
+  background-color:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-family:Arial,"Segoe UI Symbol",sans-serif!important;
+  font-size:22px!important;
+  font-weight:400!important;
+  line-height:8px!important;
+  letter-spacing:0!important;
+  text-indent:0!important;
+  overflow:visible!important;
+  transform:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+</style>
+
+<script id="whale-answer-dot-match-test-23-script">
+(function(){
+  if(!/Whale/i.test(navigator.userAgent||"")) return;
+  document.documentElement.classList.add("whale-browser");
+
+  function fixAnswerDots(){
+    var selectors=[
+      "#practiceView #answerPanel .input-dot.on",
+      "#practiceView #answerBox .input-dot.on",
+      "#practiceView .answer-panel .input-dot.on",
+      "#practiceView .answer-box .input-dot.on",
+      "#practiceView .answer-wrap .input-dot.on"
+    ];
+    document.querySelectorAll(selectors.join(",")).forEach(function(dot){
+      if(dot.dataset.whaleWhiteAnswer==="1") return;
+      dot.dataset.whaleWhiteAnswer="1";
+      dot.textContent="●";
+    });
+  }
+
+  /* 답안보기 버튼을 누른 직후 한 번만 처리 */
+  document.addEventListener("click",function(e){
+    var t=e.target;
+    if(!t) return;
+    var txt=(t.textContent||"").trim();
+    if(txt.indexOf("답안")!==-1){
+      setTimeout(fixAnswerDots,0);
+    }
+  });
+  window.addEventListener("pageshow",fixAnswerDots,{once:true});
+})();
+</script>
