@@ -4383,15 +4383,35 @@ function nextQuestion(){
 
       // 네모 숫자·문자
       const boxed=symbolText.match(/^□(.+)$/);
+      const isWhale=/Whale/i.test(navigator.userAgent||"");
       if(boxed && /네모 (숫자|한글|자음|로마자|에이|가)/.test(labelText)){
-        sym.classList.add("boxed-char");
-        sym.textContent=boxed[1];
+        if(isWhale){
+          /* 웨일에서는 CSS border 대신 '□' 자체를 문자로 렌더링하여
+             내부 문자와 네모 테두리가 항상 정확히 같은 색으로 보이게 한다. */
+          sym.classList.add("boxed-char","whale-native-box");
+          const boxGlyph=document.createElement("span");
+          boxGlyph.className="whale-box-glyph";
+          boxGlyph.textContent="□";
+          const innerGlyph=document.createElement("span");
+          innerGlyph.className="whale-box-inner";
+          innerGlyph.textContent=boxed[1];
+          sym.append(boxGlyph,innerGlyph);
+        }else{
+          sym.classList.add("boxed-char");
+          sym.textContent=boxed[1];
+        }
         sym.setAttribute("aria-label",labelText+" "+boxed[1]);
 
       // 동그라미 한글 '가'
       }else if(labelText==="동그라미 한글" || labelText==="동그라미 가"){
-        sym.classList.add("circle-hangul-force");
-        sym.textContent="가";
+        if(isWhale){
+          /* ㉠과 동일한 '문자 기호' 방식으로 렌더링 */
+          sym.classList.add("whale-native-circle-hangul");
+          sym.textContent="㉮";
+        }else{
+          sym.classList.add("circle-hangul-force");
+          sym.textContent="가";
+        }
 
       }else{
         sym.textContent=symbolText;
@@ -9347,6 +9367,91 @@ html.whale-browser #practiceView .punct-symbol.boxed-char{
     background:transparent!important;
     border:2px solid #7fb3d5!important;
     opacity:1!important;
+  }
+}
+</style>
+
+
+<style id="whale-native-punctuation-and-home-light-test-30">
+/* 웨일 전용: 동그라미 한글은 ㉠과 같은 네이티브 문자 방식 */
+html.whale-browser #practiceView .whale-native-circle-hangul{
+  color:inherit!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  opacity:1!important;
+  font-family:"Segoe UI Symbol","Noto Sans Symbols 2","Arial Unicode MS","Malgun Gothic",sans-serif!important;
+  font-weight:500!important;
+}
+
+/* 웨일 전용: 네모도 테두리를 CSS border가 아니라 □ 문자로 표시.
+   □와 안쪽 글자가 똑같은 currentColor를 사용하므로 색이 갈라지지 않는다. */
+html.whale-browser #practiceView .punct-symbol.boxed-char.whale-native-box{
+  position:relative!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  width:1.45em!important;
+  height:1.45em!important;
+  min-width:1.45em!important;
+  min-height:1.45em!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:inherit!important;
+  -webkit-text-fill-color:currentColor!important;
+  box-shadow:none!important;
+  outline:0!important;
+  overflow:visible!important;
+}
+html.whale-browser #practiceView .whale-native-box .whale-box-glyph,
+html.whale-browser #practiceView .whale-native-box .whale-box-inner{
+  grid-area:1 / 1!important;
+  color:inherit!important;
+  -webkit-text-fill-color:currentColor!important;
+  font-family:"Segoe UI Symbol","Malgun Gothic",sans-serif!important;
+  line-height:1!important;
+  text-shadow:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+html.whale-browser #practiceView .whale-native-box .whale-box-glyph{
+  font-size:1.58em!important;
+  font-weight:400!important;
+}
+html.whale-browser #practiceView .whale-native-box .whale-box-inner{
+  font-size:.82em!important;
+  font-weight:700!important;
+}
+
+/* 웨일 다크모드 ON/OFF 양쪽에서 훈맹정음 채움점이 보이도록 함.
+   흰 텍스트 점 + difference 합성: 어두운 배경에서는 밝게,
+   밝은 배경에서는 어둡게 보인다. */
+html.whale-browser #homeView .board-dot.on.whale-home-text-dot{
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  border-color:transparent!important;
+  font-size:16px!important;
+  line-height:14px!important;
+  mix-blend-mode:difference!important;
+  opacity:1!important;
+  filter:none!important;
+}
+
+/* 테스트29의 light 전용 font-size:0 규칙보다 뒤에서 확실히 복원 */
+@media (prefers-color-scheme: light){
+  html.whale-browser #homeView .board-dot.on.whale-home-text-dot{
+    color:#ffffff!important;
+    -webkit-text-fill-color:#ffffff!important;
+    background:transparent!important;
+    border-color:transparent!important;
+    font-size:16px!important;
+    line-height:14px!important;
+    mix-blend-mode:difference!important;
   }
 }
 </style>
