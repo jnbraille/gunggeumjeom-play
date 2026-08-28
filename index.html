@@ -9111,48 +9111,121 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
 </style>
 
 
-<style id="whale-braille-only-test-2">
-html.whale-browser #practiceView #typed .input-dot,
-html.whale-browser #practiceView #answerDots .input-dot,
-html.whale-browser #practiceView .answer-panel .input-dot,
-html.whale-browser #homeView .board-dot{
-  box-sizing:border-box!important;
+<style id="whale-braille-glyph-test-3">
+/* 기본 환경에서는 새 점자문자 레이어를 완전히 숨김 */
+.whale-braille-glyph{display:none!important;}
+
+/* 네이버 웨일에서만 기존 원형 점을 숨기고 실제 점자문자 사용 */
+html.whale-browser #practiceView .input-cell .input-dot,
+html.whale-browser #homeView .board-cell .board-dot{
+  display:none!important;
+}
+
+html.whale-browser #practiceView .input-cell,
+html.whale-browser #homeView .board-cell{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:auto!important;
+  min-width:36px!important;
+  height:52px!important;
+  min-height:52px!important;
+  padding:0 3px!important;
+  margin:0!important;
+  background:transparent!important;
+  outline:0!important;
+  box-shadow:none!important;
+}
+
+html.whale-browser .whale-braille-glyph{
+  display:inline-block!important;
+  font-family:"Segoe UI Symbol","Arial Unicode MS",sans-serif!important;
+  font-size:38px!important;
+  line-height:1!important;
+  font-weight:400!important;
+  color:inherit!important;
+  -webkit-text-fill-color:currentColor!important;
   opacity:1!important;
   visibility:visible!important;
-  forced-color-adjust:none!important;
-  -webkit-print-color-adjust:exact!important;
-  print-color-adjust:exact!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
 }
-html.whale-browser #practiceView #typed .input-dot:not(.on),
-html.whale-browser #practiceView #answerDots .input-dot:not(.on),
-html.whale-browser #practiceView .answer-panel .input-dot:not(.on),
-html.whale-browser #homeView .board-dot:not(.on){
-  background:transparent!important;
-  border:2px solid rgb(205,220,245)!important;
-  outline:1px solid rgba(255,255,255,.72)!important;
-  outline-offset:-1px!important;
+
+/* 연습 영역은 문제 글자와 같은 색 흐름을 타도록 */
+html.whale-browser #practiceView #typed,
+html.whale-browser #practiceView #answerDots,
+html.whale-browser #homeView .board{
+  color:inherit!important;
 }
-html.whale-browser #practiceView #typed .input-dot.on,
-html.whale-browser #practiceView #answerDots .input-dot.on,
-html.whale-browser #practiceView .answer-panel .input-dot.on,
-html.whale-browser #homeView .board-dot.on{
-  background:rgb(190,215,255)!important;
-  border:2px solid rgb(225,235,255)!important;
-  outline:1px solid rgb(225,235,255)!important;
-  outline-offset:-1px!important;
-  box-shadow:0 0 0 1px rgba(255,255,255,.35)!important;
+
+/* 입력 중 틀린 셀은 기존 의미를 살려 빨강 */
+html.whale-browser #practiceView #typed .input-cell.wrong .whale-braille-glyph,
+html.whale-browser #practiceView #typed .input-cell.error .whale-braille-glyph{
+  color:#ff3b30!important;
+  -webkit-text-fill-color:#ff3b30!important;
 }
-html.whale-browser #practiceView #typed .input-cell.wrong .input-dot.on,
-html.whale-browser #practiceView #typed .input-cell.error .input-dot.on{
-  background:#ff3434!important;
-  border-color:#ff7777!important;
-  outline-color:#ff7777!important;
+
+/* 띄어쓰기 표시는 기존 빨간 밑줄 그대로 */
+html.whale-browser #practiceView .space-gap{
+  display:inline-block!important;
+}
+
+/* 모바일 */
+@media(max-width:768px){
+  html.whale-browser .whale-braille-glyph{
+    font-size:34px!important;
+  }
+  html.whale-browser #practiceView .input-cell,
+  html.whale-browser #homeView .board-cell{
+    min-width:32px!important;
+    height:48px!important;
+    min-height:48px!important;
+  }
 }
 </style>
-<script id="whale-braille-only-test-2-script">
+
+<script id="whale-braille-glyph-test-3-script">
 (function(){
-  if(/Whale/i.test(navigator.userAgent||"")){
-    document.documentElement.classList.add("whale-browser");
+  if(!/Whale/i.test(navigator.userAgent||"")) return;
+  document.documentElement.classList.add("whale-browser");
+
+  function dotsFromCell(cell, dotSelector){
+    const dots=[...cell.querySelectorAll(dotSelector)];
+    if(dots.length!==6) return [];
+    // DOM 순서는 1,4,2,5,3,6
+    const nums=[1,4,2,5,3,6];
+    const on=[];
+    dots.forEach((d,i)=>{ if(d.classList.contains("on")) on.push(nums[i]); });
+    return on;
   }
+
+  function charFromDots(ds){
+    let n=0;
+    ds.forEach(d=>n|=1<<(d-1));
+    return String.fromCodePoint(0x2800+n);
+  }
+
+  function ensureGlyph(cell, dotSelector){
+    if(cell.querySelector(".whale-braille-glyph")) return;
+    const ds=dotsFromCell(cell,dotSelector);
+    if(!ds.length && cell.querySelectorAll(dotSelector).length!==6) return;
+    const span=document.createElement("span");
+    span.className="whale-braille-glyph";
+    span.setAttribute("aria-hidden","true");
+    span.textContent=charFromDots(ds);
+    cell.appendChild(span);
+  }
+
+  function sync(){
+    document.querySelectorAll("#practiceView .input-cell").forEach(cell=>ensureGlyph(cell,".input-dot"));
+    document.querySelectorAll("#homeView .board-cell").forEach(cell=>ensureGlyph(cell,".board-dot"));
+  }
+
+  const obs=new MutationObserver(sync);
+  obs.observe(document.body,{subtree:true,childList:true,classList:true});
+  window.addEventListener("load",sync);
+  window.addEventListener("pageshow",sync);
+  setTimeout(sync,100);
+  setTimeout(sync,500);
 })();
 </script>
