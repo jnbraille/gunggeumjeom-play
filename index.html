@@ -9032,3 +9032,53 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
   }
 }
 </style>
+
+
+<style id="whale-dot-color-only-test-7">
+/*
+  Whale 전용 점형 색상 보강.
+  기존 일반 모드 / 일반 고대비 / 점형 구조 / 입력 로직은 변경하지 않는다.
+*/
+html.whale-browser #practiceView .input-dot,
+html.whale-browser #homeView .board-dot{
+  forced-color-adjust:none!important;
+  -webkit-print-color-adjust:exact!important;
+  print-color-adjust:exact!important;
+}
+
+/* 빈 점: 어두운 웨일 배경에서도 경계가 보이도록 밝은 회청색 */
+html.whale-browser #practiceView .input-dot:not(.on),
+html.whale-browser #homeView .board-dot:not(.on){
+  background-color:transparent!important;
+  border-color:#a9c8ee!important;
+  outline:1px solid #a9c8ee!important;
+  outline-offset:-1px!important;
+  box-shadow:none!important;
+}
+
+/* 찍힌 점: 문제 글자와 가까운 밝은 청색 */
+html.whale-browser #practiceView .input-dot.on,
+html.whale-browser #homeView .board-dot.on{
+  background-color:#9fc5f8!important;
+  border-color:#c6dcfa!important;
+  outline:1px solid #c6dcfa!important;
+  outline-offset:-1px!important;
+  box-shadow:none!important;
+}
+
+/* 띄어쓰기/오답의 기존 빨간 의미는 그대로 유지 */
+html.whale-browser #practiceView .space-gap,
+html.whale-browser #practiceView .input-cell.wrong .input-dot.on,
+html.whale-browser #practiceView .input-cell.error .input-dot.on{
+  forced-color-adjust:none!important;
+}
+</style>
+
+<script id="whale-dot-color-only-test-7-script">
+(function(){
+  /* UA 확인 후 클래스 하나만 붙인다. DOM 감시/변환/반복 실행 없음. */
+  if(/Whale/i.test(navigator.userAgent||"")){
+    document.documentElement.classList.add("whale-browser");
+  }
+})();
+</script>
