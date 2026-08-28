@@ -9295,3 +9295,19 @@ html.whale-browser #practiceView .boxed-char::after{
   display:none!important;
 }
 </style>
+
+
+<style id="whale-home-empty-dot-visibility-test-28">
+/* 네이버 웨일 전용: 홈 '훈맹정음'의 빈 점 테두리만 선명하게 */
+html.whale-browser #homeView .board-dot:not(.on){
+  background:transparent!important;
+  border:2px solid #8fb9d4!important;
+  outline:0!important;
+  box-shadow:none!important;
+  opacity:1!important;
+}
+/* 이미 완성된 흰색 채움점은 그대로 유지 */
+html.whale-browser #homeView .board-dot.on.whale-home-text-dot{
+  border-color:transparent!important;
+}
+</style>
