@@ -9014,73 +9014,85 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
 
 
 
+
+
+
 <style id="footer-support-logo-size-fix">
-/*
- 하단 로고 이미지 파일 자체에 넓은 여백이 있으므로
- img 박스만 키우는 대신 실제 로고가 차지하는 영역이 커지도록
- 폭을 크게 잡고 부모 영역에서 잘라 표시한다.
-*/
+/* 하단 지원 로고: 전체 문구가 잘리지 않으면서 기존보다 크게 */
 .foot-support{
-  flex:0 0 410px!important;
-  width:410px!important;
-  min-width:410px!important;
-  height:92px!important;
-  overflow:hidden!important;
+  flex:0 0 430px!important;
+  width:430px!important;
+  min-width:430px!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
   padding:0!important;
   margin:0!important;
   display:flex!important;
   align-items:center!important;
-  justify-content:flex-start!important;
+  justify-content:center!important;
   background:transparent!important;
 }
-
-.foot img.sponsor-logo-normal{
+.foot img.sponsor-logo-normal,
+.foot-support img{
   display:block!important;
-  width:520px!important;
-  min-width:520px!important;
-  max-width:none!important;
+  width:400px!important;
+  min-width:0!important;
+  max-width:100%!important;
   height:auto!important;
-  max-height:none!important;
+  max-height:78px!important;
+  object-fit:contain!important;
+  object-position:center center!important;
   margin:0!important;
   padding:0!important;
-  object-fit:contain!important;
-  object-position:left center!important;
   transform:none!important;
 }
-
-/* 푸터 안의 기존 이미지 크기 제한 무력화 */
-.foot-support img{
-  width:520px!important;
-  max-width:none!important;
-  height:auto!important;
-}
-
 @media(max-width:900px){
   .foot-support{
-    flex-basis:350px!important;
-    width:350px!important;
-    min-width:350px!important;
-    height:82px!important;
+    flex-basis:360px!important;
+    width:360px!important;
+    min-width:360px!important;
   }
   .foot img.sponsor-logo-normal,
   .foot-support img{
-    width:450px!important;
-    min-width:450px!important;
+    width:340px!important;
+    max-height:68px!important;
   }
 }
-
 @media(max-width:700px){
   .foot-support{
     width:100%!important;
     min-width:0!important;
-    height:78px!important;
-    justify-content:center!important;
+    flex-basis:auto!important;
   }
   .foot img.sponsor-logo-normal,
   .foot-support img{
-    width:430px!important;
-    min-width:430px!important;
-    max-width:none!important;
+    width:min(360px,92vw)!important;
+    max-width:92vw!important;
+    max-height:none!important;
   }
+}
+</style>
+
+
+<style id="footer-support-background-unify">
+/* 지원 로고 영역과 사이트 하단 배경을 완전히 같은 색으로 통일 */
+.foot,
+.foot-support,
+.foot img.sponsor-logo-normal,
+.foot-support img {
+  background:#078c82!important;
+  background-color:#078c82!important;
+}
+.foot-support {
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+}
+.foot img.sponsor-logo-normal,
+.foot-support img {
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
 }
 </style>
