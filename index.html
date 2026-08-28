@@ -9111,107 +9111,48 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
 </style>
 
 
-<style id="whale-braille-only-test-1">
-/*
-  네이버 웨일 '웹 콘텐츠 다크 모드' 대응 전용 실험 패치.
-  일반 모드 / 사이트 자체 고대비 모드의 기존 CSS는 수정하지 않음.
-
-  핵심:
-  - 점의 원래 background/border 색에 의존하지 않고
-  - CSS mask + currentColor 기반의 별도 점 레이어를 추가
-  - 브라우저 색 변환 후에도 문제 글자와 같은 currentColor 계열로 남도록 함
-*/
-html.whale-browser .board-dot,
-html.whale-browser #typed .input-dot,
-html.whale-browser #answerDots .input-dot,
-html.whale-browser .answer-dots .input-dot{
-  position:relative!important;
-}
-
-/* 원래 점은 그대로 두되, 웨일에서만 별도 표시층 추가 */
-html.whale-browser .board-dot::after,
-html.whale-browser #typed .input-dot::after,
-html.whale-browser #answerDots .input-dot::after,
-html.whale-browser .answer-dots .input-dot::after{
-  content:""!important;
-  position:absolute!important;
-  inset:-2px!important;
-  border-radius:50%!important;
-  pointer-events:none!important;
+<style id="whale-braille-only-test-2">
+html.whale-browser #practiceView #typed .input-dot,
+html.whale-browser #practiceView #answerDots .input-dot,
+html.whale-browser #practiceView .answer-panel .input-dot,
+html.whale-browser #homeView .board-dot{
+  box-sizing:border-box!important;
   opacity:1!important;
   visibility:visible!important;
-  box-sizing:border-box!important;
-  /* 기본은 빈 점 */
-  border:2px solid currentColor!important;
+  forced-color-adjust:none!important;
+  -webkit-print-color-adjust:exact!important;
+  print-color-adjust:exact!important;
+}
+html.whale-browser #practiceView #typed .input-dot:not(.on),
+html.whale-browser #practiceView #answerDots .input-dot:not(.on),
+html.whale-browser #practiceView .answer-panel .input-dot:not(.on),
+html.whale-browser #homeView .board-dot:not(.on){
   background:transparent!important;
-  color:CanvasText!important;
-  forced-color-adjust:auto!important;
+  border:2px solid rgb(205,220,245)!important;
+  outline:1px solid rgba(255,255,255,.72)!important;
+  outline-offset:-1px!important;
 }
-
-/* 찍힌 점 */
-html.whale-browser .board-dot.on::after,
-html.whale-browser #typed .input-dot.on::after,
-html.whale-browser #answerDots .input-dot.on::after,
-html.whale-browser .answer-dots .input-dot.on::after{
-  background:currentColor!important;
-  border-color:currentColor!important;
+html.whale-browser #practiceView #typed .input-dot.on,
+html.whale-browser #practiceView #answerDots .input-dot.on,
+html.whale-browser #practiceView .answer-panel .input-dot.on,
+html.whale-browser #homeView .board-dot.on{
+  background:rgb(190,215,255)!important;
+  border:2px solid rgb(225,235,255)!important;
+  outline:1px solid rgb(225,235,255)!important;
+  outline-offset:-1px!important;
+  box-shadow:0 0 0 1px rgba(255,255,255,.35)!important;
 }
-
-/* 웨일이 사이트를 어둡게 만든 경우에만 대비를 더 확보 */
-html.whale-browser.whale-rendered-dark .board-dot::after,
-html.whale-browser.whale-rendered-dark #typed .input-dot::after,
-html.whale-browser.whale-rendered-dark #answerDots .input-dot::after,
-html.whale-browser.whale-rendered-dark .answer-dots .input-dot::after{
-  color:rgb(225,235,255)!important;
-}
-
-/* 오답 점은 기존 의미 유지 */
-html.whale-browser.whale-rendered-dark #typed .input-cell.wrong .input-dot.on::after,
-html.whale-browser.whale-rendered-dark #typed .input-cell.error .input-dot.on::after{
-  color:rgb(255,70,70)!important;
+html.whale-browser #practiceView #typed .input-cell.wrong .input-dot.on,
+html.whale-browser #practiceView #typed .input-cell.error .input-dot.on{
+  background:#ff3434!important;
+  border-color:#ff7777!important;
+  outline-color:#ff7777!important;
 }
 </style>
-
-<script id="whale-braille-only-test-1-script">
+<script id="whale-braille-only-test-2-script">
 (function(){
-  const root=document.documentElement;
-  const isWhale=/Whale/i.test(navigator.userAgent||"");
-  if(!isWhale) return; // 다른 브라우저/일반 환경에는 아무것도 적용하지 않음
-  root.classList.add("whale-browser");
-
-  function rgb(v){
-    const m=String(v||"").match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/i);
-    return m ? [+m[1],+m[2],+m[3]] : null;
+  if(/Whale/i.test(navigator.userAgent||"")){
+    document.documentElement.classList.add("whale-browser");
   }
-  function lum(c){
-    return c ? .2126*c[0]+.7152*c[1]+.0722*c[2] : 255;
-  }
-  function detectRenderedDark(){
-    /*
-      웨일의 후처리형 다크모드는 prefers-color-scheme으로 잡히지 않을 수 있어
-      실제 렌더링 배경을 여러 지점에서 확인.
-    */
-    const els=[
-      document.body,
-      document.querySelector("main"),
-      document.querySelector(".card"),
-      document.querySelector("#practiceView")
-    ].filter(Boolean);
-    let darkest=255;
-    els.forEach(el=>{
-      const c=rgb(getComputedStyle(el).backgroundColor);
-      if(c) darkest=Math.min(darkest,lum(c));
-    });
-    root.classList.toggle("whale-rendered-dark",darkest<105);
-  }
-  function run(){
-    detectRenderedDark();
-    setTimeout(detectRenderedDark,150);
-    setTimeout(detectRenderedDark,700);
-    setTimeout(detectRenderedDark,1600);
-  }
-  window.addEventListener("load",run);
-  window.addEventListener("pageshow",run);
-  document.addEventListener("visibilitychange",()=>{if(!document.hidden)run();});
 })();
 </script>
