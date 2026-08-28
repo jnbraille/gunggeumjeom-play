@@ -9111,93 +9111,132 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
 </style>
 
 
-<style id="whale-braille-glyph-test-3">
-/* 기본 환경에서는 새 점자문자 레이어를 완전히 숨김 */
-.whale-braille-glyph{display:none!important;}
 
-/* 네이버 웨일에서만 기존 원형 점을 숨기고 실제 점자문자 사용 */
-html.whale-browser #practiceView .input-cell .input-dot,
-html.whale-browser #homeView .board-cell .board-dot{
+
+
+
+
+<style id="whale-braille-glyph-test-4">
+/*
+  웨일 전용 테스트4:
+  기존 6개 원형 점과 그 pseudo-element까지 완전히 숨기고
+  Unicode 점자문자 하나만 표시한다.
+  일반 모드/일반 고대비 CSS는 수정하지 않음.
+*/
+html.whale-browser #practiceView .input-cell > .input-dot,
+html.whale-browser #homeView .board-cell > .board-dot{
   display:none!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+  visibility:hidden!important;
+  opacity:0!important;
 }
 
+/* 혹시 기존 CSS가 점에 pseudo element를 붙였더라도 함께 제거 */
+html.whale-browser #practiceView .input-cell > .input-dot::before,
+html.whale-browser #practiceView .input-cell > .input-dot::after,
+html.whale-browser #homeView .board-cell > .board-dot::before,
+html.whale-browser #homeView .board-cell > .board-dot::after{
+  content:none!important;
+  display:none!important;
+  width:0!important;
+  height:0!important;
+}
+
+/* 셀 자체는 점자문자 하나만 담는 상자 */
 html.whale-browser #practiceView .input-cell,
 html.whale-browser #homeView .board-cell{
   display:inline-flex!important;
   align-items:center!important;
   justify-content:center!important;
-  width:auto!important;
-  min-width:36px!important;
-  height:52px!important;
-  min-height:52px!important;
-  padding:0 3px!important;
+  grid-template-columns:none!important;
+  grid-template-rows:none!important;
+  grid-auto-flow:unset!important;
+  width:34px!important;
+  min-width:34px!important;
+  height:46px!important;
+  min-height:46px!important;
+  padding:0 2px!important;
   margin:0!important;
   background:transparent!important;
+  border:0!important;
   outline:0!important;
   box-shadow:none!important;
+  overflow:visible!important;
 }
 
+/* Unicode 점자문자 */
 html.whale-browser .whale-braille-glyph{
   display:inline-block!important;
-  font-family:"Segoe UI Symbol","Arial Unicode MS",sans-serif!important;
-  font-size:38px!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  font-family:"Segoe UI Symbol","Noto Sans Symbols 2","Arial Unicode MS",sans-serif!important;
+  font-size:36px!important;
   line-height:1!important;
   font-weight:400!important;
   color:inherit!important;
   -webkit-text-fill-color:currentColor!important;
+  letter-spacing:0!important;
+  transform:none!important;
+  filter:none!important;
   opacity:1!important;
   visibility:visible!important;
-  filter:none!important;
-  mix-blend-mode:normal!important;
 }
 
-/* 연습 영역은 문제 글자와 같은 색 흐름을 타도록 */
-html.whale-browser #practiceView #typed,
-html.whale-browser #practiceView #answerDots,
-html.whale-browser #homeView .board{
-  color:inherit!important;
-}
-
-/* 입력 중 틀린 셀은 기존 의미를 살려 빨강 */
+/* 오답 셀의 점자문자만 빨강 */
 html.whale-browser #practiceView #typed .input-cell.wrong .whale-braille-glyph,
 html.whale-browser #practiceView #typed .input-cell.error .whale-braille-glyph{
   color:#ff3b30!important;
   -webkit-text-fill-color:#ff3b30!important;
 }
 
-/* 띄어쓰기 표시는 기존 빨간 밑줄 그대로 */
+/* 기존 띄어쓰기 표시는 유지 */
 html.whale-browser #practiceView .space-gap{
   display:inline-block!important;
+  width:25px!important;
+  min-width:25px!important;
+  height:45px!important;
 }
 
-/* 모바일 */
+/* 웨일에서 입력/정답 영역의 셀 간격 정리 */
+html.whale-browser #practiceView #typed,
+html.whale-browser #practiceView #answerDots,
+html.whale-browser #homeView .board{
+  gap:8px!important;
+}
+
 @media(max-width:768px){
   html.whale-browser .whale-braille-glyph{
-    font-size:34px!important;
+    font-size:33px!important;
   }
   html.whale-browser #practiceView .input-cell,
   html.whale-browser #homeView .board-cell{
-    min-width:32px!important;
-    height:48px!important;
-    min-height:48px!important;
+    width:31px!important;
+    min-width:31px!important;
+    height:43px!important;
+    min-height:43px!important;
   }
 }
 </style>
 
-<script id="whale-braille-glyph-test-3-script">
+<script id="whale-braille-glyph-test-4-script">
 (function(){
   if(!/Whale/i.test(navigator.userAgent||"")) return;
   document.documentElement.classList.add("whale-browser");
 
-  function dotsFromCell(cell, dotSelector){
-    const dots=[...cell.querySelectorAll(dotSelector)];
-    if(dots.length!==6) return [];
-    // DOM 순서는 1,4,2,5,3,6
-    const nums=[1,4,2,5,3,6];
-    const on=[];
-    dots.forEach((d,i)=>{ if(d.classList.contains("on")) on.push(nums[i]); });
-    return on;
-  }
+  const order=[1,4,2,5,3,6];
 
   function charFromDots(ds){
     let n=0;
@@ -9205,27 +9244,36 @@ html.whale-browser #practiceView .space-gap{
     return String.fromCodePoint(0x2800+n);
   }
 
-  function ensureGlyph(cell, dotSelector){
-    if(cell.querySelector(".whale-braille-glyph")) return;
-    const ds=dotsFromCell(cell,dotSelector);
-    if(!ds.length && cell.querySelectorAll(dotSelector).length!==6) return;
-    const span=document.createElement("span");
-    span.className="whale-braille-glyph";
-    span.setAttribute("aria-hidden","true");
-    span.textContent=charFromDots(ds);
-    cell.appendChild(span);
+  function syncCell(cell,dotClass){
+    const dots=[...cell.children].filter(el=>el.classList && el.classList.contains(dotClass));
+    if(dots.length!==6) return;
+
+    const ds=[];
+    dots.forEach((dot,i)=>{
+      if(dot.classList.contains("on")) ds.push(order[i]);
+    });
+
+    let glyph=cell.querySelector(":scope > .whale-braille-glyph");
+    if(!glyph){
+      glyph=document.createElement("span");
+      glyph.className="whale-braille-glyph";
+      glyph.setAttribute("aria-hidden","true");
+      cell.appendChild(glyph);
+    }
+    glyph.textContent=charFromDots(ds);
   }
 
   function sync(){
-    document.querySelectorAll("#practiceView .input-cell").forEach(cell=>ensureGlyph(cell,".input-dot"));
-    document.querySelectorAll("#homeView .board-cell").forEach(cell=>ensureGlyph(cell,".board-dot"));
+    document.querySelectorAll("#practiceView .input-cell").forEach(cell=>syncCell(cell,"input-dot"));
+    document.querySelectorAll("#homeView .board-cell").forEach(cell=>syncCell(cell,"board-dot"));
   }
 
   const obs=new MutationObserver(sync);
-  obs.observe(document.body,{subtree:true,childList:true,classList:true});
+  obs.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
   window.addEventListener("load",sync);
   window.addEventListener("pageshow",sync);
-  setTimeout(sync,100);
-  setTimeout(sync,500);
+  setTimeout(sync,0);
+  setTimeout(sync,150);
+  setTimeout(sync,600);
 })();
 </script>
