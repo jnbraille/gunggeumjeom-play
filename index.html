@@ -4042,19 +4042,7 @@ function sixDotCell(ch,wrong=false){
    */
    if(whale && !wrong && isOn){
      d.classList.add("whale-text-dot");
-     const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
-     svg.setAttribute("class","whale-dot-svg");
-     svg.setAttribute("viewBox","0 0 14 14");
-     svg.setAttribute("width","14");
-     svg.setAttribute("height","14");
-     svg.setAttribute("aria-hidden","true");
-     const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
-     c.setAttribute("cx","7");
-     c.setAttribute("cy","7");
-     c.setAttribute("r","6");
-     c.setAttribute("fill","#ffffff");
-     svg.appendChild(c);
-     d.appendChild(svg);
+     d.textContent="●";
    }
    el.appendChild(d)
  });return el
@@ -9063,40 +9051,36 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
 </style>
 
 
-<style id="whale-input-svg-dot-test-17">
-/*
-  Whale 전용 입력 정답점:
-  글자 ● 대신 실제 SVG 원을 셀 중앙에 고정.
-  폰트 baseline/글자 여백 문제를 제거하며,
-  빈 점/오답 빨강/띄어쓰기/홈 훈맹정음은 그대로 유지.
-*/
+<style id="whale-text-dot-test-18">
 #practiceView .input-dot.whale-text-dot{
-  position:relative!important;
+  width:13px!important;
+  height:13px!important;
+  min-width:13px!important;
+  min-height:13px!important;
+  padding:0!important;
+  margin:0!important;
+
   background:transparent!important;
   background-color:transparent!important;
   border-color:transparent!important;
-  color:transparent!important;
-  -webkit-text-fill-color:transparent!important;
-  font-size:0!important;
-  line-height:0!important;
+
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+
+  display:grid!important;
+  place-items:center!important;
+
+  font-family:Arial,sans-serif!important;
+  font-size:16px!important;
+  font-weight:700!important;
+  line-height:13px!important;
+  letter-spacing:0!important;
+  text-indent:0!important;
+
   overflow:visible!important;
   transform:none!important;
   box-shadow:none!important;
   filter:none!important;
-  opacity:1!important;
-}
-#practiceView .input-dot.whale-text-dot > .whale-dot-svg{
-  position:absolute!important;
-  left:50%!important;
-  top:50%!important;
-  width:14px!important;
-  height:14px!important;
-  transform:translate(-50%,-50%)!important;
-  pointer-events:none!important;
-  overflow:visible!important;
-}
-#practiceView .input-dot.whale-text-dot > .whale-dot-svg circle{
-  fill:#ffffff!important;
   opacity:1!important;
 }
 </style>
