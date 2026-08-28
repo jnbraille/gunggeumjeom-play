@@ -4042,7 +4042,19 @@ function sixDotCell(ch,wrong=false){
    */
    if(whale && !wrong && isOn){
      d.classList.add("whale-text-dot");
-     d.textContent="";
+     const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+     svg.setAttribute("class","whale-dot-svg");
+     svg.setAttribute("viewBox","0 0 14 14");
+     svg.setAttribute("width","14");
+     svg.setAttribute("height","14");
+     svg.setAttribute("aria-hidden","true");
+     const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
+     c.setAttribute("cx","7");
+     c.setAttribute("cy","7");
+     c.setAttribute("r","6");
+     c.setAttribute("fill","#ffffff");
+     svg.appendChild(c);
+     d.appendChild(svg);
    }
    el.appendChild(d)
  });return el
@@ -9051,13 +9063,15 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
 </style>
 
 
-<style id="whale-input-dot-svg-test-16">
+<style id="whale-input-svg-dot-test-17">
 /*
   Whale 전용 입력 정답점:
-  폰트 글리프 대신 중앙 정렬된 SVG 원을 사용하여 baseline/글자 여백 문제를 제거.
-  셀의 크기/위치와 빈 점, 오답 빨강, 띄어쓰기에는 영향 없음.
+  글자 ● 대신 실제 SVG 원을 셀 중앙에 고정.
+  폰트 baseline/글자 여백 문제를 제거하며,
+  빈 점/오답 빨강/띄어쓰기/홈 훈맹정음은 그대로 유지.
 */
 #practiceView .input-dot.whale-text-dot{
+  position:relative!important;
   background:transparent!important;
   background-color:transparent!important;
   border-color:transparent!important;
@@ -9065,16 +9079,25 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
   -webkit-text-fill-color:transparent!important;
   font-size:0!important;
   line-height:0!important;
-  text-indent:0!important;
   overflow:visible!important;
   transform:none!important;
   box-shadow:none!important;
   filter:none!important;
   opacity:1!important;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='6.5' fill='%23ffffff'/%3E%3C/svg%3E")!important;
-  background-repeat:no-repeat!important;
-  background-position:center center!important;
-  background-size:14px 14px!important;
+}
+#practiceView .input-dot.whale-text-dot > .whale-dot-svg{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:14px!important;
+  height:14px!important;
+  transform:translate(-50%,-50%)!important;
+  pointer-events:none!important;
+  overflow:visible!important;
+}
+#practiceView .input-dot.whale-text-dot > .whale-dot-svg circle{
+  fill:#ffffff!important;
+  opacity:1!important;
 }
 </style>
 
