@@ -4267,6 +4267,61 @@ html.whale-browser .gmgj-word{
 }
 </style>
 
+
+<style id="mobile-footer-contact-layout-v8">
+@media (max-width:768px){
+  footer .foot,
+  footer .shell.foot{
+    box-sizing:border-box!important;
+  }
+
+  /* 센터명 */
+  footer .foot-center-title{
+    text-align:center!important;
+    word-break:keep-all!important;
+    line-height:1.4!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  /* 주소/대표전화/팩스/전자우편 정보 영역 */
+  footer .foot-center-info{
+    width:100%!important;
+    max-width:100%!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
+    box-sizing:border-box!important;
+    text-align:center!important;
+    line-height:1.75!important;
+    word-break:keep-all!important;
+    overflow-wrap:normal!important;
+  }
+
+  footer .foot-center-info a{
+    white-space:nowrap!important;
+  }
+}
+
+/* 휴대폰 폭에서는 연락처 영역의 글자와 간격을 살짝 줄여
+   '대표전화 / 팩스 / 전자우편'이 어색하게 잘려 다음 줄로 넘어가지 않게 함 */
+@media (max-width:480px){
+  footer .foot-center-info{
+    font-size:.88rem!important;
+    line-height:1.8!important;
+    letter-spacing:-.035em!important;
+    padding-left:4px!important;
+    padding-right:4px!important;
+  }
+
+  footer .foot-center-title{
+    font-size:1.08rem!important;
+    letter-spacing:-.025em!important;
+  }
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
