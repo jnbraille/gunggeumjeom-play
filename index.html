@@ -9008,28 +9008,64 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
 
 
 
+
+
+
 <style id="footer-support-logo-size-fix">
-/* 하단 지원 로고 확대 */
+/* 하단 지원 로고: 세로 박스를 키우지 않고 가로로 크게 표시 */
 .foot-support{
-  flex:0 0 auto!important;
-  min-width:340px!important;
+  flex:0 0 390px!important;
+  width:390px!important;
+  min-width:390px!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:0!important;
   display:flex!important;
   align-items:center!important;
-  justify-content:center!important;
+  justify-content:flex-start!important;
+  background:transparent!important;
 }
 .foot img.sponsor-logo-normal{
-  width:330px!important;
-  max-width:none!important;
-  height:auto!important;
-  object-fit:contain!important;
   display:block!important;
+  width:370px!important;
+  max-width:370px!important;
+  height:auto!important;
+  max-height:72px!important;
+  object-fit:contain!important;
+  object-position:left center!important;
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+}
+
+/* 푸터 전체 높이는 로고 때문에 불필요하게 늘어나지 않게 */
+.foot{
+  align-items:center!important;
+}
+
+@media(max-width:900px){
+  .foot-support{
+    flex-basis:320px!important;
+    width:320px!important;
+    min-width:320px!important;
+  }
+  .foot img.sponsor-logo-normal{
+    width:305px!important;
+    max-width:305px!important;
+    max-height:64px!important;
+  }
 }
 @media(max-width:700px){
   .foot-support{
-    min-width:250px!important;
+    flex-basis:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    justify-content:center!important;
   }
   .foot img.sponsor-logo-normal{
-    width:245px!important;
+    width:min(340px,92vw)!important;
+    max-width:92vw!important;
+    max-height:none!important;
   }
 }
 </style>
