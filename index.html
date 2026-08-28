@@ -8972,3 +8972,115 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
   }
 }
 </style>
+
+
+<style id="whale-auto-dark-braille-visibility-final">
+/* 웨일 '모든 사이트 다크 모드'에서 점형 대비를 화면 글자색에 맞춰 자동 확보 */
+#practiceView #typed,
+#practiceView #answerDots,
+#practiceView .answer-dots{
+  color:CanvasText!important;
+}
+
+/* 빈 점 */
+#practiceView #typed .input-dot:not(.on),
+#practiceView #answerDots .input-dot:not(.on),
+#practiceView .answer-dots .input-dot:not(.on){
+  background:transparent!important;
+  border:2px solid currentColor!important;
+  box-shadow:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  filter:none!important;
+}
+
+/* 찍힌 점 */
+#practiceView #typed .input-dot.on,
+#practiceView #answerDots .input-dot.on,
+#practiceView .answer-dots .input-dot.on{
+  background:currentColor!important;
+  border:2px solid currentColor!important;
+  box-shadow:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  filter:none!important;
+}
+
+/* 오답 입력점만 빨강 */
+#practiceView #typed .input-cell.wrong .input-dot.on,
+#practiceView #typed .input-cell.error .input-dot.on{
+  color:#ff3b30!important;
+  background:#ff3b30!important;
+  border-color:#ff3b30!important;
+}
+
+/* 사이트 자체 고대비에서는 흰색 점형 */
+.high-contrast #practiceView #typed,
+.high-contrast #practiceView #answerDots,
+.high-contrast #practiceView .answer-dots,
+.contrast #practiceView #typed,
+.contrast #practiceView #answerDots,
+.contrast #practiceView .answer-dots{
+  color:#fff!important;
+}
+.high-contrast #practiceView #typed .input-dot:not(.on),
+.high-contrast #practiceView #answerDots .input-dot:not(.on),
+.high-contrast #practiceView .answer-dots .input-dot:not(.on),
+.contrast #practiceView #typed .input-dot:not(.on),
+.contrast #practiceView #answerDots .input-dot:not(.on),
+.contrast #practiceView .answer-dots .input-dot:not(.on){
+  background:#202020!important;
+  border-color:#fff!important;
+}
+.high-contrast #practiceView #typed .input-dot.on,
+.high-contrast #practiceView #answerDots .input-dot.on,
+.high-contrast #practiceView .answer-dots .input-dot.on,
+.contrast #practiceView #typed .input-dot.on,
+.contrast #practiceView #answerDots .input-dot.on,
+.contrast #practiceView .answer-dots .input-dot.on{
+  background:#fff!important;
+  border-color:#fff!important;
+}
+
+/* 브라우저가 다크 선호를 전달하는 경우 */
+@media (prefers-color-scheme:dark){
+  #practiceView #typed,
+  #practiceView #answerDots,
+  #practiceView .answer-dots{color:#fff!important;}
+
+  #practiceView #typed .input-dot:not(.on),
+  #practiceView #answerDots .input-dot:not(.on),
+  #practiceView .answer-dots .input-dot:not(.on){
+    background:transparent!important;
+    border-color:#fff!important;
+  }
+
+  #practiceView #typed .input-dot.on,
+  #practiceView #answerDots .input-dot.on,
+  #practiceView .answer-dots .input-dot.on{
+    background:#fff!important;
+    border-color:#fff!important;
+  }
+}
+
+/* 강제 색상에서도 현재 글자색을 그대로 사용 */
+@media (forced-colors:active), (prefers-contrast:more){
+  #practiceView #typed,
+  #practiceView #answerDots,
+  #practiceView .answer-dots{
+    color:CanvasText!important;
+  }
+  #practiceView #typed .input-dot:not(.on),
+  #practiceView #answerDots .input-dot:not(.on),
+  #practiceView .answer-dots .input-dot:not(.on){
+    background:transparent!important;
+    border-color:currentColor!important;
+  }
+  #practiceView #typed .input-dot.on,
+  #practiceView #answerDots .input-dot.on,
+  #practiceView .answer-dots .input-dot.on{
+    background:currentColor!important;
+    border-color:currentColor!important;
+  }
+}
+</style>
