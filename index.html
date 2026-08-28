@@ -9067,16 +9067,63 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
   align-items:center!important;
   justify-content:center!important;
   font-family:"Segoe UI Symbol","Arial Unicode MS",sans-serif!important;
-  font-size:17px!important;
+  font-size:16px!important;
   font-weight:700!important;
   line-height:14px!important;
   letter-spacing:0!important;
   text-indent:0!important;
   overflow:visible!important;
-  transform:translate(-0.5px, 0.5px)!important;
+  transform:translate(0px, 1px)!important;
   transform-origin:center center!important;
   box-shadow:none!important;
   filter:none!important;
   opacity:1!important;
 }
 </style>
+
+
+<style id="whale-home-text-dot-test-13">
+html.whale-browser #homeView .board-dot.whale-home-text-dot{
+  background:transparent!important;
+  background-color:transparent!important;
+  border-color:transparent!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-family:"Segoe UI Symbol","Arial Unicode MS",sans-serif!important;
+  font-size:16px!important;
+  font-weight:700!important;
+  line-height:14px!important;
+  letter-spacing:0!important;
+  text-indent:0!important;
+  overflow:visible!important;
+  transform:translate(0px,1px)!important;
+  transform-origin:center center!important;
+  box-shadow:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+</style>
+<script id="whale-home-text-dot-test-13-script">
+(function(){
+  if(!/Whale/i.test(navigator.userAgent||"")) return;
+  document.documentElement.classList.add("whale-browser");
+
+  function fixHomeBraille(){
+    document.querySelectorAll("#homeView .board-dot.on").forEach(function(dot){
+      if(dot.classList.contains("whale-home-text-dot")) return;
+      dot.classList.add("whale-home-text-dot");
+      dot.textContent="●";
+    });
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded", fixHomeBraille, {once:true});
+  }else{
+    fixHomeBraille();
+  }
+  window.addEventListener("pageshow", fixHomeBraille, {once:true});
+})();
+</script>
