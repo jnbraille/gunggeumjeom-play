@@ -4201,6 +4201,20 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i{
 .high-contrast .gmgj-jeom,.contrast .gmgj-jeom,body.high-contrast .gmgj-jeom,body.contrast .gmgj-jeom{color:#fff!important;-webkit-text-fill-color:#fff!important}
 .high-contrast .gmgj-braille i,.contrast .gmgj-braille i,body.high-contrast .gmgj-braille i,body.contrast .gmgj-braille i{background:#fff!important;background-color:#fff!important}
 </style>
+
+<style id="gmgj-whale-normal-word-fix-v6">
+html.whale-browser .gmgj-word{
+  color:#142b48!important;
+  -webkit-text-fill-color:#142b48!important;
+  opacity:1!important;
+  visibility:visible!important;
+  text-shadow:none!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  forced-color-adjust:none!important;
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -4366,9 +4380,13 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
 
 /* 네이버 웨일 웹 콘텐츠 다크 모드 */
 @media (prefers-color-scheme:dark){
+  /* 웨일 일반모드가 흰 배경일 때 OS 다크 설정 때문에 '궁금'이 흰색으로 바뀌지 않도록
+     원래 남색을 유지한다. 웨일 웹 콘텐츠 다크 모드는 브라우저 변환에 맡긴다. */
   html.whale-browser .gmgj-word{
-    color:#eaf2ff!important;
-    -webkit-text-fill-color:#eaf2ff!important;
+    color:#142b48!important;
+    -webkit-text-fill-color:#142b48!important;
+    text-shadow:none!important;
+    opacity:1!important;
   }
 
   html.whale-browser .gmgj-dotmark{
