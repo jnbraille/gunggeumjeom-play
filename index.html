@@ -9311,3 +9311,42 @@ html.whale-browser #homeView .board-dot.on.whale-home-text-dot{
   border-color:transparent!important;
 }
 </style>
+
+
+<style id="whale-punctuation-and-home-light-fix-test-29">
+/* 웨일에서 동그라미 한글/네모 계열을 현재 잘 보이는 동그라미 기역 계열 색상으로 통일 */
+html.whale-browser #practiceView .circle-hangul-force,
+html.whale-browser #practiceView .square-symbol,
+html.whale-browser #practiceView .boxed-char,
+html.whale-browser #practiceView .square-a-inside,
+html.whale-browser #practiceView .square-ga-inside,
+html.whale-browser #practiceView .punct-symbol.square-symbol,
+html.whale-browser #practiceView .punct-symbol.boxed-char{
+  color:#b9d8ff!important;
+  -webkit-text-fill-color:#b9d8ff!important;
+  border-color:#b9d8ff!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+
+/* 웨일 브라우저이지만 '웹 콘텐츠 다크 모드'를 끈 밝은 화면:
+   훈맹정음의 채움점이 빈 점처럼 보이지 않도록 원래 채움색 복원 */
+@media (prefers-color-scheme: light){
+  html.whale-browser #homeView .board-dot.on.whale-home-text-dot{
+    color:#2f6f91!important;
+    -webkit-text-fill-color:#2f6f91!important;
+    background:#2f6f91!important;
+    border:2px solid #2f6f91!important;
+    border-radius:50%!important;
+    font-size:0!important;
+    line-height:0!important;
+    text-indent:0!important;
+    opacity:1!important;
+  }
+  html.whale-browser #homeView .board-dot:not(.on){
+    background:transparent!important;
+    border:2px solid #7fb3d5!important;
+    opacity:1!important;
+  }
+}
+</style>
