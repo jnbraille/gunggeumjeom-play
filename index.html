@@ -9129,3 +9129,93 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
   }
 }
 </style>
+
+
+<style id="whale-dark-braille-white-force-final">
+/*
+  네이버 웨일 '모든 사이트 다크모드'의 자동 색상 변환 영향을 받더라도
+  점형 자체는 흰색이 유지되도록 점을 독립 렌더링한다.
+*/
+
+/* 점 영역은 브라우저 자동 다크 변환에서 최대한 제외 */
+#practiceView #typed,
+#practiceView #answerDots,
+#practiceView .answer-dots,
+#practiceView #typed .input-cell,
+#practiceView #answerDots .input-cell,
+#practiceView .answer-dots .input-cell,
+#practiceView #typed .input-dot,
+#practiceView #answerDots .input-dot,
+#practiceView .answer-dots .input-dot{
+  color-scheme:only light!important;
+  forced-color-adjust:none!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+}
+
+/* 점 자체 원래 배경/테두리는 투명화하고 ::after로 직접 그림 */
+#practiceView #typed .input-dot,
+#practiceView #answerDots .input-dot,
+#practiceView .answer-dots .input-dot{
+  position:relative!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+
+/* 빈 점 = 흰색 테두리 */
+#practiceView #typed .input-dot::after,
+#practiceView #answerDots .input-dot::after,
+#practiceView .answer-dots .input-dot::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  border-radius:50%!important;
+  box-sizing:border-box!important;
+  background:transparent!important;
+  border:2px solid #ffffff!important;
+  box-shadow:0 0 0 1px rgba(0,0,0,.42)!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:none!important;
+}
+
+/* 찍힌 점 = 흰색 꽉 찬 원 + 얇은 어두운 외곽선
+   (일반 밝은 화면에서도 점의 위치가 사라지지 않게 외곽선을 둠) */
+#practiceView #typed .input-dot.on::after,
+#practiceView #answerDots .input-dot.on::after,
+#practiceView .answer-dots .input-dot.on::after{
+  background:#ffffff!important;
+  border:2px solid #ffffff!important;
+  box-shadow:0 0 0 1px rgba(0,0,0,.55)!important;
+}
+
+/* 오답 입력 점만 빨강 */
+#practiceView #typed .input-cell.wrong .input-dot.on::after,
+#practiceView #typed .input-cell.error .input-dot.on::after{
+  background:#ff3b30!important;
+  border-color:#ff3b30!important;
+  box-shadow:0 0 0 1px rgba(0,0,0,.55)!important;
+}
+
+/* 혹시 기존 고대비 CSS가 pseudo element를 덮어도 마지막에 다시 확정 */
+.high-contrast #practiceView #typed .input-dot::after,
+.high-contrast #practiceView #answerDots .input-dot::after,
+.high-contrast #practiceView .answer-dots .input-dot::after,
+.contrast #practiceView #typed .input-dot::after,
+.contrast #practiceView #answerDots .input-dot::after,
+.contrast #practiceView .answer-dots .input-dot::after{
+  border-color:#fff!important;
+}
+.high-contrast #practiceView #typed .input-dot.on::after,
+.high-contrast #practiceView #answerDots .input-dot.on::after,
+.high-contrast #practiceView .answer-dots .input-dot.on::after,
+.contrast #practiceView #typed .input-dot.on::after,
+.contrast #practiceView #answerDots .input-dot.on::after,
+.contrast #practiceView .answer-dots .input-dot.on::after{
+  background:#fff!important;
+  border-color:#fff!important;
+}
+</style>
