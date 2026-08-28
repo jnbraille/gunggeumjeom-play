@@ -9111,57 +9111,21 @@ body.contrast #practiceView #typed .input-cell.error .input-dot.on{
 </style>
 
 
+<style id="whale-braille-static-test-6">
+.whale-braille-glyph{display:none!important;}
 
-
-
-
-
-<style id="whale-braille-glyph-test-4">
-/*
-  웨일 전용 테스트4:
-  기존 6개 원형 점과 그 pseudo-element까지 완전히 숨기고
-  Unicode 점자문자 하나만 표시한다.
-  일반 모드/일반 고대비 CSS는 수정하지 않음.
-*/
-html.whale-browser #practiceView .input-cell > .input-dot,
-html.whale-browser #homeView .board-cell > .board-dot{
+html.whale-browser #practiceView .input-cell.whale-converted > .input-dot,
+html.whale-browser #homeView .board-cell.whale-converted > .board-dot{
   display:none!important;
-  width:0!important;
-  height:0!important;
-  min-width:0!important;
-  min-height:0!important;
-  max-width:0!important;
-  max-height:0!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  outline:0!important;
-  box-shadow:none!important;
-  overflow:hidden!important;
-  visibility:hidden!important;
-  opacity:0!important;
 }
 
-/* 혹시 기존 CSS가 점에 pseudo element를 붙였더라도 함께 제거 */
-html.whale-browser #practiceView .input-cell > .input-dot::before,
-html.whale-browser #practiceView .input-cell > .input-dot::after,
-html.whale-browser #homeView .board-cell > .board-dot::before,
-html.whale-browser #homeView .board-cell > .board-dot::after{
-  content:none!important;
-  display:none!important;
-  width:0!important;
-  height:0!important;
-}
-
-/* 셀 자체는 점자문자 하나만 담는 상자 */
-html.whale-browser #practiceView .input-cell,
-html.whale-browser #homeView .board-cell{
+html.whale-browser #practiceView .input-cell.whale-converted,
+html.whale-browser #homeView .board-cell.whale-converted{
   display:inline-flex!important;
   align-items:center!important;
   justify-content:center!important;
   grid-template-columns:none!important;
   grid-template-rows:none!important;
-  grid-auto-flow:unset!important;
   width:34px!important;
   min-width:34px!important;
   height:46px!important;
@@ -9172,149 +9136,89 @@ html.whale-browser #homeView .board-cell{
   border:0!important;
   outline:0!important;
   box-shadow:none!important;
-  overflow:visible!important;
 }
 
-/* Unicode 점자문자 */
 html.whale-browser .whale-braille-glyph{
   display:inline-block!important;
-  width:auto!important;
-  height:auto!important;
-  margin:0!important;
-  padding:0!important;
   font-family:"Segoe UI Symbol","Noto Sans Symbols 2","Arial Unicode MS",sans-serif!important;
   font-size:36px!important;
   line-height:1!important;
   font-weight:400!important;
   color:inherit!important;
   -webkit-text-fill-color:currentColor!important;
-  letter-spacing:0!important;
-  transform:none!important;
-  filter:none!important;
   opacity:1!important;
   visibility:visible!important;
 }
 
-/* 오답 셀의 점자문자만 빨강 */
 html.whale-browser #practiceView #typed .input-cell.wrong .whale-braille-glyph,
 html.whale-browser #practiceView #typed .input-cell.error .whale-braille-glyph{
   color:#ff3b30!important;
   -webkit-text-fill-color:#ff3b30!important;
 }
-
-/* 기존 띄어쓰기 표시는 유지 */
-html.whale-browser #practiceView .space-gap{
-  display:inline-block!important;
-  width:25px!important;
-  min-width:25px!important;
-  height:45px!important;
-}
-
-/* 웨일에서 입력/정답 영역의 셀 간격 정리 */
-html.whale-browser #practiceView #typed,
-html.whale-browser #practiceView #answerDots,
-html.whale-browser #homeView .board{
-  gap:8px!important;
-}
-
-@media(max-width:768px){
-  html.whale-browser .whale-braille-glyph{
-    font-size:33px!important;
-  }
-  html.whale-browser #practiceView .input-cell,
-  html.whale-browser #homeView .board-cell{
-    width:31px!important;
-    min-width:31px!important;
-    height:43px!important;
-    min-height:43px!important;
-  }
-}
 </style>
 
-
-
-
-<script id="whale-braille-glyph-test-5-script">
+<script id="whale-braille-static-test-6-script">
 (function(){
   if(!/Whale/i.test(navigator.userAgent||"")) return;
   document.documentElement.classList.add("whale-browser");
 
   const order=[1,4,2,5,3,6];
-  let syncQueued=false;
 
-  function charFromDots(ds){
-    let n=0;
-    ds.forEach(d=>n|=1<<(d-1));
-    return String.fromCodePoint(0x2800+n);
+  function toChar(dots){
+    let mask=0;
+    dots.forEach((d,i)=>{
+      if(d.classList.contains("on")) mask|=1<<(order[i]-1);
+    });
+    return String.fromCodePoint(0x2800+mask);
   }
 
-  function syncCell(cell,dotClass){
-    const dots=[...cell.children].filter(
+  function convertCell(cell,dotClass){
+    if(!cell) return;
+    const dots=Array.from(cell.children).filter(
       el=>el.classList && el.classList.contains(dotClass)
     );
     if(dots.length!==6) return;
 
-    const ds=[];
-    dots.forEach((dot,i)=>{
-      if(dot.classList.contains("on")) ds.push(order[i]);
-    });
-
-    const nextChar=charFromDots(ds);
     let glyph=cell.querySelector(":scope > .whale-braille-glyph");
+    const ch=toChar(dots);
 
     if(!glyph){
       glyph=document.createElement("span");
       glyph.className="whale-braille-glyph";
       glyph.setAttribute("aria-hidden","true");
-      glyph.textContent=nextChar;
       cell.appendChild(glyph);
-      return;
     }
-
-    if(glyph.textContent!==nextChar){
-      glyph.textContent=nextChar;
-    }
+    if(glyph.textContent!==ch) glyph.textContent=ch;
+    cell.classList.add("whale-converted");
   }
 
-  function sync(){
-    syncQueued=false;
+  function convertVisible(){
     document.querySelectorAll("#practiceView .input-cell").forEach(
-      cell=>syncCell(cell,"input-dot")
+      c=>convertCell(c,"input-dot")
     );
     document.querySelectorAll("#homeView .board-cell").forEach(
-      cell=>syncCell(cell,"board-dot")
+      c=>convertCell(c,"board-dot")
     );
   }
 
-  function requestSync(){
-    if(syncQueued) return;
-    syncQueued=true;
-    requestAnimationFrame(sync);
-  }
-
-  const obs=new MutationObserver(mutations=>{
-    for(const m of mutations){
-      if(m.type==="childList"){
-        requestSync();
-        break;
-      }
-    }
-  });
-
-  function start(){
-    sync();
-    obs.observe(document.body,{
-      subtree:true,
-      childList:true
-    });
+  /*
+    중요: MutationObserver / interval / 무한 감시 없음.
+    메뉴 클릭을 막을 수 있는 지속 작업을 만들지 않는다.
+  */
+  function deferredConvert(){
+    setTimeout(convertVisible,0);
+    setTimeout(convertVisible,80);
   }
 
   if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",start,{once:true});
+    document.addEventListener("DOMContentLoaded",deferredConvert,{once:true});
   }else{
-    start();
+    deferredConvert();
   }
 
-  window.addEventListener("pageshow",requestSync);
+  /* 기존 사이트 이벤트를 가로채지 않고, bubble 이후 한 번만 갱신 */
+  document.addEventListener("click",deferredConvert,false);
+  document.addEventListener("keyup",deferredConvert,false);
+  window.addEventListener("pageshow",deferredConvert,false);
 })();
 </script>
