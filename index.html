@@ -6650,6 +6650,134 @@ html.contrast .homepage svg path{
 }
 </style>
 
+
+<style id="gmgj-v61-forced-colors-final">
+/* v61: 일반 고대비(Forced Colors) 최종 보정
+   네이버 웨일(.whale-browser)은 이 규칙에서 제외 */
+
+@media (forced-colors: active){
+
+  /* 궁금점 이야기 메뉴의 '점' 원형 흰 테두리 */
+  html:not(.whale-browser) header .nav-story-dotmark{
+    forced-color-adjust:none!important;
+    -webkit-forced-color-adjust:none!important;
+    background:#000!important;
+    border:2px solid #fff!important;
+    outline:0!important;
+    box-shadow:none!important;
+  }
+
+  html:not(.whale-browser) header .nav-story-jeom{
+    forced-color-adjust:none!important;
+    -webkit-forced-color-adjust:none!important;
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+  }
+
+  /* 궁금점 이야기 1·2·3·4·5·6 점 원형에 흰 테두리 */
+  html:not(.whale-browser) #brailleStoryView .story-sixdot span{
+    forced-color-adjust:none!important;
+    -webkit-forced-color-adjust:none!important;
+    background:#000!important;
+    color:#fff!important;
+    border:2px solid #fff!important;
+    box-sizing:border-box!important;
+    outline:0!important;
+    box-shadow:none!important;
+  }
+
+  /* SNS: 시스템 고대비가 SVG를 청록색 도형으로 바꾸는 현상을 차단 */
+  html:not(.whale-browser) .footer-social-links .social-link{
+    position:relative!important;
+    forced-color-adjust:none!important;
+    -webkit-forced-color-adjust:none!important;
+    background:#000!important;
+    border:2px solid #fff!important;
+    color:#fff!important;
+    border-radius:12px!important;
+    overflow:hidden!important;
+  }
+
+  /* 실제 SVG는 숨기고, 고대비 전용 식별 심볼을 선명하게 표시 */
+  html:not(.whale-browser) .footer-social-links .social-link svg{
+    display:none!important;
+  }
+
+  html:not(.whale-browser) .footer-social-links .social-link::after{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    position:absolute!important;
+    inset:0!important;
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+    background:#000!important;
+    font-family:Arial,"Malgun Gothic","맑은 고딕",sans-serif!important;
+    font-weight:900!important;
+    line-height:1!important;
+    forced-color-adjust:none!important;
+    -webkit-forced-color-adjust:none!important;
+  }
+
+  /* 각 서비스가 서로 확실히 구분되는 고대비 전용 심볼 */
+  html:not(.whale-browser) .footer-social-links .instagram::after{
+    content:"◎"!important;
+    font-size:31px!important;
+    border:3px solid #fff!important;
+    border-radius:9px!important;
+    margin:6px!important;
+  }
+  html:not(.whale-browser) .footer-social-links .facebook::after{
+    content:"f"!important;
+    font-family:Arial,sans-serif!important;
+    font-size:34px!important;
+    font-weight:900!important;
+  }
+  html:not(.whale-browser) .footer-social-links .youtube::after{
+    content:"▶"!important;
+    font-size:25px!important;
+    padding-left:3px!important;
+  }
+  html:not(.whale-browser) .footer-social-links .kakao::after{
+    content:"Ch"!important;
+    font-size:18px!important;
+    border:2px solid #fff!important;
+    border-radius:50%!important;
+    margin:7px!important;
+  }
+  html:not(.whale-browser) .footer-social-links .homepage::after{
+    content:"⌂"!important;
+    font-family:Arial,sans-serif!important;
+    font-size:36px!important;
+    font-weight:900!important;
+    padding-bottom:3px!important;
+  }
+}
+
+/* 사이트 자체 고대비 클래스에서도 동일한 원형 테두리 보강 */
+html:not(.whale-browser).high-contrast header .nav-story-dotmark,
+html:not(.whale-browser) body.high-contrast header .nav-story-dotmark,
+html:not(.whale-browser).contrast header .nav-story-dotmark,
+html:not(.whale-browser) body.contrast header .nav-story-dotmark{
+  border:2px solid #fff!important;
+}
+
+html:not(.whale-browser).high-contrast #brailleStoryView .story-sixdot span,
+html:not(.whale-browser) body.high-contrast #brailleStoryView .story-sixdot span,
+html:not(.whale-browser).contrast #brailleStoryView .story-sixdot span,
+html:not(.whale-browser) body.contrast #brailleStoryView .story-sixdot span{
+  background:#000!important;
+  color:#fff!important;
+  border:2px solid #fff!important;
+  box-sizing:border-box!important;
+}
+
+/* 저작권 가운데 정렬 유지 */
+.footer-copyright{
+  text-align:center!important;
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
