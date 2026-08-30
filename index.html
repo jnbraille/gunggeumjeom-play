@@ -4410,6 +4410,68 @@ html.whale-browser .gmgj-word{
 }
 </style>
 
+
+<style id="daily-improvement-v11">
+.daily-improvement-summary{
+  text-align:center;
+}
+#overallDailyImprovement{
+  margin-top:7px;
+  line-height:1.35;
+}
+#overallDailyComparison{
+  display:block;
+  margin-top:5px;
+  font-size:.98rem;
+  font-weight:650;
+}
+.category-daily-improvement{
+  display:block;
+  margin-top:9px;
+  font-size:.98rem!important;
+  font-weight:850!important;
+  line-height:1.45!important;
+}
+.category-daily-comparison{
+  display:block;
+  margin-top:3px;
+  font-size:.88rem!important;
+  font-weight:600!important;
+  color:#52656f!important;
+  line-height:1.4!important;
+}
+.improved{color:#15723c!important}
+.declined{color:#a12929!important}
+.same{color:#31576b!important}
+.no-comparison{color:#596b76!important}
+
+@media(max-width:768px){
+  #overallDailyImprovement{
+    font-size:1.5rem!important;
+  }
+  #overallDailyComparison{
+    font-size:.94rem!important;
+  }
+  .category-daily-improvement{
+    font-size:.94rem!important;
+  }
+  .category-daily-comparison{
+    font-size:.84rem!important;
+  }
+}
+
+@media(forced-colors:active){
+  #overallDailyImprovement,
+  #overallDailyComparison,
+  .category-daily-improvement,
+  .category-daily-comparison,
+  .improved,.declined,.same,.no-comparison{
+    color:CanvasText!important;
+    -webkit-text-fill-color:CanvasText!important;
+  }
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -4704,10 +4766,10 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
 <section id="recordsView" class="view">
 <h2 class="title">나의 기록</h2>
 <div class="records-summary-persist">
-  <div class="record persist-study-time">
-    <b>누적 학습 시간</b>
-    <div class="v" id="persistStudyTime">0분</div>
-    <small>이 기기·이 브라우저에 저장</small>
+  <div class="record daily-improvement-summary">
+    <b>전날 대비 전체 향상도</b>
+    <div class="v" id="overallDailyImprovement">비교 기록 없음</div>
+    <small id="overallDailyComparison">오늘과 어제 모두 학습한 경우 표시됩니다.</small>
   </div>
 </div>
 <div id="recordsGrid" class="records"></div>
@@ -4859,7 +4921,7 @@ heroBraille.forEach(ds=>{let c=document.createElement("div");c.className="board-
 const LEARNING_STORAGE_KEY="gmgjPlayLearningRecordV1";
 
 function defaultLearningRecord(){
-  return {total:0,correct:0,cat:{},wrong:{},studyMs:0};
+  return {total:0,correct:0,cat:{},wrong:{},studyMs:0,daily:{}};
 }
 
 function normalizeLearningRecord(value){
@@ -4881,7 +4943,28 @@ function normalizeLearningRecord(value){
   }
 
   const wrongObj=(value.wrong && typeof value.wrong==="object") ? value.wrong : {};
-  return {total,correct,cat:catObj,wrong:wrongObj,studyMs};
+
+  const dailyObj={};
+  if(value.daily && typeof value.daily==="object"){
+    Object.entries(value.daily).forEach(([date,d])=>{
+      if(!d || typeof d!=="object") return;
+      const dt=Number.isFinite(Number(d.total)) ? Math.max(0,Number(d.total)) : 0;
+      const dc=Number.isFinite(Number(d.correct)) ? Math.max(0,Math.min(dt,Number(d.correct))) : 0;
+      const dcat={};
+
+      if(d.cat && typeof d.cat==="object"){
+        Object.entries(d.cat).forEach(([name,r])=>{
+          if(!r || typeof r!=="object") return;
+          const rt=Number.isFinite(Number(r.total)) ? Math.max(0,Number(r.total)) : 0;
+          const rc=Number.isFinite(Number(r.correct)) ? Math.max(0,Math.min(rt,Number(r.correct))) : 0;
+          dcat[name]={total:rt,correct:rc};
+        });
+      }
+      dailyObj[date]={total:dt,correct:dc,cat:dcat};
+    });
+  }
+
+  return {total,correct,cat:catObj,wrong:wrongObj,studyMs,daily:dailyObj};
 }
 
 function loadLearningRecord(){
@@ -4900,6 +4983,74 @@ function saveLearningRecord(){
   }catch(err){
     console.warn("학습 기록을 저장하지 못했습니다.",err);
   }
+}
+
+function localDateKey(date=new Date()){
+  const y=date.getFullYear();
+  const m=String(date.getMonth()+1).padStart(2,"0");
+  const d=String(date.getDate()).padStart(2,"0");
+  return `${y}-${m}-${d}`;
+}
+
+function yesterdayDateKey(){
+  const d=new Date();
+  d.setDate(d.getDate()-1);
+  return localDateKey(d);
+}
+
+function ensureDailyRecord(dateKey){
+  if(!rec.daily || typeof rec.daily!=="object") rec.daily={};
+  if(!rec.daily[dateKey]) rec.daily[dateKey]={total:0,correct:0,cat:{}};
+  if(!rec.daily[dateKey].cat || typeof rec.daily[dateKey].cat!=="object") rec.daily[dateKey].cat={};
+  return rec.daily[dateKey];
+}
+
+function recordDailyAnswer(category,isCorrect){
+  const day=ensureDailyRecord(localDateKey());
+  day.total++;
+  if(isCorrect) day.correct++;
+
+  day.cat[category]??={total:0,correct:0};
+  day.cat[category].total++;
+  if(isCorrect) day.cat[category].correct++;
+
+  /* 날짜별 기록은 최근 120일만 보관해 localStorage가 불필요하게 커지지 않게 함 */
+  const keys=Object.keys(rec.daily).sort();
+  if(keys.length>120){
+    keys.slice(0,keys.length-120).forEach(k=>delete rec.daily[k]);
+  }
+}
+
+function dailyRate(record){
+  return record && record.total>0 ? Math.round(record.correct/record.total*100) : null;
+}
+
+function categoryDailyRate(record,category){
+  const r=record && record.cat ? record.cat[category] : null;
+  return r && r.total>0 ? Math.round(r.correct/r.total*100) : null;
+}
+
+function improvementData(todayRate,yesterdayRate){
+  if(todayRate===null || yesterdayRate===null) return null;
+  return {
+    today:todayRate,
+    yesterday:yesterdayRate,
+    diff:todayRate-yesterdayRate
+  };
+}
+
+function improvementLabel(data){
+  if(!data) return "비교 기록 없음";
+  if(data.diff>0) return `+${data.diff}%p 향상`;
+  if(data.diff<0) return `${data.diff}%p 하락`;
+  return "0%p 변화 없음";
+}
+
+function improvementClass(data){
+  if(!data) return "no-comparison";
+  if(data.diff>0) return "improved";
+  if(data.diff<0) return "declined";
+  return "same";
 }
 
 let rec=loadLearningRecord(),cat="초성",round=0,q=null,input="",grading=false,queue=[],wrongOnlyMode=false,pressed=new Set(),chord=new Set(),timer,sessionStart=Date.now(),typedCells=0,sessionTotal=0,sessionCorrect=0,activeTypingMs=0,typingStartedAt=null,lastSpeed=0;
@@ -5119,8 +5270,24 @@ function openWrongPractice(category){
 function stats(){
   liveMetrics();
   saveLearningRecord();
-  const persistStudyTime=document.getElementById("persistStudyTime");
-  if(persistStudyTime) persistStudyTime.textContent=formatStudyTime(currentStoredStudyMs());
+
+  const todayRecord=(rec.daily||{})[localDateKey()]||null;
+  const yesterdayRecord=(rec.daily||{})[yesterdayDateKey()]||null;
+  const overallImprovement=improvementData(dailyRate(todayRecord),dailyRate(yesterdayRecord));
+  const overallDailyImprovement=document.getElementById("overallDailyImprovement");
+  const overallDailyComparison=document.getElementById("overallDailyComparison");
+
+  if(overallDailyImprovement){
+    overallDailyImprovement.textContent=improvementLabel(overallImprovement);
+    overallDailyImprovement.classList.remove("improved","declined","same","no-comparison");
+    overallDailyImprovement.classList.add(improvementClass(overallImprovement));
+  }
+  if(overallDailyComparison){
+    overallDailyComparison.textContent=overallImprovement
+      ? `어제 ${overallImprovement.yesterday}% → 오늘 ${overallImprovement.today}%`
+      : "오늘과 어제 모두 학습한 경우 표시됩니다.";
+  }
+
   homeTotal.textContent=rec.total;
   homeRate.textContent=pct(rec.correct,rec.total)+"%";
   homeBar.style.width=pct(rec.correct,rec.total)+"%";
@@ -5146,7 +5313,23 @@ function stats(){
     const rate=document.createElement("small");
     rate.textContent="정답률 "+pct(r.correct,r.total)+"%";
 
-    e.append(title,total,rate);
+    const todayCatRate=categoryDailyRate(todayRecord,c);
+    const yesterdayCatRate=categoryDailyRate(yesterdayRecord,c);
+    const catImprovement=improvementData(todayCatRate,yesterdayCatRate);
+
+    const improvement=document.createElement("small");
+    improvement.className="category-daily-improvement "+improvementClass(catImprovement);
+    improvement.textContent=catImprovement
+      ? "전날 대비 "+improvementLabel(catImprovement)
+      : "전날 대비 비교 기록 없음";
+
+    const comparison=document.createElement("small");
+    comparison.className="category-daily-comparison";
+    comparison.textContent=catImprovement
+      ? `어제 ${catImprovement.yesterday}% → 오늘 ${catImprovement.today}%`
+      : "오늘·어제 모두 학습 시 비교";
+
+    e.append(title,total,rate,improvement,comparison);
 
     if(wrongItems.length){
       const actions=document.createElement("div");
@@ -5430,7 +5613,7 @@ function playFeedbackSound(ok){
     });
   }catch(e){}
 }
-function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";sessionTotal++;if(ok)sessionCorrect++;rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;if(!ok)recordWrongQuestion(cat,q,input);if(ok&&wrongOnlyMode)removeWrongQuestion(cat,q);stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{if(ok&&finishWrongPracticeIfDone(cat))return;round++;if(round>=queue.length){round=0;queue=wrongOnlyMode?getWrongQueue(cat):makeQueue(cat)}if(wrongOnlyMode&&queue.length===0){finishWrongPracticeIfDone(cat);return}nextQuestion()},ok?1200:2000)}
+function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";sessionTotal++;if(ok)sessionCorrect++;rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;recordDailyAnswer(cat,ok);if(!ok)recordWrongQuestion(cat,q,input);if(ok&&wrongOnlyMode)removeWrongQuestion(cat,q);stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{if(ok&&finishWrongPracticeIfDone(cat))return;round++;if(round>=queue.length){round=0;queue=wrongOnlyMode?getWrongQueue(cat):makeQueue(cat)}if(wrongOnlyMode&&queue.length===0){finishWrongPracticeIfDone(cat);return}nextQuestion()},ok?1200:2000)}
 document.onkeydown=e=>{
 if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput")) return;
 if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}if(e.key===" "){e.preventDefault();beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return}let k=e.key.toLowerCase();if(KD[k]){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
@@ -5547,7 +5730,7 @@ setInterval(()=>{
 const resetLearningRecordsBtn=document.getElementById("resetLearningRecords");
 if(resetLearningRecordsBtn){
   resetLearningRecordsBtn.addEventListener("click",()=>{
-    const ok=window.confirm("학습 기록을 모두 초기화할까요?\\n푼 문제, 정답률, 틀린 문제, 누적 학습 시간이 모두 삭제됩니다.");
+    const ok=window.confirm("학습 기록을 모두 초기화할까요?\\n푼 문제, 정답률, 틀린 문제, 날짜별 기록과 향상도가 모두 삭제됩니다.");
     if(!ok) return;
 
     persistentStudyStartedAt=null;
@@ -5708,6 +5891,7 @@ function nextSpellingV17(){
       rec.cat["맞춤법"]??={total:0,correct:0};
       rec.cat["맞춤법"].total++;
       if(isCorrect) rec.cat["맞춤법"].correct++;
+      recordDailyAnswer("맞춤법",isCorrect);
       stats();
 
       box.classList.add("answered");
