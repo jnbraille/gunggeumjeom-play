@@ -5145,6 +5145,101 @@ html.whale-browser .gmgj-word{
 }
 </style>
 
+
+<style id="gmgj-braille-correction-v22">
+#brailleDetectionCanvas{
+  cursor:crosshair !important;
+  touch-action:none !important;
+}
+.braille-correction-guide{
+  max-width:820px;
+  margin:12px auto;
+  padding:12px 16px;
+  border-radius:12px;
+  background:#f3faf8;
+  text-align:center;
+  line-height:1.55;
+  word-break:keep-all;
+}
+.braille-correction-guide p{margin:5px 0 0}
+.braille-correction-actions{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:14px 0 6px;
+}
+.braille-cell-result{
+  max-width:900px;
+  margin:18px auto 6px;
+  padding:18px;
+  border:1px solid #9ebac6;
+  border-radius:14px;
+  background:#fff;
+}
+.braille-cell-result h3{
+  margin:0 0 14px;
+  text-align:center;
+}
+.braille-cell-cards{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.braille-cell-card{
+  min-width:105px;
+  padding:10px 12px;
+  border:1px solid #b8cbd2;
+  border-radius:12px;
+  text-align:center;
+  background:#f8fbfb;
+}
+.braille-cell-number,.braille-cell-dots{
+  display:block;
+  font-weight:700;
+}
+.braille-cell-symbol{
+  display:block;
+  margin:4px 0;
+  font-size:2.25rem;
+  line-height:1.05;
+}
+.braille-cell-summary{
+  margin:15px 0 0;
+  text-align:center;
+  line-height:1.65;
+  word-break:keep-all;
+}
+.braille-unicode-result{
+  font-size:1.65rem;
+  letter-spacing:.12em;
+}
+@media(max-width:768px){
+  .braille-correction-guide{
+    margin:10px 6px;
+    padding:11px 12px;
+  }
+  .braille-correction-actions{
+    padding:0 6px;
+  }
+  .braille-correction-actions button{
+    min-height:48px;
+    font-size:1rem;
+  }
+  .braille-cell-card{
+    min-width:92px;
+  }
+}
+@media(forced-colors:active){
+  .braille-correction-guide,.braille-cell-result,.braille-cell-card{
+    background:Canvas !important;
+    color:CanvasText !important;
+    border-color:CanvasText !important;
+  }
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -5371,11 +5466,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
   <button data-view="guide"><span class="center-nav-title">전남점자도서관<br>시각장애인학습지원센터</span></button>
 </nav></div></header>
 <main class="shell">
-<section id="homeView" class="view active">
-<div class="home-shortcut-wrap">
-  <button type="button" id="installShortcutButton" class="home-shortcut-button">궁금점 PLAY 바로가기 만들기</button>
-  <div id="installShortcutHelp" class="home-shortcut-help" hidden role="status"></div>
-</div><div class="hero"><div><h2>망설이지 말고 시작하세요,<br><em class="mobile-firststep">점자 학습의 가장 쉬운 첫걸음</em></h2></div><div id="board" class="board"></div></div><h2 class="title">단계별 학습하기</h2><div id="homeGrid" class="grid"></div><div class="bottom"><div class="card"><h3>나의 학습 현황</h3><div class="big"><span id="homeTotal">0</span>문제</div><div>정답률 <b id="homeRate">0%</b></div><div class="bar"><span id="homeBar"></span></div></div><div class="card"><h3>입력 방법</h3><div><kbd>F D S</kbd> / <kbd>J K L</kbd> 점자 입력</div><div><kbd>Backspace</kbd>/<kbd>Delete</kbd> 삭제 · <kbd>Space</kbd> 띄어쓰기 · <kbd>Enter</kbd> 제출</div></div></div></section>
+<section id="homeView" class="view active"><div class="hero"><div><h2>망설이지 말고 시작하세요,<br><em class="mobile-firststep">점자 학습의 가장 쉬운 첫걸음</em></h2></div><div id="board" class="board"></div></div><h2 class="title">단계별 학습하기</h2><div id="homeGrid" class="grid"></div><div class="bottom"><div class="card"><h3>나의 학습 현황</h3><div class="big"><span id="homeTotal">0</span>문제</div><div>정답률 <b id="homeRate">0%</b></div><div class="bar"><span id="homeBar"></span></div></div><div class="card"><h3>입력 방법</h3><div><kbd>F D S</kbd> / <kbd>J K L</kbd> 점자 입력</div><div><kbd>Backspace</kbd>/<kbd>Delete</kbd> 삭제 · <kbd>Space</kbd> 띄어쓰기 · <kbd>Enter</kbd> 제출</div></div></div></section>
 
 
 <section id="brailleReaderView" class="view braille-reader-view" aria-labelledby="brailleReaderTitle">
@@ -5440,15 +5531,32 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
       사진을 촬영하거나 선택한 뒤, 점자가 있는 부분을 손가락이나 마우스로 드래그해 선택해 주세요.
     </div>
     <div id="brailleDetectionResult" class="braille-detection-result" hidden>
-      <h3>점자 점 탐지 결과</h3>
-      <canvas id="brailleDetectionCanvas" aria-label="점자로 추정되는 점을 표시한 분석 이미지"></canvas>
+      <h3>점자 점 보정</h3>
+      <canvas id="brailleDetectionCanvas" aria-label="점자로 추정되는 점을 표시한 분석 이미지. 표시된 점을 선택하면 삭제하고 빈 곳을 선택하면 점을 추가할 수 있습니다."></canvas>
       <p id="brailleDetectionSummary"></p>
-      <p class="braille-detection-note">현재는 사진의 선·테두리보다 점자처럼 작고 둥근 돌출점을 우선해서 찾는 1단계입니다. 다음 단계에서 탐지된 점을 6점 셀로 묶어 점형과 한글을 판독합니다.</p>
+
+      <div class="braille-correction-guide">
+        <strong>점 위치를 확인해 주세요.</strong>
+        <p>점자가 아닌 빨간 원은 클릭하거나 터치하면 삭제됩니다. 실제 점자가 빠진 곳은 사진을 클릭하거나 터치하면 새 점을 추가할 수 있습니다.</p>
+      </div>
+
+      <div class="braille-correction-actions">
+        <button type="button" id="brailleUndoCorrection" class="reader-secondary-btn" disabled>마지막 수정 취소</button>
+        <button type="button" id="brailleReReadButton" class="reader-primary-btn">보정한 점으로 점형 판독하기</button>
+      </div>
+
+      <div id="brailleCellResult" class="braille-cell-result" hidden aria-live="polite">
+        <h3>점형 판독 결과</h3>
+        <div id="brailleCellCards" class="braille-cell-cards"></div>
+        <p id="brailleCellSummary" class="braille-cell-summary"></p>
+      </div>
+
+      <p class="braille-detection-note">자동 탐지 뒤 사용자가 점 위치를 한 번 보정하고, 남은 점의 규칙적인 간격과 2열×3행 구조를 이용해 점형을 판독합니다.</p>
     </div>
 
     <div id="brailleReaderNextStep" class="braille-reader-next-step">
       <strong>현재 단계</strong>
-      <p>카메라 촬영·사진 선택 후 사용자가 점자 영역을 직접 지정하고, 선택한 영역만 자동 분석하도록 연결했습니다. 다음 단계에서 탐지된 점을 6점 셀로 묶고 한글 점자로 변환합니다.</p>
+      <p>점자 영역을 지정한 뒤 자동으로 점 후보를 찾고, 잘못 찾은 점은 삭제하고 빠진 점은 직접 추가할 수 있습니다. 보정이 끝나면 남은 점을 2열×3행 셀로 묶어 점 번호와 점형을 판독합니다.</p>
     </div>
   </div>
 </section>
@@ -6734,13 +6842,12 @@ window.addEventListener("hashchange",()=>{
 });
 
 </script>
-<script id="braille-reader-region-select-v19">
+<script id="braille-reader-correction-v22">
 (function(){
   const cameraInput=document.getElementById("brailleCameraInput");
   const imageInput=document.getElementById("brailleImageInput");
   const preview=document.getElementById("braillePreviewImage");
   const stage=document.getElementById("brailleSelectionStage");
-  const previewArea=document.getElementById("braillePreviewArea");
   const placeholder=document.getElementById("braillePreviewPlaceholder");
   const selectionBox=document.getElementById("brailleSelectionBox");
   const analyze=document.getElementById("brailleAnalyzeButton");
@@ -6750,6 +6857,11 @@ window.addEventListener("hashchange",()=>{
   const result=document.getElementById("brailleDetectionResult");
   const canvas=document.getElementById("brailleDetectionCanvas");
   const summary=document.getElementById("brailleDetectionSummary");
+  const undoBtn=document.getElementById("brailleUndoCorrection");
+  const rereadBtn=document.getElementById("brailleReReadButton");
+  const cellResult=document.getElementById("brailleCellResult");
+  const cellCards=document.getElementById("brailleCellCards");
+  const cellSummary=document.getElementById("brailleCellSummary");
 
   const shades={
     top:document.getElementById("brailleSelectionShadeTop"),
@@ -6758,15 +6870,18 @@ window.addEventListener("hashchange",()=>{
     left:document.getElementById("brailleSelectionShadeLeft")
   };
 
-  if(!cameraInput || !imageInput || !preview || !stage) return;
+  if(!cameraInput || !imageInput || !preview || !stage || !canvas) return;
 
   let currentObjectUrl=null;
-  let selection=null; // {x,y,w,h} stage CSS px
-  let dragMode=null;
-  let dragHandle=null;
-  let startPoint=null;
-  let startSelection=null;
+  let selection=null;
+  let dragMode=null, dragHandle=null, startPoint=null, startSelection=null;
   const minSelection=36;
+
+  // 분석 이미지와 사용자가 확정하는 점 목록
+  let baseImageData=null;
+  let detectedPoints=[];
+  let correctionHistory=[];
+  let markRadius=10;
 
   function revokeCurrent(){
     if(currentObjectUrl){
@@ -6791,7 +6906,6 @@ window.addEventListener("hashchange",()=>{
       reselect.hidden=true;
       return;
     }
-
     const r=stage.getBoundingClientRect();
     const x=Math.max(0,Math.min(selection.x,r.width));
     const y=Math.max(0,Math.min(selection.y,r.height));
@@ -6804,7 +6918,6 @@ window.addEventListener("hashchange",()=>{
     selectionBox.style.top=y+"px";
     selectionBox.style.width=w+"px";
     selectionBox.style.height=h+"px";
-
     shades.top.style.cssText=`display:block;left:0;top:0;width:100%;height:${y}px`;
     shades.bottom.style.cssText=`display:block;left:0;top:${y+h}px;width:100%;height:${Math.max(0,r.height-y-h)}px`;
     shades.left.style.cssText=`display:block;left:0;top:${y}px;width:${x}px;height:${h}px`;
@@ -6815,9 +6928,18 @@ window.addEventListener("hashchange",()=>{
     reselect.hidden=!valid;
   }
 
+  function resetCorrection(){
+    detectedPoints=[];
+    correctionHistory=[];
+    baseImageData=null;
+    if(undoBtn) undoBtn.disabled=true;
+    if(cellResult) cellResult.hidden=true;
+  }
+
   function clearSelection(message=true){
     selection=null;
     renderSelection();
+    resetCorrection();
     if(result) result.hidden=true;
     if(message) status.textContent="점자가 있는 부분의 왼쪽 위에서 오른쪽 아래로 드래그해 영역을 선택해 주세요.";
   }
@@ -6828,7 +6950,6 @@ window.addEventListener("hashchange",()=>{
       status.textContent="이미지 파일을 선택해 주세요.";
       return;
     }
-
     revokeCurrent();
     currentObjectUrl=URL.createObjectURL(file);
     preview.onload=()=>{
@@ -6847,16 +6968,12 @@ window.addEventListener("hashchange",()=>{
     const p=stagePointFromEvent(e);
     startPoint=p;
     startSelection=selection ? {...selection} : null;
-
     if(handle && selection){
-      dragMode="resize";
-      dragHandle=handle;
+      dragMode="resize"; dragHandle=handle;
     }else{
-      dragMode="new";
-      dragHandle=null;
+      dragMode="new"; dragHandle=null;
       selection={x:p.x,y:p.y,w:0,h:0};
     }
-
     stage.setPointerCapture?.(e.pointerId);
     e.preventDefault();
     renderSelection();
@@ -6865,48 +6982,31 @@ window.addEventListener("hashchange",()=>{
   function movePointer(e){
     if(!dragMode || !startPoint) return;
     const p=stagePointFromEvent(e);
-
     if(dragMode==="new"){
       selection={
-        x:Math.min(startPoint.x,p.x),
-        y:Math.min(startPoint.y,p.y),
-        w:Math.abs(p.x-startPoint.x),
-        h:Math.abs(p.y-startPoint.y)
+        x:Math.min(startPoint.x,p.x), y:Math.min(startPoint.y,p.y),
+        w:Math.abs(p.x-startPoint.x), h:Math.abs(p.y-startPoint.y)
       };
     }else if(dragMode==="resize" && startSelection){
-      let x1=startSelection.x, y1=startSelection.y;
-      let x2=startSelection.x+startSelection.w, y2=startSelection.y+startSelection.h;
-
+      let x1=startSelection.x,y1=startSelection.y;
+      let x2=startSelection.x+startSelection.w,y2=startSelection.y+startSelection.h;
       if(dragHandle.includes("w")) x1=p.x;
       if(dragHandle.includes("e")) x2=p.x;
       if(dragHandle.includes("n")) y1=p.y;
       if(dragHandle.includes("s")) y2=p.y;
-
-      selection={
-        x:Math.min(x1,x2),
-        y:Math.min(y1,y2),
-        w:Math.abs(x2-x1),
-        h:Math.abs(y2-y1)
-      };
+      selection={x:Math.min(x1,x2),y:Math.min(y1,y2),w:Math.abs(x2-x1),h:Math.abs(y2-y1)};
     }
-
     renderSelection();
     e.preventDefault();
   }
 
   function endPointer(e){
     if(!dragMode) return;
-    dragMode=null;
-    dragHandle=null;
-    startPoint=null;
-    startSelection=null;
+    dragMode=null; dragHandle=null; startPoint=null; startSelection=null;
     stage.releasePointerCapture?.(e.pointerId);
-
     if(selection && selection.w>=minSelection && selection.h>=minSelection){
       status.textContent="점자 영역이 선택되었습니다. 모서리 손잡이로 조정하거나 ‘선택 영역 판독하기’를 눌러 주세요.";
-    }else{
-      clearSelection();
-    }
+    }else clearSelection();
     e.preventDefault();
   }
 
@@ -6920,12 +7020,274 @@ window.addEventListener("hashchange",()=>{
   change.addEventListener("click",()=>imageInput.click());
   reselect.addEventListener("click",()=>clearSelection());
 
+  function drawDetectedPoints(){
+    if(!baseImageData) return;
+    const ctx=canvas.getContext("2d");
+    ctx.putImageData(baseImageData,0,0);
+    ctx.save();
+    ctx.lineWidth=Math.max(2,Math.round(Math.min(canvas.width,canvas.height)/350));
+    ctx.strokeStyle="#e11";
+    ctx.fillStyle="rgba(255,255,255,.10)";
+    detectedPoints.forEach((d,i)=>{
+      ctx.beginPath();
+      ctx.arc(d.x,d.y,d.r||markRadius,0,Math.PI*2);
+      ctx.fill(); ctx.stroke();
+      // 작은 번호는 점을 구분하기 위한 보조표시
+      if(detectedPoints.length<=40){
+        ctx.fillStyle="rgba(255,255,255,.94)";
+        ctx.font=`bold ${Math.max(10,Math.round(markRadius*.9))}px sans-serif`;
+        ctx.textAlign="center"; ctx.textBaseline="middle";
+        ctx.fillText(String(i+1),d.x,d.y);
+        ctx.fillStyle="rgba(255,255,255,.10)";
+      }
+    });
+    ctx.restore();
+    summary.textContent=detectedPoints.length
+      ? `현재 점 ${detectedPoints.length}개가 선택되어 있습니다. 잘못 표시된 원은 터치하여 삭제하고, 빠진 점은 사진을 터치하여 추가해 주세요.`
+      : "현재 선택된 점이 없습니다. 실제 점자가 있는 위치를 사진에서 터치하여 추가해 주세요.";
+    if(cellResult) cellResult.hidden=true;
+  }
+
+  function canvasPointFromEvent(e){
+    const r=canvas.getBoundingClientRect();
+    return {
+      x:(e.clientX-r.left)*(canvas.width/r.width),
+      y:(e.clientY-r.top)*(canvas.height/r.height)
+    };
+  }
+
+  canvas.addEventListener("pointerdown",(e)=>{
+    if(!baseImageData) return;
+    const p=canvasPointFromEvent(e);
+    // 화면에서 손가락으로 누르기 쉽게 실제 반경보다 넓게 판정
+    const hitRadius=Math.max(markRadius*2.1,22*(canvas.width/canvas.getBoundingClientRect().width));
+    let best=-1,bestD=Infinity;
+    detectedPoints.forEach((d,i)=>{
+      const dx=p.x-d.x,dy=p.y-d.y,dist=Math.hypot(dx,dy);
+      if(dist<bestD){bestD=dist;best=i;}
+    });
+
+    correctionHistory.push(detectedPoints.map(d=>({...d})));
+    if(best>=0 && bestD<=hitRadius){
+      detectedPoints.splice(best,1);
+      status.textContent="선택한 점을 삭제했습니다. 잘못 삭제했다면 ‘마지막 수정 취소’를 눌러 주세요.";
+    }else{
+      detectedPoints.push({x:p.x,y:p.y,r:markRadius,manual:true});
+      status.textContent="새 점을 추가했습니다.";
+    }
+    if(undoBtn) undoBtn.disabled=correctionHistory.length===0;
+    drawDetectedPoints();
+    e.preventDefault();
+  });
+
+  undoBtn?.addEventListener("click",()=>{
+    if(!correctionHistory.length) return;
+    detectedPoints=correctionHistory.pop();
+    undoBtn.disabled=correctionHistory.length===0;
+    drawDetectedPoints();
+    status.textContent="마지막 점 수정을 취소했습니다.";
+  });
+
+  function median(values){
+    if(!values.length) return 0;
+    const s=[...values].sort((a,b)=>a-b);
+    const m=Math.floor(s.length/2);
+    return s.length%2?s[m]:(s[m-1]+s[m])/2;
+  }
+
+  function cluster1D(values,tol){
+    const sorted=[...values].sort((a,b)=>a-b);
+    const clusters=[];
+    sorted.forEach(v=>{
+      const last=clusters[clusters.length-1];
+      if(!last || Math.abs(v-last.mean)>tol){
+        clusters.push({values:[v],mean:v});
+      }else{
+        last.values.push(v);
+        last.mean=last.values.reduce((a,b)=>a+b,0)/last.values.length;
+      }
+    });
+    return clusters;
+  }
+
+  function dotPatternToUnicode(dots){
+    let mask=0;
+    dots.forEach(n=>mask|=1<<(n-1));
+    return String.fromCodePoint(0x2800+mask);
+  }
+
+  // 사용자가 보정한 점을 2열×3행 셀로 묶는다.
+  // 한 줄 점자를 우선으로 하며, 여러 줄은 y 간격이 크게 벌어지는 지점에서 분리한다.
+  function inferBrailleCells(points){
+    if(!points.length) return {cells:[],confidence:"낮음"};
+
+    const xs=points.map(p=>p.x), ys=points.map(p=>p.y);
+    const xDiffs=[],yDiffs=[];
+    for(let i=0;i<points.length;i++){
+      for(let j=i+1;j<points.length;j++){
+        const dx=Math.abs(points[i].x-points[j].x);
+        const dy=Math.abs(points[i].y-points[j].y);
+        if(dx>3) xDiffs.push(dx);
+        if(dy>3) yDiffs.push(dy);
+      }
+    }
+
+    const minDim=Math.min(canvas.width,canvas.height);
+    // 점 간 기본 간격 후보: 전체 차이 중 작은 구간의 중앙값
+    function smallGapEstimate(diffs){
+      if(!diffs.length) return Math.max(12,minDim/12);
+      const s=[...diffs].sort((a,b)=>a-b);
+      const cutoff=s[Math.min(s.length-1,Math.max(2,Math.floor(s.length*.28)))];
+      const small=s.filter(v=>v<=cutoff*1.18);
+      return Math.max(8,median(small));
+    }
+
+    let rowStep=smallGapEstimate(yDiffs);
+    let colStep=smallGapEstimate(xDiffs);
+    rowStep=Math.max(8,Math.min(rowStep,minDim*.38));
+    colStep=Math.max(8,Math.min(colStep,minDim*.38));
+
+    // 실제 y 행을 묶고, 가까운 세 행씩 한 점자 줄로 처리
+    let yClusters=cluster1D(ys,Math.max(5,rowStep*.34));
+    if(yClusters.length<2){
+      yClusters=cluster1D(ys,Math.max(5,minDim*.055));
+    }
+
+    // 3행 단위 줄 구성. 행이 3개 미만인 경우에도 빈 행을 추정한다.
+    const lineGroups=[];
+    let current=[];
+    yClusters.forEach((c,idx)=>{
+      if(!current.length){current=[c];return;}
+      const gap=c.mean-current[current.length-1].mean;
+      if(current.length>=3 || gap>rowStep*1.75){
+        lineGroups.push(current); current=[c];
+      }else current.push(c);
+    });
+    if(current.length) lineGroups.push(current);
+
+    const allCells=[];
+    lineGroups.forEach((rows,lineIndex)=>{
+      const rowMeans=rows.map(r=>r.mean).sort((a,b)=>a-b);
+      let step=rowMeans.length>=2 ? median(rowMeans.slice(1).map((v,i)=>v-rowMeans[i])) : rowStep;
+      if(!step || !isFinite(step)) step=rowStep;
+
+      let baseY=rowMeans[0];
+      // 행이 2개뿐일 때 어느 행이 빠졌는지는 x 정렬만으로 완전히 알 수 없어 가장 가까운 3행 격자 후보를 사용
+      const rowCenters=[baseY,baseY+step,baseY+2*step];
+
+      const linePts=points.filter(p=>{
+        const nearest=Math.min(...rowCenters.map(y=>Math.abs(p.y-y)));
+        return nearest<=step*.62;
+      });
+      if(!linePts.length) return;
+
+      // x 열 묶기
+      const lx=linePts.map(p=>p.x);
+      let xClusters=cluster1D(lx,Math.max(5,colStep*.32));
+      const means=xClusters.map(c=>c.mean).sort((a,b)=>a-b);
+      if(!means.length) return;
+
+      const adjacent=means.slice(1).map((v,i)=>v-means[i]).filter(v=>v>4);
+      const within=adjacent.length ? Math.min(...adjacent) : colStep;
+      const pairLimit=within*1.55;
+
+      // 열을 좌/우 한 쌍으로 묶되 큰 간격에서는 새 셀 시작
+      const cellCols=[];
+      for(let i=0;i<means.length;){
+        if(i+1<means.length && means[i+1]-means[i]<=pairLimit){
+          cellCols.push([means[i],means[i+1]]);
+          i+=2;
+        }else{
+          // 단일 열: 다음 셀과의 상대 위치를 고려하되 기본적으로 왼쪽 열로 둔다.
+          cellCols.push([means[i],null]);
+          i+=1;
+        }
+      }
+
+      cellCols.forEach((cols,ci)=>{
+        const left=cols[0], right=cols[1];
+        const localWithin=right!==null ? right-left : within;
+        const xTol=Math.max(7,localWithin*.48);
+        const yTol=Math.max(7,step*.48);
+        const dots=[];
+
+        linePts.forEach(p=>{
+          let col=null,row=null;
+          if(Math.abs(p.x-left)<=xTol) col=0;
+          else if(right!==null && Math.abs(p.x-right)<=xTol) col=1;
+          if(col===null) return;
+
+          let bestRow=-1,bestDY=Infinity;
+          rowCenters.forEach((cy,ri)=>{
+            const dy=Math.abs(p.y-cy);
+            if(dy<bestDY){bestDY=dy;bestRow=ri;}
+          });
+          if(bestDY<=yTol) row=bestRow;
+          if(row===null || row<0) return;
+
+          const dotNum = col===0 ? [1,2,3][row] : [4,5,6][row];
+          if(!dots.includes(dotNum)) dots.push(dotNum);
+        });
+
+        if(dots.length){
+          dots.sort((a,b)=>a-b);
+          allCells.push({
+            line:lineIndex+1,
+            index:ci+1,
+            dots,
+            unicode:dotPatternToUnicode(dots)
+          });
+        }
+      });
+    });
+
+    const conf = points.length>=4 && allCells.length ? "보정 점 기준" : "낮음";
+    return {cells:allCells,confidence:conf};
+  }
+
+  function renderCellResult(){
+    const inferred=inferBrailleCells(detectedPoints);
+    cellCards.innerHTML="";
+
+    if(!inferred.cells.length){
+      cellSummary.textContent="점형을 구성할 수 있는 규칙적인 2열×3행 배열을 찾지 못했습니다. 점 위치를 다시 보정하거나 점자 영역을 조금 더 정확하게 선택해 주세요.";
+      cellResult.hidden=false;
+      return;
+    }
+
+    inferred.cells.forEach((cell,i)=>{
+      const card=document.createElement("div");
+      card.className="braille-cell-card";
+      card.innerHTML=`
+        <span class="braille-cell-number">${i+1}셀</span>
+        <span class="braille-cell-symbol" aria-label="${cell.dots.join(",")}번 점">${cell.unicode}</span>
+        <span class="braille-cell-dots">${cell.dots.join("·")}번 점</span>
+      `;
+      cellCards.appendChild(card);
+    });
+
+    const unicodeText=inferred.cells.map(c=>c.unicode).join("");
+    cellSummary.innerHTML=
+      `<strong>판독된 점형:</strong> <span class="braille-unicode-result">${unicodeText}</span><br>`+
+      `<span>현재 결과는 사용자가 보정한 점의 위치를 기준으로 만든 6점 점형입니다. 한글 변환은 점형 판독이 안정된 뒤 한국 점자 규칙과 연결합니다.</span>`;
+    cellResult.hidden=false;
+    cellResult.scrollIntoView({behavior:"smooth",block:"nearest"});
+    status.textContent=`보정한 ${detectedPoints.length}개의 점으로 ${inferred.cells.length}개의 점형을 판독했습니다.`;
+  }
+
+  rereadBtn?.addEventListener("click",()=>{
+    if(!detectedPoints.length){
+      status.textContent="판독할 점이 없습니다. 실제 점자 위치를 사진에서 터치해 추가해 주세요.";
+      return;
+    }
+    renderCellResult();
+  });
+
   analyze.addEventListener("click",()=>{
     if(!selection || !preview.naturalWidth || !preview.naturalHeight){
       status.textContent="먼저 점자 영역을 선택해 주세요.";
       return;
     }
-
     analyze.disabled=true;
     status.textContent="선택한 점자 영역을 분석하고 있습니다.";
 
@@ -6939,7 +7301,6 @@ window.addEventListener("hashchange",()=>{
         let sy=Math.max(0,Math.round(selection.y*scaleY));
         let sw=Math.max(1,Math.round(selection.w*scaleX));
         let sh=Math.max(1,Math.round(selection.h*scaleY));
-
         if(sx+sw>preview.naturalWidth) sw=preview.naturalWidth-sx;
         if(sy+sh>preview.naturalHeight) sh=preview.naturalHeight-sy;
 
@@ -6954,13 +7315,11 @@ window.addEventListener("hashchange",()=>{
         const original=ctx.getImageData(0,0,w,h);
         const data=original.data;
 
-        // 회색조
         const gray=new Uint8Array(w*h);
         for(let i=0,p=0;i<data.length;i+=4,p++){
           gray[p]=Math.round(data[i]*.299+data[i+1]*.587+data[i+2]*.114);
         }
 
-        // 국소 대비 기반 후보
         const integral=new Float64Array((w+1)*(h+1));
         for(let y=1;y<=h;y++){
           let row=0;
@@ -6972,10 +7331,8 @@ window.addEventListener("hashchange",()=>{
         function boxMean(x,y,r){
           const x0=Math.max(0,x-r),y0=Math.max(0,y-r);
           const x1=Math.min(w-1,x+r),y1=Math.min(h-1,y+r);
-          const A=integral[y0*(w+1)+x0];
-          const B=integral[y0*(w+1)+(x1+1)];
-          const C=integral[(y1+1)*(w+1)+x0];
-          const D=integral[(y1+1)*(w+1)+(x1+1)];
+          const A=integral[y0*(w+1)+x0],B=integral[y0*(w+1)+(x1+1)];
+          const C=integral[(y1+1)*(w+1)+x0],D=integral[(y1+1)*(w+1)+(x1+1)];
           return (D-B-C+A)/((x1-x0+1)*(y1-y0+1));
         }
 
@@ -6985,8 +7342,7 @@ window.addEventListener("hashchange",()=>{
         for(let y=localR;y<h-localR;y++){
           for(let x=localR;x<w-localR;x++){
             const idx=y*w+x;
-            const diff=Math.abs(gray[idx]-boxMean(x,y,localR));
-            if(diff>=15) mask[idx]=1;
+            if(Math.abs(gray[idx]-boxMean(x,y,localR))>=15) mask[idx]=1;
           }
         }
 
@@ -6994,15 +7350,12 @@ window.addEventListener("hashchange",()=>{
         for(let y=1;y<h-1;y++){
           for(let x=1;x<w-1;x++){
             let n=0;
-            for(let yy=-1;yy<=1;yy++){
-              for(let xx=-1;xx<=1;xx++) n+=mask[(y+yy)*w+(x+xx)];
-            }
+            for(let yy=-1;yy<=1;yy++) for(let xx=-1;xx<=1;xx++) n+=mask[(y+yy)*w+(x+xx)];
             if(n>=4) clean[y*w+x]=1;
           }
         }
 
-        const seen=new Uint8Array(w*h);
-        const components=[];
+        const seen=new Uint8Array(w*h),components=[];
         const minBox=Math.max(3,Math.round(minDim/260));
         const maxBox=Math.max(16,Math.round(minDim/22));
         const minArea=Math.max(6,Math.round(minDim*minDim/110000));
@@ -7013,25 +7366,19 @@ window.addEventListener("hashchange",()=>{
           for(let x=1;x<w-1;x++){
             const seed=y*w+x;
             if(!clean[seed]||seen[seed]) continue;
-
-            const stack=[seed];
-            seen[seed]=1;
+            const stack=[seed]; seen[seed]=1;
             let area=0,sumX=0,sumY=0,minX=x,maxX=x,minY=y,maxY=y,perim=0;
 
             while(stack.length){
-              const p=stack.pop();
-              const py=Math.floor(p/w),px=p-py*w;
+              const p=stack.pop(),py=Math.floor(p/w),px=p-py*w;
               area++;sumX+=px;sumY+=py;
-              if(px<minX)minX=px;if(px>maxX)maxX=px;
-              if(py<minY)minY=py;if(py>maxY)maxY=py;
-
+              if(px<minX)minX=px;if(px>maxX)maxX=px;if(py<minY)minY=py;if(py>maxY)maxY=py;
               const neigh=[[px-1,py],[px+1,py],[px,py-1],[px,py+1]];
               for(const [nx,ny] of neigh){
                 if(nx<0||nx>=w||ny<0||ny>=h||!clean[ny*w+nx]) perim++;
               }
               for(const d of dirs){
-                const q=p+d;
-                const qy=Math.floor(q/w),qx=q-qy*w;
+                const q=p+d,qy=Math.floor(q/w),qx=q-qy*w;
                 if(qx<=0||qx>=w-1||qy<=0||qy>=h-1) continue;
                 if(clean[q]&&!seen[q]){seen[q]=1;stack.push(q);}
               }
@@ -7039,37 +7386,27 @@ window.addEventListener("hashchange",()=>{
             }
 
             const bw=maxX-minX+1,bh=maxY-minY+1;
-            if(area<minArea||area>maxArea) continue;
-            if(bw<minBox||bh<minBox||bw>maxBox||bh>maxBox) continue;
-
+            if(area<minArea||area>maxArea||bw<minBox||bh<minBox||bw>maxBox||bh>maxBox) continue;
             const aspect=Math.max(bw,bh)/Math.max(1,Math.min(bw,bh));
             if(aspect>1.8) continue;
-
             const fill=area/(bw*bh);
             if(fill<.16||fill>.9) continue;
-
             const circularity=perim>0?(4*Math.PI*area)/(perim*perim):0;
             if(circularity<.16) continue;
-
-            components.push({
-              x:sumX/area,y:sumY/area,
-              size:(bw+bh)/2,
-              score:circularity/aspect
-            });
+            components.push({x:sumX/area,y:sumY/area,size:(bw+bh)/2,score:circularity/aspect});
           }
         }
 
         let usable=[];
         if(components.length){
           const sizes=components.map(c=>c.size).sort((a,b)=>a-b);
-          const median=sizes[Math.floor(sizes.length/2)];
-          usable=components.filter(c=>c.size>=median*.55&&c.size<=median*1.85);
+          const med=sizes[Math.floor(sizes.length/2)];
+          usable=components.filter(c=>c.size>=med*.55&&c.size<=med*1.85);
         }
-
         usable.sort((a,b)=>b.score-a.score);
+
         const merged=[];
-        const mergeDist=Math.max(5,Math.round(minDim/115));
-        const mergeDist2=mergeDist*mergeDist;
+        const mergeDist=Math.max(5,Math.round(minDim/115)),mergeDist2=mergeDist*mergeDist;
         for(const c of usable){
           let near=false;
           for(const d of merged){
@@ -7078,26 +7415,19 @@ window.addEventListener("hashchange",()=>{
           }
           if(!near) merged.push(c);
         }
-        usable=merged.slice(0,180);
 
-        ctx.putImageData(original,0,0);
-        ctx.save();
-        ctx.lineWidth=Math.max(2,Math.round(minDim/350));
-        ctx.strokeStyle="#e11";
-        ctx.fillStyle="rgba(255,255,255,.08)";
-        for(const d of usable){
-          const markR=Math.max(5,Math.min(18,Math.round(d.size*.85)));
-          ctx.beginPath();ctx.arc(d.x,d.y,markR,0,Math.PI*2);ctx.fill();ctx.stroke();
-        }
-        ctx.restore();
+        markRadius=Math.max(6,Math.min(18,Math.round((merged.length?median(merged.map(d=>d.size)):10)*.85)));
+        baseImageData=original;
+        detectedPoints=merged.slice(0,120).map(d=>({x:d.x,y:d.y,r:markRadius,manual:false}));
+        correctionHistory=[];
+        if(undoBtn) undoBtn.disabled=true;
+        if(cellResult) cellResult.hidden=true;
 
         result.hidden=false;
-        summary.textContent=usable.length
-          ? `선택한 영역에서 점자로 추정되는 둥근 점 ${usable.length}개를 찾았습니다. 빨간 원이 실제 점자 점에 주로 표시되는지 확인해 주세요.`
-          : "선택한 영역에서 점자로 추정되는 둥근 점을 찾지 못했습니다. 영역을 조금 넓히거나 다른 사진으로 다시 시도해 주세요.";
-        status.textContent=usable.length
-          ? "선택 영역의 점 탐지가 완료되었습니다."
-          : "점 탐지가 완료되었지만 인식 가능한 점이 부족합니다.";
+        drawDetectedPoints();
+        status.textContent=detectedPoints.length
+          ? "자동 점 탐지가 완료되었습니다. 잘못 표시된 점은 삭제하고 빠진 점은 추가한 뒤 점형을 판독해 주세요."
+          : "자동으로 찾은 점이 없습니다. 실제 점자 위치를 사진에서 직접 터치해 추가해 주세요.";
         result.scrollIntoView({behavior:"smooth",block:"nearest"});
       }catch(err){
         console.error(err);
@@ -7110,7 +7440,6 @@ window.addEventListener("hashchange",()=>{
 
   window.addEventListener("resize",()=>{
     if(selection){
-      // 화면 크기가 바뀌면 잘못된 좌표를 피하기 위해 다시 선택
       clearSelection(false);
       status.textContent="화면 크기가 변경되었습니다. 점자 영역을 다시 선택해 주세요.";
     }
@@ -7118,48 +7447,6 @@ window.addEventListener("hashchange",()=>{
   window.addEventListener("pagehide",revokeCurrent);
 })();
 </script>
-
-
-<script id="gmgj-shortcut-v19">
-(function(){
-  const btn=document.getElementById("installShortcutButton");
-  const help=document.getElementById("installShortcutHelp");
-  if(!btn||!help) return;
-
-  let deferredPrompt=null;
-
-  window.addEventListener("beforeinstallprompt",(e)=>{
-    e.preventDefault();
-    deferredPrompt=e;
-    btn.textContent="궁금점 PLAY 설치하기";
-  });
-
-  btn.addEventListener("click",async()=>{
-    if(deferredPrompt){
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt=null;
-      help.hidden=false;
-      help.textContent="설치 창에서 추가 또는 설치를 선택하면 바탕화면이나 앱 목록에서 바로 실행할 수 있습니다.";
-      return;
-    }
-
-    const ua=navigator.userAgent||"";
-    const isIOS=/iPhone|iPad|iPod/i.test(ua);
-    const isSafari=/Safari/i.test(ua)&&!/Chrome|CriOS|Edg|OPR/i.test(ua);
-
-    help.hidden=false;
-    if(isIOS && isSafari){
-      help.textContent="아이폰·아이패드 Safari에서는 공유 버튼을 누른 뒤 ‘홈 화면에 추가’를 선택해 주세요.";
-    }else if(/Android/i.test(ua)){
-      help.textContent="모바일 브라우저 메뉴에서 ‘홈 화면에 추가’ 또는 ‘앱 설치’를 선택해 주세요.";
-    }else{
-      help.textContent="PC 브라우저 메뉴에서 ‘앱 설치’, ‘바로가기 만들기’ 또는 ‘이 페이지를 앱으로 설치’를 선택해 주세요.";
-    }
-  });
-})();
-</script>
-
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
