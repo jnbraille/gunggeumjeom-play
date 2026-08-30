@@ -5242,24 +5242,97 @@ html.whale-browser .gmgj-word{
 
 
 
-<style id="gmgj-v24-nav-braille-icon">
-.nav-braille-icon{
+
+<style id="gmgj-v25-nav-main-dotmark">
+.nav-braille-reader{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:.12em !important;
+}
+.nav-dotmark{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  width:48px;
+  height:34px;
+  margin:0 .06em;
+  padding:0 6px;
+  border-radius:999px;
+  background:#142b48;
+  color:#fff;
+  flex:0 0 auto;
+  box-sizing:border-box;
+  vertical-align:middle;
+}
+.nav-dotmark-jeom{
   display:inline-block;
-  margin-right:.34em;
-  font-size:1.18em;
+  font-size:1em;
+  font-weight:800;
   line-height:1;
-  vertical-align:-.04em;
-  letter-spacing:0;
+  color:#fff;
+}
+.nav-dotmark-braille{
+  display:grid;
+  grid-template-columns:repeat(2,4px);
+  grid-template-rows:repeat(3,4px);
+  gap:2px 3px;
+  width:11px;
+  height:16px;
+  align-content:center;
+  justify-content:center;
+}
+.nav-dotmark-braille i{
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:#fff;
+  display:block;
+}
+.nav-reader-label{
+  white-space:nowrap;
+}
+
+@media (min-width:769px){
+  .nav-braille-reader{
+    font-size:1.18rem !important;
+  }
+  .nav-dotmark{
+    width:50px;
+    height:35px;
+  }
 }
 @media (max-width:768px){
-  .nav-braille-icon{
-    margin-right:.24em;
-    font-size:1.12em;
+  .nav-braille-reader{
+    gap:.08em !important;
+  }
+  .nav-dotmark{
+    width:43px;
+    height:31px;
+    padding:0 5px;
+    gap:4px;
+  }
+  .nav-dotmark-braille{
+    grid-template-columns:repeat(2,3.5px);
+    grid-template-rows:repeat(3,3.5px);
+    gap:2px 2.5px;
+  }
+  .nav-dotmark-braille i{
+    width:3.5px;
+    height:3.5px;
   }
 }
 @media(forced-colors:active){
-  .nav-braille-icon{
-    color:ButtonText !important;
+  .nav-dotmark{
+    background:ButtonText !important;
+    color:ButtonFace !important;
+    border:1px solid ButtonText !important;
+  }
+  .nav-dotmark-jeom,
+  .nav-dotmark-braille i{
+    color:ButtonFace !important;
+    background:ButtonFace !important;
   }
 }
 </style>
@@ -5484,7 +5557,14 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
 </div></div>
 <div class="shell"><nav>
   <button data-view="home" class="active">홈</button>
-  <button data-view="brailleReader"><span class="nav-braille-icon" aria-hidden="true">⠿</span>궁금점(점자판독)</button>
+  <button data-view="brailleReader" class="nav-braille-reader">
+  궁금<span class="nav-dotmark" aria-hidden="true">
+    <span class="nav-dotmark-jeom">점</span>
+    <span class="nav-dotmark-braille">
+      <i></i><i></i><i></i><i></i><i></i><i></i>
+    </span>
+  </span><span class="nav-reader-label">(점자판독)</span>
+</button>
   <button data-view="select">점자 타자 연습</button>
   <button data-view="records">나의 기록</button>
   <button data-view="guide"><span class="center-nav-title">전남점자도서관<br>시각장애인학습지원센터</span></button>
