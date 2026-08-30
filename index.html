@@ -5240,6 +5240,18 @@ html.whale-browser .gmgj-word{
 }
 </style>
 
+
+<style id="gmgj-braille-grid-v23">
+#brailleDetectionCanvas{
+  background:#f5f8f9;
+}
+.braille-cell-summary{
+  max-width:820px;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -5551,7 +5563,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
         <p id="brailleCellSummary" class="braille-cell-summary"></p>
       </div>
 
-      <p class="braille-detection-note">자동 탐지 뒤 사용자가 점 위치를 한 번 보정하고, 남은 점의 규칙적인 간격과 2열×3행 구조를 이용해 점형을 판독합니다.</p>
+      <p class="braille-detection-note">자동 탐지 뒤 사용자가 점 위치를 보정하면, 전체 점의 공통 행 간격·열 간격·셀 간격을 계산해 점자 격자를 맞춘 뒤 점형을 판독합니다.</p>
     </div>
 
     <div id="brailleReaderNextStep" class="braille-reader-next-step">
@@ -7118,131 +7130,322 @@ window.addEventListener("hashchange",()=>{
 
   // 사용자가 보정한 점을 2열×3행 셀로 묶는다.
   // 한 줄 점자를 우선으로 하며, 여러 줄은 y 간격이 크게 벌어지는 지점에서 분리한다.
-  function inferBrailleCells(points){
-    if(!points.length) return {cells:[],confidence:"낮음"};
-
-    const xs=points.map(p=>p.x), ys=points.map(p=>p.y);
-    const xDiffs=[],yDiffs=[];
-    for(let i=0;i<points.length;i++){
-      for(let j=i+1;j<points.length;j++){
-        const dx=Math.abs(points[i].x-points[j].x);
-        const dy=Math.abs(points[i].y-points[j].y);
-        if(dx>3) xDiffs.push(dx);
-        if(dy>3) yDiffs.push(dy);
+  function kmeans1D(values,k,iterations=30){
+    if(!values.length) return [];
+    const s=[...values].sort((a,b)=>a-b);
+    if(s.length<=k) return s.map(v=>({mean:v,values:[v]}));
+    let centers=[];
+    for(let i=0;i<k;i++){
+      const idx=Math.round((s.length-1)*i/(k-1));
+      centers.push(s[idx]);
+    }
+    for(let iter=0;iter<iterations;iter++){
+      const groups=Array.from({length:k},()=>[]);
+      for(const v of values){
+        let bi=0,bd=Infinity;
+        centers.forEach((c,i)=>{
+          const d=Math.abs(v-c);
+          if(d<bd){bd=d;bi=i;}
+        });
+        groups[bi].push(v);
       }
+      const next=centers.map((c,i)=>groups[i].length
+        ? groups[i].reduce((a,b)=>a+b,0)/groups[i].length
+        : c
+      );
+      const moved=next.some((v,i)=>Math.abs(v-centers[i])>.2);
+      centers=next;
+      if(!moved) break;
     }
+    return centers
+      .map((c,i)=>({mean:c,values:values.filter(v=>{
+        let bi=0,bd=Infinity;
+        centers.forEach((cc,j)=>{
+          const d=Math.abs(v-cc);
+          if(d<bd){bd=d;bi=j;}
+        });
+        return bi===i;
+      })}))
+      .filter(g=>g.values.length)
+      .sort((a,b)=>a.mean-b.mean);
+  }
 
-    const minDim=Math.min(canvas.width,canvas.height);
-    // 점 간 기본 간격 후보: 전체 차이 중 작은 구간의 중앙값
-    function smallGapEstimate(diffs){
-      if(!diffs.length) return Math.max(12,minDim/12);
-      const s=[...diffs].sort((a,b)=>a-b);
-      const cutoff=s[Math.min(s.length-1,Math.max(2,Math.floor(s.length*.28)))];
-      const small=s.filter(v=>v<=cutoff*1.18);
-      return Math.max(8,median(small));
-    }
+  function fitThreeRows(points){
+    const ys=points.map(p=>p.y);
+    if(!ys.length) return null;
 
-    let rowStep=smallGapEstimate(yDiffs);
-    let colStep=smallGapEstimate(xDiffs);
-    rowStep=Math.max(8,Math.min(rowStep,minDim*.38));
-    colStep=Math.max(8,Math.min(colStep,minDim*.38));
-
-    // 실제 y 행을 묶고, 가까운 세 행씩 한 점자 줄로 처리
-    let yClusters=cluster1D(ys,Math.max(5,rowStep*.34));
-    if(yClusters.length<2){
-      yClusters=cluster1D(ys,Math.max(5,minDim*.055));
-    }
-
-    // 3행 단위 줄 구성. 행이 3개 미만인 경우에도 빈 행을 추정한다.
-    const lineGroups=[];
-    let current=[];
-    yClusters.forEach((c,idx)=>{
-      if(!current.length){current=[c];return;}
-      const gap=c.mean-current[current.length-1].mean;
-      if(current.length>=3 || gap>rowStep*1.75){
-        lineGroups.push(current); current=[c];
-      }else current.push(c);
-    });
-    if(current.length) lineGroups.push(current);
-
-    const allCells=[];
-    lineGroups.forEach((rows,lineIndex)=>{
-      const rowMeans=rows.map(r=>r.mean).sort((a,b)=>a-b);
-      let step=rowMeans.length>=2 ? median(rowMeans.slice(1).map((v,i)=>v-rowMeans[i])) : rowStep;
-      if(!step || !isFinite(step)) step=rowStep;
-
-      let baseY=rowMeans[0];
-      // 행이 2개뿐일 때 어느 행이 빠졌는지는 x 정렬만으로 완전히 알 수 없어 가장 가까운 3행 격자 후보를 사용
-      const rowCenters=[baseY,baseY+step,baseY+2*step];
-
-      const linePts=points.filter(p=>{
-        const nearest=Math.min(...rowCenters.map(y=>Math.abs(p.y-y)));
-        return nearest<=step*.62;
-      });
-      if(!linePts.length) return;
-
-      // x 열 묶기
-      const lx=linePts.map(p=>p.x);
-      let xClusters=cluster1D(lx,Math.max(5,colStep*.32));
-      const means=xClusters.map(c=>c.mean).sort((a,b)=>a-b);
-      if(!means.length) return;
-
-      const adjacent=means.slice(1).map((v,i)=>v-means[i]).filter(v=>v>4);
-      const within=adjacent.length ? Math.min(...adjacent) : colStep;
-      const pairLimit=within*1.55;
-
-      // 열을 좌/우 한 쌍으로 묶되 큰 간격에서는 새 셀 시작
-      const cellCols=[];
-      for(let i=0;i<means.length;){
-        if(i+1<means.length && means[i+1]-means[i]<=pairLimit){
-          cellCols.push([means[i],means[i+1]]);
-          i+=2;
-        }else{
-          // 단일 열: 다음 셀과의 상대 위치를 고려하되 기본적으로 왼쪽 열로 둔다.
-          cellCols.push([means[i],null]);
-          i+=1;
+    // 3개 행이 모두 보이면 k-means가 가장 안정적이다.
+    if(ys.length>=3){
+      const km=kmeans1D(ys,Math.min(3,new Set(ys.map(v=>Math.round(v))).size));
+      if(km.length===3){
+        const centers=km.map(g=>g.mean).sort((a,b)=>a-b);
+        const d1=centers[1]-centers[0], d2=centers[2]-centers[1];
+        const step=(d1+d2)/2;
+        if(step>4 && Math.abs(d1-d2)<=step*.55){
+          return {centers,step};
         }
       }
+    }
 
-      cellCols.forEach((cols,ci)=>{
-        const left=cols[0], right=cols[1];
-        const localWithin=right!==null ? right-left : within;
-        const xTol=Math.max(7,localWithin*.48);
-        const yTol=Math.max(7,step*.48);
-        const dots=[];
+    // 행 하나가 비어 있는 경우를 위해 가능한 등간격 3행 격자를 탐색
+    const pairDiffs=[];
+    for(let i=0;i<ys.length;i++){
+      for(let j=i+1;j<ys.length;j++){
+        const d=Math.abs(ys[i]-ys[j]);
+        if(d>5) pairDiffs.push(d);
+      }
+    }
+    pairDiffs.sort((a,b)=>a-b);
+    const candidates=[];
+    pairDiffs.slice(0,Math.min(20,pairDiffs.length)).forEach(d=>{
+      candidates.push(d);
+      candidates.push(d/2);
+    });
 
-        linePts.forEach(p=>{
-          let col=null,row=null;
-          if(Math.abs(p.x-left)<=xTol) col=0;
-          else if(right!==null && Math.abs(p.x-right)<=xTol) col=1;
-          if(col===null) return;
-
-          let bestRow=-1,bestDY=Infinity;
-          rowCenters.forEach((cy,ri)=>{
-            const dy=Math.abs(p.y-cy);
-            if(dy<bestDY){bestDY=dy;bestRow=ri;}
+    let best=null;
+    for(const step0 of candidates){
+      if(step0<5) continue;
+      for(const y of ys){
+        for(let row=0;row<3;row++){
+          const base=y-row*step0;
+          const centers=[base,base+step0,base+2*step0];
+          let err=0;
+          ys.forEach(v=>{
+            err+=Math.min(...centers.map(c=>Math.pow((v-c)/step0,2)));
           });
-          if(bestDY<=yTol) row=bestRow;
-          if(row===null || row<0) return;
+          err/=ys.length;
+          if(!best || err<best.err) best={centers,step:step0,err};
+        }
+      }
+    }
+    return best;
+  }
 
-          const dotNum = col===0 ? [1,2,3][row] : [4,5,6][row];
-          if(!dots.includes(dotNum)) dots.push(dotNum);
+  function nearestRow(y,rowFit){
+    let row=0,dist=Infinity;
+    rowFit.centers.forEach((c,i)=>{
+      const d=Math.abs(y-c);
+      if(d<dist){dist=d;row=i;}
+    });
+    return {row,dist};
+  }
+
+  function fitHorizontalBrailleGrid(points,rowFit){
+    const pts=points.map(p=>{
+      const rr=nearestRow(p.y,rowFit);
+      return {...p,row:rr.row,rowDist:rr.dist};
+    }).filter(p=>p.rowDist<=rowFit.step*.62);
+
+    if(!pts.length) return null;
+
+    const xs=pts.map(p=>p.x);
+    const minX=Math.min(...xs), maxX=Math.max(...xs);
+    const span=Math.max(1,maxX-minX);
+
+    // 같은 행에 있는 점들의 x 차이는 실제 가로 점 간격을 찾는 데 특히 유용하다.
+    const sameRowDiffs=[];
+    for(let r=0;r<3;r++){
+      const rowPts=pts.filter(p=>p.row===r).sort((a,b)=>a.x-b.x);
+      for(let i=0;i<rowPts.length;i++){
+        for(let j=i+1;j<rowPts.length;j++){
+          const d=rowPts[j].x-rowPts[i].x;
+          if(d>5) sameRowDiffs.push(d);
+        }
+      }
+    }
+    const allDiffs=[];
+    for(let i=0;i<xs.length;i++){
+      for(let j=i+1;j<xs.length;j++){
+        const d=Math.abs(xs[i]-xs[j]);
+        if(d>5) allDiffs.push(d);
+      }
+    }
+
+    const source=(sameRowDiffs.length>=2?sameRowDiffs:allDiffs).sort((a,b)=>a-b);
+    if(!source.length) return null;
+
+    // 가로 한 셀 안의 좌/우 열 간격 후보
+    const dCandidates=[];
+    source.slice(0,Math.min(28,source.length)).forEach(d=>{
+      if(d>=8 && d<=span*.45) dCandidates.push(d);
+    });
+
+    // 너무 비슷한 후보 중복 제거
+    const uniqD=[];
+    dCandidates.sort((a,b)=>a-b).forEach(d=>{
+      if(!uniqD.some(v=>Math.abs(v-d)<Math.max(2,d*.08))) uniqD.push(d);
+    });
+
+    let best=null;
+    for(const colGap of uniqD){
+      // 점자 셀의 시작점 간격은 좌/우 열 간격보다 커야 한다.
+      const pCandidates=[];
+      allDiffs.forEach(d=>{
+        if(d>=colGap*1.55 && d<=colGap*4.2) pCandidates.push(d);
+      });
+      // 실제 값이 후보에 없을 때를 대비한 일반적인 범위
+      pCandidates.push(colGap*2.15,colGap*2.35,colGap*2.55,colGap*2.8);
+
+      const uniqP=[];
+      pCandidates.sort((a,b)=>a-b).forEach(p=>{
+        if(!uniqP.some(v=>Math.abs(v-p)<Math.max(3,p*.07))) uniqP.push(p);
+      });
+
+      for(const cellPitch of uniqP){
+        if(cellPitch<=colGap*1.45) continue;
+        const maxCells=Math.max(1,Math.ceil(span/cellPitch)+2);
+
+        // 각 실제 점을 좌/우 열 중 하나의 격자점으로 놓아 보며 위상을 탐색
+        const phases=[];
+        pts.forEach(pt=>{
+          for(let col=0;col<2;col++){
+            for(let k=0;k<=maxCells;k++){
+              phases.push(pt.x-col*colGap-k*cellPitch);
+            }
+          }
         });
 
-        if(dots.length){
-          dots.sort((a,b)=>a-b);
-          allCells.push({
-            line:lineIndex+1,
-            index:ci+1,
-            dots,
-            unicode:dotPatternToUnicode(dots)
-          });
-        }
-      });
-    });
+        // 계산량 제한을 위해 비슷한 위상 제거
+        phases.sort((a,b)=>a-b);
+        const phaseUniq=[];
+        phases.forEach(v=>{
+          if(!phaseUniq.some(p=>Math.abs(p-v)<Math.max(2,colGap*.08))) phaseUniq.push(v);
+        });
 
-    const conf = points.length>=4 && allCells.length ? "보정 점 기준" : "낮음";
-    return {cells:allCells,confidence:conf};
+        for(const x0 of phaseUniq){
+          let err=0;
+          const assignments=[];
+          const used=new Map();
+
+          for(const pt of pts){
+            const approx=Math.round((pt.x-x0)/cellPitch);
+            let bestSlot=null;
+            for(let k=Math.max(0,approx-1);k<=approx+1;k++){
+              for(let col=0;col<2;col++){
+                const sx=x0+k*cellPitch+col*colGap;
+                const dist=Math.abs(pt.x-sx);
+                if(!bestSlot || dist<bestSlot.dist){
+                  bestSlot={cell:k,col,x:sx,dist};
+                }
+              }
+            }
+            if(!bestSlot) continue;
+            const norm=bestSlot.dist/colGap;
+            err+=norm*norm;
+
+            const key=`${bestSlot.cell}-${bestSlot.col}-${pt.row}`;
+            if(used.has(key)) err+=1.8; // 한 점 위치에 여러 점이 겹치면 불리하게
+            used.set(key,true);
+            assignments.push({...pt,...bestSlot});
+          }
+
+          err/=Math.max(1,pts.length);
+
+          // 너무 많은 빈 셀을 만들지 않도록 사용 셀 범위도 약간 반영
+          if(assignments.length){
+            const cells=assignments.map(a=>a.cell);
+            const minCell=Math.min(...cells),maxCell=Math.max(...cells);
+            const usedCells=new Set(cells).size;
+            const range=maxCell-minCell+1;
+            err+=(range-usedCells)*.08;
+          }
+
+          if(!best || err<best.err){
+            best={err,colGap,cellPitch,x0,assignments};
+          }
+        }
+      }
+    }
+
+    if(!best) return null;
+
+    // cell 번호를 0부터 다시 정렬
+    const usedCells=[...new Set(best.assignments.map(a=>a.cell))].sort((a,b)=>a-b);
+    const remap=new Map(usedCells.map((c,i)=>[c,i]));
+    best.assignments=best.assignments.map(a=>({...a,cell:remap.get(a.cell)}));
+    best.cellCount=usedCells.length;
+    return best;
+  }
+
+  function inferBrailleCells(points){
+    if(!points.length) return {cells:[],confidence:"낮음",grid:null};
+
+    const rowFit=fitThreeRows(points);
+    if(!rowFit) return {cells:[],confidence:"낮음",grid:null};
+
+    const grid=fitHorizontalBrailleGrid(points,rowFit);
+    if(!grid) return {cells:[],confidence:"낮음",grid:null};
+
+    const cells=[];
+    for(let ci=0;ci<grid.cellCount;ci++){
+      const dots=[];
+      grid.assignments.filter(a=>a.cell===ci).forEach(a=>{
+        // 점자 표준 번호: 왼쪽 1,2,3 / 오른쪽 4,5,6
+        const num=a.col===0 ? [1,2,3][a.row] : [4,5,6][a.row];
+        if(!dots.includes(num)) dots.push(num);
+      });
+      dots.sort((a,b)=>a-b);
+      if(dots.length){
+        cells.push({
+          index:ci+1,
+          dots,
+          unicode:dotPatternToUnicode(dots)
+        });
+      }
+    }
+
+    // 격자 적합 오차 기준의 간단한 신뢰도
+    let confidence="낮음";
+    if(grid.err<.12) confidence="높음";
+    else if(grid.err<.28) confidence="보통";
+
+    return {
+      cells,
+      confidence,
+      grid:{
+        ...grid,
+        rowCenters:rowFit.centers,
+        rowStep:rowFit.step
+      }
+    };
+  }
+
+  function drawGridOverlay(inferred){
+    drawDetectedPoints();
+    if(!inferred || !inferred.grid || !inferred.cells.length) return;
+
+    const g=inferred.grid;
+    const ctx=canvas.getContext("2d");
+    ctx.save();
+
+    const yTop=g.rowCenters[0]-g.rowStep*.48;
+    const yBottom=g.rowCenters[2]+g.rowStep*.48;
+    const cellW=g.colGap+Math.max(g.colGap*.55,(g.cellPitch-g.colGap)*.52);
+
+    ctx.lineWidth=Math.max(1.5,Math.round(Math.min(canvas.width,canvas.height)/500));
+    ctx.setLineDash([6,5]);
+    ctx.strokeStyle="rgba(0,120,210,.9)";
+    ctx.fillStyle="rgba(0,120,210,.08)";
+
+    for(let ci=0;ci<g.cellCount;ci++){
+      const left=g.x0+ci*g.cellPitch-g.colGap*.28;
+      const right=left+cellW;
+      ctx.fillRect(left,yTop,right-left,yBottom-yTop);
+      ctx.strokeRect(left,yTop,right-left,yBottom-yTop);
+
+      // 6개 점 위치를 희미하게 표시
+      for(let row=0;row<3;row++){
+        for(let col=0;col<2;col++){
+          const x=g.x0+ci*g.cellPitch+col*g.colGap;
+          const y=g.rowCenters[row];
+          ctx.beginPath();
+          ctx.arc(x,y,Math.max(3,markRadius*.28),0,Math.PI*2);
+          ctx.fillStyle="rgba(0,120,210,.55)";
+          ctx.fill();
+        }
+      }
+    }
+    ctx.restore();
   }
 
   function renderCellResult(){
@@ -7250,10 +7453,13 @@ window.addEventListener("hashchange",()=>{
     cellCards.innerHTML="";
 
     if(!inferred.cells.length){
-      cellSummary.textContent="점형을 구성할 수 있는 규칙적인 2열×3행 배열을 찾지 못했습니다. 점 위치를 다시 보정하거나 점자 영역을 조금 더 정확하게 선택해 주세요.";
+      drawDetectedPoints();
+      cellSummary.textContent="점형을 구성할 수 있는 규칙적인 2열×3행 격자를 찾지 못했습니다. 빠진 점이나 잘못 남은 점이 없는지 다시 확인해 주세요.";
       cellResult.hidden=false;
       return;
     }
+
+    drawGridOverlay(inferred);
 
     inferred.cells.forEach((cell,i)=>{
       const card=document.createElement("div");
@@ -7269,7 +7475,8 @@ window.addEventListener("hashchange",()=>{
     const unicodeText=inferred.cells.map(c=>c.unicode).join("");
     cellSummary.innerHTML=
       `<strong>판독된 점형:</strong> <span class="braille-unicode-result">${unicodeText}</span><br>`+
-      `<span>현재 결과는 사용자가 보정한 점의 위치를 기준으로 만든 6점 점형입니다. 한글 변환은 점형 판독이 안정된 뒤 한국 점자 규칙과 연결합니다.</span>`;
+      `<span>격자 적합도: ${inferred.confidence}. 파란 격자가 실제 점자 셀의 2열×3행 위치와 맞는지 확인해 주세요.</span><br>`+
+      `<span>현재 단계에서는 점형을 먼저 정확하게 판독하고, 한글 변환은 점형 판독이 안정된 뒤 한국 점자 규칙과 연결합니다.</span>`;
     cellResult.hidden=false;
     cellResult.scrollIntoView({behavior:"smooth",block:"nearest"});
     status.textContent=`보정한 ${detectedPoints.length}개의 점으로 ${inferred.cells.length}개의 점형을 판독했습니다.`;
