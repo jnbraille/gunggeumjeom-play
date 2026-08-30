@@ -6078,6 +6078,82 @@ html.whale-browser header .nav-sixdot-img{
 }
 </style>
 
+
+<style id="gmgj-v52-side-border-cleanup">
+/* ===== v52: 메인 콘텐츠 양옆의 희미한 세로 테두리 정리 ===== */
+
+/* 홈/학습 선택 화면의 가장 바깥 컨테이너에 생기던 연한 테두리 제거 */
+#homeView,
+#selectView,
+main,
+main > .shell,
+main .shell,
+.view,
+.view > .shell{
+  border-left:0!important;
+  border-right:0!important;
+  outline-left:0!important;
+  outline-right:0!important;
+}
+
+/* 단계별 학습하기 영역의 바깥 큰 박스만 테두리를 없애고,
+   내부 학습 카드/현황 박스 테두리는 그대로 유지 */
+#homeView .panel,
+#homeView .section,
+#homeView .content-wrap,
+#homeView .practice-section,
+#homeView .learning-section,
+#homeView .home-section,
+#selectView .panel,
+#selectView .section,
+#selectView .content-wrap,
+#selectView .practice-section,
+#selectView .learning-section{
+  border-left-color:transparent!important;
+  border-right-color:transparent!important;
+}
+
+/* 화면 가장자리에서만 보이는 1px 선/그림자 제거 */
+#homeView::before,
+#homeView::after,
+#selectView::before,
+#selectView::after,
+main::before,
+main::after,
+main > .shell::before,
+main > .shell::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* 큰 외곽 래퍼에 적용된 흐린 그림자도 제거 */
+#homeView,
+#selectView,
+main > .shell,
+main .shell{
+  box-shadow:none!important;
+}
+
+/* 내부 카드 디자인은 유지 */
+#homeView .card,
+#homeView .step-card,
+#homeView .stat-card,
+#homeView .input-guide,
+#selectView .card,
+#selectView .step-card{
+  box-shadow:inherit;
+}
+
+/* PC에서 콘텐츠 좌우 여백은 선 대신 깔끔한 여백으로 정리 */
+@media (min-width:769px){
+  main > .shell,
+  main .shell{
+    padding-left:24px!important;
+    padding-right:24px!important;
+  }
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
