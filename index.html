@@ -1,5 +1,35 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>궁금점 PLAY | 점자 학습</title>
+<!doctype html><html lang="ko"><head>
+
+<!-- 궁금점 PLAY 검색 노출용 메타정보 v18 -->
+<title>궁금점 PLAY | 전남점자도서관 점자 학습·점자판독</title>
+<meta name="description" content="전남점자도서관 시각장애인학습지원센터가 운영하는 궁금점 PLAY입니다. 점자 타자 연습, 오늘의 궁금점, 학습 기록, 사진 기반 점자판독 기능을 제공합니다.">
+<meta name="keywords" content="궁금점 PLAY, 궁금점플레이, 점자, 점자학습, 점자 타자 연습, 점자판독, 전남점자도서관, 시각장애인학습지원센터">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://jnbraille.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="궁금점 PLAY">
+<meta property="og:title" content="궁금점 PLAY | 전남점자도서관 점자 학습·점자판독">
+<meta property="og:description" content="점자 타자 연습부터 사진 기반 점자판독까지, 전남점자도서관 시각장애인학습지원센터의 온라인 점자 학습 서비스">
+<meta property="og:url" content="https://jnbraille.github.io/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"EducationalApplication",
+  "name":"궁금점 PLAY",
+  "alternateName":"궁금점플레이",
+  "url":"https://jnbraille.github.io/",
+  "description":"전남점자도서관 시각장애인학습지원센터가 운영하는 온라인 점자 학습 및 점자판독 서비스",
+  "applicationCategory":"EducationalApplication",
+  "operatingSystem":"Web",
+  "provider":{
+    "@type":"Organization",
+    "name":"전남점자도서관 시각장애인학습지원센터"
+  }
+}
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
 <style>
 :root{--teal:#07837b;--navy:#142b48;--line:#dce8e8;--muted:#66737c;--good:#249344;--bad:#df3030}
 *{box-sizing:border-box}body{margin:0;font-family:"함초롬바탕","HCR Batang","Noto Serif KR","Noto Serif CJK KR","Batang","바탕","Times New Roman",serif;color:var(--navy);background:#fff}button{font:inherit}.shell{max-width:1400px;margin:auto;padding:0 24px}
@@ -4856,6 +4886,40 @@ html.whale-browser .gmgj-word{
 }
 </style>
 
+
+<style id="braille-reader-v18-detection-refine">
+/* 안내문은 의도한 두 줄만 사용 */
+.braille-reader-tip > span{
+  display:block!important;
+  white-space:normal!important;
+  word-break:keep-all!important;
+}
+
+/* 결과 설명이 화면 밖으로 잘리지 않도록 */
+.braille-detection-result,
+#brailleDetectionSummary,
+.braille-detection-note{
+  box-sizing:border-box!important;
+  max-width:100%!important;
+  overflow-wrap:break-word!important;
+  word-break:keep-all!important;
+}
+
+/* 판독 결과 범례 */
+.braille-detection-legend{
+  margin:8px 0 0;
+  font-size:.88rem;
+  color:#52656f;
+  line-height:1.5;
+}
+@media(forced-colors:active){
+  .braille-detection-legend{
+    color:CanvasText!important;
+    -webkit-text-fill-color:CanvasText!important;
+  }
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -5129,7 +5193,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
       <h3>점자 점 탐지 결과</h3>
       <canvas id="brailleDetectionCanvas" aria-label="점자로 추정되는 점을 표시한 분석 이미지"></canvas>
       <p id="brailleDetectionSummary"></p>
-      <p class="braille-detection-note">현재는 사진에서 점자로 보이는 작은 원형 점을 자동 탐지하는 1단계입니다. 다음 단계에서 탐지된 점을 6점 셀로 묶어 점형과 한글을 판독합니다.</p>
+      <p class="braille-detection-note">현재는 사진의 선·테두리보다 점자처럼 작고 둥근 돌출점을 우선해서 찾는 1단계입니다. 다음 단계에서 탐지된 점을 6점 셀로 묶어 점형과 한글을 판독합니다.</p>
     </div>
 
     <div id="brailleReaderNextStep" class="braille-reader-next-step">
@@ -6514,58 +6578,154 @@ window.addEventListener("hashchange",()=>{
         const original=ctx.getImageData(0,0,w,h);
         const data=original.data;
 
-        // 회색조 + 국소 대비 기반 후보 생성
+        // 회색조
         const gray=new Uint8Array(w*h);
         for(let i=0,p=0;i<data.length;i+=4,p++){
           gray[p]=Math.round(data[i]*.299+data[i+1]*.587+data[i+2]*.114);
         }
 
-        const step=Math.max(2,Math.round(Math.min(w,h)/320));
-        const radius=Math.max(4,Math.round(Math.min(w,h)/120));
-        const candidates=[];
+        // 적분영상을 이용한 국소 평균
+        const integral=new Float64Array((w+1)*(h+1));
+        for(let y=1;y<=h;y++){
+          let row=0;
+          for(let x=1;x<=w;x++){
+            row+=gray[(y-1)*w+(x-1)];
+            integral[y*(w+1)+x]=integral[(y-1)*(w+1)+x]+row;
+          }
+        }
+        function boxMean(x,y,r){
+          const x0=Math.max(0,x-r), y0=Math.max(0,y-r);
+          const x1=Math.min(w-1,x+r), y1=Math.min(h-1,y+r);
+          const A=integral[y0*(w+1)+x0];
+          const B=integral[y0*(w+1)+(x1+1)];
+          const C=integral[(y1+1)*(w+1)+x0];
+          const D=integral[(y1+1)*(w+1)+(x1+1)];
+          return (D-B-C+A)/((x1-x0+1)*(y1-y0+1));
+        }
 
-        for(let y=radius;y<h-radius;y+=step){
-          for(let x=radius;x<w-radius;x+=step){
-            const c=gray[y*w+x];
-            let ring=0,n=0;
-            const rr=radius;
-            const pts=[
-              [x-rr,y],[x+rr,y],[x,y-rr],[x,y+rr],
-              [x-rr,y-rr],[x+rr,y-rr],[x-rr,y+rr],[x+rr,y+rr]
-            ];
-            for(const [px,py] of pts){ ring+=gray[py*w+px]; n++; }
-            const avg=ring/n;
-            const contrast=Math.abs(c-avg);
-            if(contrast>=22) candidates.push({x,y,score:contrast});
+        // 점자 돌출점은 주변보다 밝거나 어두운 작은 덩어리로 나타날 수 있음.
+        // 긴 선/테두리를 줄이기 위해 high-pass 마스크를 만든 뒤 연결요소의 모양을 검사.
+        const localR=Math.max(5,Math.round(Math.min(w,h)/95));
+        const threshold=18;
+        const mask=new Uint8Array(w*h);
+        for(let y=localR;y<h-localR;y++){
+          for(let x=localR;x<w-localR;x++){
+            const idx=y*w+x;
+            const diff=Math.abs(gray[idx]-boxMean(x,y,localR));
+            if(diff>=threshold) mask[idx]=1;
           }
         }
 
-        // 비최대 억제: 가까운 후보를 하나의 점으로 합침
-        candidates.sort((a,b)=>b.score-a.score);
-        const dots=[];
-        const minDist=Math.max(7,Math.round(Math.min(w,h)/85));
-        const minDist2=minDist*minDist;
-        for(const c of candidates){
+        // 3x3 다수결로 작은 잡음 제거
+        const clean=new Uint8Array(w*h);
+        for(let y=1;y<h-1;y++){
+          for(let x=1;x<w-1;x++){
+            let n=0;
+            for(let yy=-1;yy<=1;yy++){
+              for(let xx=-1;xx<=1;xx++) n+=mask[(y+yy)*w+(x+xx)];
+            }
+            if(n>=4) clean[y*w+x]=1;
+          }
+        }
+
+        // 연결요소 분석
+        const seen=new Uint8Array(w*h);
+        const components=[];
+        const minDim=Math.min(w,h);
+        const minBox=Math.max(3,Math.round(minDim/260));
+        const maxBox=Math.max(18,Math.round(minDim/24));
+        const minArea=Math.max(7,Math.round(minDim*minDim/90000));
+        const maxArea=Math.round(maxBox*maxBox*1.7);
+        const dirs=[-1,1,-w,w,-w-1,-w+1,w-1,w+1];
+
+        for(let y=1;y<h-1;y++){
+          for(let x=1;x<w-1;x++){
+            const seed=y*w+x;
+            if(!clean[seed] || seen[seed]) continue;
+
+            const stack=[seed];
+            seen[seed]=1;
+            let area=0,sumX=0,sumY=0,minX=x,maxX=x,minY=y,maxY=y,perim=0;
+
+            while(stack.length){
+              const p=stack.pop();
+              const py=Math.floor(p/w), px=p-py*w;
+              area++; sumX+=px; sumY+=py;
+              if(px<minX)minX=px;if(px>maxX)maxX=px;
+              if(py<minY)minY=py;if(py>maxY)maxY=py;
+
+              let exposed=0;
+              const neigh=[[px-1,py],[px+1,py],[px,py-1],[px,py+1]];
+              for(const [nx,ny] of neigh){
+                if(nx<0||nx>=w||ny<0||ny>=h||!clean[ny*w+nx]) exposed++;
+              }
+              perim+=exposed;
+
+              for(const d of dirs){
+                const q=p+d;
+                const qy=Math.floor(q/w), qx=q-qy*w;
+                if(qx<=0||qx>=w-1||qy<=0||qy>=h-1) continue;
+                if(clean[q]&&!seen[q]){
+                  seen[q]=1; stack.push(q);
+                }
+              }
+              if(area>maxArea*4) break; // 큰 테두리/선은 조기 중단
+            }
+
+            const bw=maxX-minX+1,bh=maxY-minY+1;
+            if(area<minArea||area>maxArea) continue;
+            if(bw<minBox||bh<minBox||bw>maxBox||bh>maxBox) continue;
+
+            const aspect=Math.max(bw,bh)/Math.max(1,Math.min(bw,bh));
+            if(aspect>1.75) continue;
+
+            const fill=area/(bw*bh);
+            if(fill<0.18||fill>0.88) continue;
+
+            const circularity=perim>0 ? (4*Math.PI*area)/(perim*perim) : 0;
+            if(circularity<0.18) continue;
+
+            components.push({
+              x:sumX/area,
+              y:sumY/area,
+              area,bw,bh,
+              size:(bw+bh)/2,
+              score:circularity*(1/aspect)
+            });
+          }
+        }
+
+        // 점자는 대체로 비슷한 크기이므로 중앙 크기에서 지나치게 벗어난 후보 제거
+        let usable=[];
+        if(components.length){
+          const sizes=components.map(c=>c.size).sort((a,b)=>a-b);
+          const median=sizes[Math.floor(sizes.length/2)];
+          usable=components.filter(c=>c.size>=median*.55 && c.size<=median*1.8);
+        }
+
+        // 너무 가까운 중복 후보 병합
+        usable.sort((a,b)=>b.score-a.score);
+        const merged=[];
+        const mergeDist=Math.max(5,Math.round(minDim/115));
+        const mergeDist2=mergeDist*mergeDist;
+        for(const c of usable){
           let near=false;
-          for(const d of dots){
+          for(const d of merged){
             const dx=c.x-d.x,dy=c.y-d.y;
-            if(dx*dx+dy*dy<minDist2){near=true;break;}
+            if(dx*dx+dy*dy<mergeDist2){near=true;break;}
           }
-          if(!near){
-            dots.push(c);
-            if(dots.length>=300) break;
-          }
+          if(!near) merged.push(c);
         }
+        usable=merged.slice(0,180);
 
-        // 점자 후보는 지나치게 큰/작은 잡음을 피하도록 상위 대비점만 표시
-        const usable=dots.filter(d=>d.score>=26);
+        // 원본 위에 후보 표시
         ctx.putImageData(original,0,0);
         ctx.save();
-        ctx.lineWidth=Math.max(2,Math.round(Math.min(w,h)/350));
+        ctx.lineWidth=Math.max(2,Math.round(minDim/350));
         ctx.strokeStyle="#e11";
-        ctx.fillStyle="rgba(255,255,255,.12)";
-        const markR=Math.max(5,Math.round(Math.min(w,h)/95));
+        ctx.fillStyle="rgba(255,255,255,.08)";
         for(const d of usable){
+          const markR=Math.max(5,Math.min(18,Math.round(d.size*.85)));
           ctx.beginPath();
           ctx.arc(d.x,d.y,markR,0,Math.PI*2);
           ctx.fill();
@@ -6575,8 +6735,8 @@ window.addEventListener("hashchange",()=>{
 
         result.hidden=false;
         summary.textContent=usable.length
-          ? `점자로 추정되는 점 ${usable.length}개를 찾았습니다. 빨간 원으로 표시된 위치를 확인해 주세요.`
-          : "점자로 추정되는 점을 찾지 못했습니다. 그림자를 줄이고 점의 볼록함이 더 잘 보이도록 촬영해 주세요.";
+          ? `점자로 추정되는 둥근 점 ${usable.length}개를 찾았습니다. 빨간 원이 실제 점자 점에 주로 표시되는지 확인해 주세요.`
+          : "점자로 추정되는 둥근 점을 찾지 못했습니다. 그림자를 줄이고 점의 볼록함이 더 잘 보이도록 촬영해 주세요.";
         status.textContent=usable.length
           ? "1단계 점 탐지가 완료되었습니다."
           : "점 탐지가 완료되었지만 인식 가능한 점이 부족합니다.";
