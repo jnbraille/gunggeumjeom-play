@@ -5610,6 +5610,23 @@ html, body, button, input, select, textarea {
 }
 </style>
 
+
+<style id="gmgj-v38-cell-calibration">
+#brailleConfirmCellSize.primary-action{
+  background:#7b38a6;color:#fff;border-color:#7b38a6;
+}
+#brailleConfirmCellSize:focus-visible,
+#brailleAddCell:focus-visible,
+.braille-six-dot-picker button:focus-visible{
+  outline:3px solid currentColor;
+  outline-offset:3px;
+}
+@media(max-width:520px){
+  #brailleDetectionCanvas{cursor:crosshair!important}
+  .cell-size-tools{gap:7px}
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -5915,11 +5932,12 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
 <div id="brailleCellCursorTools" class="braille-cell-cursor-tools">
   <div class="cell-size-tools" role="group" aria-label="6점 셀 크기 조절">
     <button type="button" id="brailleCellSmaller">셀 작게</button>
-    <span id="brailleCellSizeLabel" aria-live="polite">셀 크기 100%</span>
+    <span id="brailleCellSizeLabel" aria-live="polite">첫 셀 크기 맞춤 전</span>
     <button type="button" id="brailleCellLarger">셀 크게</button>
+    <button type="button" id="brailleConfirmCellSize" class="primary-action">셀 크기 확정</button>
   </div>
   <p class="cell-cursor-help">
-    사진 위에서 마우스를 움직이면 6점 셀 틀이 하나만 따라옵니다. 점자 한 글자에 맞춘 뒤 클릭해 위치를 고정하고, 아래 1~6점 중 실제로 돌출된 점만 선택한 다음 <strong>이 셀 추가</strong>를 누르세요.
+    먼저 사진의 첫 번째 점자 한 글자에 6점 셀 틀을 맞춰 주세요. 셀을 클릭해 고정한 뒤 오른쪽 아래 조절점을 드래그해 실제 점자 크기에 맞추고 <strong>셀 크기 확정</strong>을 누르세요. 그 다음부터는 확정된 셀 하나만 마우스를 따라다닙니다.
   </p>
   <div id="brailleSixDotPicker" class="braille-six-dot-picker" aria-label="현재 셀의 점 선택">
     <button type="button" data-dot="1" aria-pressed="false"><span>1</span></button>
@@ -8292,201 +8310,329 @@ window.addEventListener("hashchange",()=>{
 </script>
 
 
-<script id="gmgj-v36-cell-cursor">
+<script id="gmgj-v38-cell-cursor">
 (function(){
   const canvas=document.getElementById("brailleDetectionCanvas");
-  const result=document.getElementById("brailleDetectionResult");
   const picker=document.getElementById("brailleSixDotPicker");
   const addBtn=document.getElementById("brailleAddCell");
   const removeBtn=document.getElementById("brailleRemoveLastCell");
   const smaller=document.getElementById("brailleCellSmaller");
   const larger=document.getElementById("brailleCellLarger");
+  const confirmSize=document.getElementById("brailleConfirmCellSize");
   const sizeLabel=document.getElementById("brailleCellSizeLabel");
   const entryStatus=document.getElementById("brailleCellEntryStatus");
-  const reread=document.getElementById("brailleReReadButton");
-  if(!canvas||!picker||!addBtn)return;
+  const analyze=document.getElementById("brailleAnalyzeButton");
+  if(!canvas||!picker||!addBtn||!confirmSize)return;
 
   let cursor={x:0,y:0,visible:false,locked:false};
-  let cellScale=1;
+  let cellW=90, cellH=140;
+  let sizeConfirmed=false;
+  let calibrating=false;
+  let resizing=false;
   let selected=new Set();
   let manualCells=[];
+  let cleanCanvas=document.createElement("canvas");
+  let cleanCtx=cleanCanvas.getContext("2d");
+  let overlayRAF=0;
 
-  function dims(){
-    const base=Math.max(36,Math.min(canvas.width,canvas.height)*.15);
-    return {w:base*cellScale,h:base*1.55*cellScale};
+  function cacheCleanImage(){
+    if(!canvas.width||!canvas.height)return;
+    cleanCanvas.width=canvas.width;
+    cleanCanvas.height=canvas.height;
+    cleanCtx=cleanCanvas.getContext("2d");
+    cleanCtx.clearRect(0,0,cleanCanvas.width,cleanCanvas.height);
+    cleanCtx.drawImage(canvas,0,0);
   }
+
+  function resetToClean(){
+    const ctx=canvas.getContext("2d");
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    if(cleanCanvas.width===canvas.width && cleanCanvas.height===canvas.height){
+      ctx.drawImage(cleanCanvas,0,0);
+    }
+  }
+
+  function initialCellSize(){
+    const short=Math.max(1,Math.min(canvas.width,canvas.height));
+    cellW=Math.max(46,short*.14);
+    cellH=cellW*1.55;
+  }
+
   function pointerXY(e){
     const r=canvas.getBoundingClientRect();
-    return {x:(e.clientX-r.left)*(canvas.width/r.width),y:(e.clientY-r.top)*(canvas.height/r.height)};
+    return {
+      x:(e.clientX-r.left)*(canvas.width/r.width),
+      y:(e.clientY-r.top)*(canvas.height/r.height)
+    };
   }
-  function redrawOverlay(){
-    const ctx=canvas.getContext("2d");
 
-    // 중요: 매 프레임마다 원본 선택영역으로 완전히 되돌린 뒤
-    // 현재 위치의 셀 틀만 한 번 그린다. 이전 셀 틀 잔상이 누적되지 않는다.
-    try{
-      if(typeof baseImageData!=="undefined" && baseImageData &&
-         baseImageData.width===canvas.width && baseImageData.height===canvas.height){
-        ctx.putImageData(baseImageData,0,0);
-      }else if(typeof drawDetectedPoints==="function"){
-        drawDetectedPoints();
-      }
-    }catch(e){
-      try{ if(typeof drawDetectedPoints==="function") drawDetectedPoints(); }catch(_){}
-    }
+  function handleRadius(){ return Math.max(8,cellW*.07); }
 
+  function cellRect(){
+    return {x:cursor.x-cellW/2,y:cursor.y-cellH/2,w:cellW,h:cellH};
+  }
+
+  function inResizeHandle(p){
+    if(!cursor.visible||!cursor.locked||sizeConfirmed)return false;
+    const r=cellRect(), hx=r.x+r.w, hy=r.y+r.h;
+    return Math.hypot(p.x-hx,p.y-hy)<=handleRadius()*2.2;
+  }
+
+  function drawCell(){
+    resetToClean();
     if(!cursor.visible)return;
 
-    const d=dims();
-    const x=cursor.x-d.w/2,y=cursor.y-d.h/2;
+    const ctx=canvas.getContext("2d"), r=cellRect();
     ctx.save();
-
-    // 셀 틀은 선명하지만 사진을 가리지 않도록 선만 표시
-    ctx.lineWidth=Math.max(2,canvas.width/450);
-    ctx.strokeStyle="#007f9b";
-    ctx.setLineDash([8,6]);
-    ctx.strokeRect(x,y,d.w,d.h);
-
+    ctx.lineWidth=Math.max(2,canvas.width/500);
+    ctx.strokeStyle=sizeConfirmed?"#007f9b":"#7b38a6";
+    ctx.setLineDash(sizeConfirmed?[8,6]:[10,6]);
+    ctx.strokeRect(r.x,r.y,r.w,r.h);
     ctx.setLineDash([]);
-    ctx.strokeStyle="#007f9b";
     ctx.globalAlpha=.95;
     ctx.beginPath();
-    ctx.moveTo(x+d.w/2,y);ctx.lineTo(x+d.w/2,y+d.h);
-    ctx.moveTo(x,y+d.h/3);ctx.lineTo(x+d.w,y+d.h/3);
-    ctx.moveTo(x,y+2*d.h/3);ctx.lineTo(x+d.w,y+2*d.h/3);
+    ctx.moveTo(r.x+r.w/2,r.y);ctx.lineTo(r.x+r.w/2,r.y+r.h);
+    ctx.moveTo(r.x,r.y+r.h/3);ctx.lineTo(r.x+r.w,r.y+r.h/3);
+    ctx.moveTo(r.x,r.y+2*r.h/3);ctx.lineTo(r.x+r.w,r.y+2*r.h/3);
     ctx.stroke();
 
-    // 6개 기준점: 선택 전에는 속이 투명한 작은 원, 선택하면 빨간 원
     for(let row=0;row<3;row++)for(let col=0;col<2;col++){
       const dot=col===0?row+1:row+4;
-      const px=x+d.w*(col?0.75:0.25),py=y+d.h*((row+.5)/3);
+      const px=r.x+r.w*(col?0.75:0.25), py=r.y+r.h*((row+.5)/3);
       ctx.beginPath();
-      ctx.arc(px,py,Math.max(4,d.w*.045),0,Math.PI*2);
+      ctx.arc(px,py,Math.max(4,r.w*.045),0,Math.PI*2);
       if(selected.has(dot)){
-        ctx.fillStyle="rgba(225,20,20,.82)";
+        ctx.fillStyle="rgba(225,20,20,.84)";
         ctx.fill();
         ctx.strokeStyle="#fff";
       }else{
-        ctx.fillStyle="rgba(255,255,255,.12)";
+        ctx.fillStyle="rgba(255,255,255,.08)";
         ctx.fill();
-        ctx.strokeStyle="#e11";
+        ctx.strokeStyle="#d71920";
       }
+      ctx.stroke();
+    }
+
+    if(!sizeConfirmed && cursor.locked){
+      const hx=r.x+r.w, hy=r.y+r.h, hr=handleRadius();
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.arc(hx,hy,hr,0,Math.PI*2);
+      ctx.fillStyle="#7b38a6";
+      ctx.fill();
+      ctx.strokeStyle="#fff";
+      ctx.lineWidth=Math.max(2,hr*.25);
       ctx.stroke();
     }
     ctx.restore();
   }
+
+  function scheduleDraw(){
+    if(overlayRAF)cancelAnimationFrame(overlayRAF);
+    overlayRAF=requestAnimationFrame(()=>{drawCell();overlayRAF=0;});
+  }
+
   function syncPicker(){
     picker.querySelectorAll("[data-dot]").forEach(b=>{
       b.setAttribute("aria-pressed",selected.has(+b.dataset.dot)?"true":"false");
+      b.disabled=!sizeConfirmed || !cursor.locked;
     });
   }
-  function resetCurrent(){
-    selected.clear();syncPicker();cursor.locked=false;
+
+  function updateSizeLabel(){
+    if(!sizeConfirmed){
+      sizeLabel.textContent=`셀 크기 맞춤 · ${Math.round(cellW)} × ${Math.round(cellH)}`;
+    }else{
+      sizeLabel.textContent=`확정된 셀 · ${Math.round(cellW)} × ${Math.round(cellH)}`;
+    }
+  }
+
+  function clearCurrentCell(){
+    selected.clear();
+    cursor.locked=false;
+    syncPicker();
     addBtn.disabled=true;
   }
 
-  let overlayRAF=0;
-  canvas.addEventListener("pointermove",e=>{
-    if(cursor.locked)return;
-    cursor={...pointerXY(e),visible:true,locked:false};
-    if(overlayRAF) cancelAnimationFrame(overlayRAF);
-    overlayRAF=requestAnimationFrame(()=>{
-      redrawOverlay();
-      overlayRAF=0;
-    });
-  },true);
-  canvas.addEventListener("pointerleave",()=>{
-    if(!cursor.locked){cursor.visible=false;redrawOverlay();}
-  },true);
-  canvas.addEventListener("pointerdown",e=>{
-    e.preventDefault();e.stopImmediatePropagation();
-    cursor={...pointerXY(e),visible:true,locked:true};
-    addBtn.disabled=false;
-    entryStatus.textContent="셀 위치를 고정했습니다. 실제 돌출된 점만 아래 1~6점에서 선택해 주세요.";
-    redrawOverlay();
-  },true);
-
-  picker.addEventListener("click",e=>{
-    const b=e.target.closest("[data-dot]");if(!b)return;
-    const n=+b.dataset.dot;
-    selected.has(n)?selected.delete(n):selected.add(n);
-    syncPicker();redrawOverlay();
-  });
-
-  addBtn.addEventListener("click",()=>{
-    if(!cursor.locked)return;
-    if(!selected.size){
-      entryStatus.textContent="이 셀에 돌출된 점을 먼저 선택해 주세요.";return;
-    }
-    const dots=[...selected].sort((a,b)=>a-b);
-    manualCells.push({dots,unicode:String.fromCharCode(0x2800+dots.reduce((m,n)=>m|(1<<(n-1)),0))});
-
-    // 기존 판독 렌더러가 읽는 inferred 결과 대신 직접 셀 목록을 화면에 렌더
+  function renderManualCells(){
     const cards=document.getElementById("brailleCellCards");
     const summary=document.getElementById("brailleCellSummary");
     const cellResult=document.getElementById("brailleCellResult");
-    if(cards&&summary&&cellResult){
-      cards.innerHTML="";
-      manualCells.forEach((cell,i)=>{
-        const el=document.createElement("div");el.className="braille-cell-card";
-        let meanings=[];
-        try{if(typeof cellMeaning==="function")meanings=cellMeaning(cell)}catch(e){}
-        el.innerHTML=`<span class="braille-cell-number">${i+1}셀</span>
-          <span class="braille-cell-symbol">${cell.unicode}</span>
-          <span class="braille-cell-dots">${cell.dots.join("·")}번 점</span>
-          <span class="braille-cell-rule">${meanings.length?meanings.join(" · "):"문맥 해석 필요"}</span>`;
-        cards.appendChild(el);
-      });
-      try{
-        const decoded=typeof decodeKoreanBraille==="function"?decodeKoreanBraille(manualCells):{text:"",notes:[]};
-        summary.innerHTML=`<strong>판독된 점형:</strong> <span class="braille-unicode-result">${manualCells.map(c=>c.unicode).join("")}</span><br>
-          <strong>2024 한국 점자 규정 기준 한글 해석:</strong> <span class="braille-korean-result">${decoded.text||"해석할 수 없음"}</span>`;
-      }catch(e){}
-      cellResult.hidden=false;
+    if(!cards||!summary||!cellResult)return;
+
+    cards.innerHTML="";
+    manualCells.forEach((cell,i)=>{
+      const el=document.createElement("div");
+      el.className="braille-cell-card";
+      let meanings=[];
+      try{if(typeof cellMeaning==="function")meanings=cellMeaning(cell)}catch(_){}
+      el.innerHTML=`<span class="braille-cell-number">${i+1}셀</span>
+        <span class="braille-cell-symbol">${cell.unicode}</span>
+        <span class="braille-cell-dots">${cell.dots.join("·")}번 점</span>
+        <span class="braille-cell-rule">${meanings.length?meanings.join(" · "):"문맥 해석 필요"}</span>`;
+      cards.appendChild(el);
+    });
+
+    try{
+      const decoded=typeof decodeKoreanBraille==="function"
+        ? decodeKoreanBraille(manualCells) : {text:"",notes:[]};
+      summary.innerHTML=`<strong>판독된 점형:</strong> <span class="braille-unicode-result">${manualCells.map(c=>c.unicode).join("")}</span><br>
+        <strong>2024 한국 점자 규정 기준 한글 해석:</strong>
+        <span class="braille-korean-result">${decoded.text||"해석할 수 없음"}</span>`;
+    }catch(_){}
+    cellResult.hidden=manualCells.length===0;
+  }
+
+  // 기존 '점 직접 찍기' 이벤트보다 먼저 받아 새 셀 입력 방식만 동작시킨다.
+  canvas.addEventListener("pointerdown",e=>{
+    if(!cleanCanvas.width)return;
+    const p=pointerXY(e);
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    if(!sizeConfirmed && inResizeHandle(p)){
+      resizing=true;
+      try{canvas.setPointerCapture(e.pointerId)}catch(_){}
+      return;
     }
-    entryStatus.textContent=`${manualCells.length}셀을 입력했습니다. 다음 글자 위로 6점 셀 틀을 옮겨 주세요.`;
-    resetCurrent();redrawOverlay();
+
+    cursor={x:p.x,y:p.y,visible:true,locked:true};
+    calibrating=!sizeConfirmed;
+    selected.clear();
+    syncPicker();
+    addBtn.disabled=!sizeConfirmed;
+
+    if(!sizeConfirmed){
+      entryStatus.textContent="첫 셀 위치를 고정했습니다. 오른쪽 아래 보라색 조절점을 드래그해 실제 점자 한 글자의 크기에 맞춘 뒤 ‘셀 크기 확정’을 누르세요.";
+    }else{
+      entryStatus.textContent="셀 위치를 고정했습니다. 실제 돌출된 점만 1~6점에서 선택해 주세요.";
+    }
+    scheduleDraw();
+  },true);
+
+  canvas.addEventListener("pointermove",e=>{
+    if(!cleanCanvas.width)return;
+    const p=pointerXY(e);
+
+    if(resizing && !sizeConfirmed && cursor.locked){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const dx=Math.abs(p.x-cursor.x)*2, dy=Math.abs(p.y-cursor.y)*2;
+      cellW=Math.max(32,Math.min(canvas.width*.9,dx));
+      cellH=Math.max(48,Math.min(canvas.height*.9,dy));
+      updateSizeLabel();
+      scheduleDraw();
+      return;
+    }
+
+    if(cursor.locked || !sizeConfirmed)return;
+    cursor={x:p.x,y:p.y,visible:true,locked:false};
+    scheduleDraw();
+  },true);
+
+  canvas.addEventListener("pointerup",e=>{
+    if(resizing){
+      resizing=false;
+      try{canvas.releasePointerCapture(e.pointerId)}catch(_){}
+      entryStatus.textContent="셀 크기를 확인한 뒤 ‘셀 크기 확정’을 눌러 주세요. 더 조절하려면 오른쪽 아래 보라색 점을 다시 드래그하세요.";
+      scheduleDraw();
+    }
+  },true);
+
+  canvas.addEventListener("pointercancel",()=>{resizing=false;},true);
+
+  canvas.addEventListener("pointerleave",()=>{
+    if(sizeConfirmed && !cursor.locked){
+      cursor.visible=false;
+      scheduleDraw();
+    }
+  },true);
+
+  confirmSize.addEventListener("click",()=>{
+    if(!cursor.locked){
+      entryStatus.textContent="먼저 사진의 첫 번째 점자 한 글자 위를 클릭해서 셀 위치를 잡아 주세요.";
+      return;
+    }
+    sizeConfirmed=true;
+    calibrating=false;
+    selected.clear();
+    cursor.locked=false;
+    cursor.visible=false;
+    updateSizeLabel();
+    syncPicker();
+    addBtn.disabled=true;
+    entryStatus.textContent="셀 크기를 확정했습니다. 이제 사진 위로 마우스를 움직이면 이 크기의 6점 셀 하나만 따라옵니다. 다음 글자에 맞춰 클릭하세요.";
+    scheduleDraw();
+  });
+
+  function fineResize(mult){
+    cellW=Math.max(32,Math.min(canvas.width*.9,cellW*mult));
+    cellH=Math.max(48,Math.min(canvas.height*.9,cellH*mult));
+    updateSizeLabel();scheduleDraw();
+  }
+  smaller?.addEventListener("click",()=>fineResize(.92));
+  larger?.addEventListener("click",()=>fineResize(1.08));
+
+  picker.addEventListener("click",e=>{
+    const b=e.target.closest("[data-dot]");
+    if(!b || b.disabled)return;
+    const n=+b.dataset.dot;
+    selected.has(n)?selected.delete(n):selected.add(n);
+    syncPicker();scheduleDraw();
+  });
+
+  addBtn.addEventListener("click",()=>{
+    if(!sizeConfirmed||!cursor.locked)return;
+    if(!selected.size){
+      entryStatus.textContent="이 셀에 실제로 돌출된 점을 1~6점에서 먼저 선택해 주세요.";
+      return;
+    }
+    const dots=[...selected].sort((a,b)=>a-b);
+    manualCells.push({
+      dots,
+      unicode:String.fromCharCode(0x2800+dots.reduce((m,n)=>m|(1<<(n-1)),0))
+    });
+    renderManualCells();
+    entryStatus.textContent=`${manualCells.length}셀을 입력했습니다. 다음 점자 글자에 셀 틀을 맞춰 클릭해 주세요.`;
+    clearCurrentCell();
+    cursor.visible=false;
+    scheduleDraw();
   });
 
   removeBtn?.addEventListener("click",()=>{
-    if(!manualCells.length){entryStatus.textContent="삭제할 셀이 없습니다.";return;}
+    if(!manualCells.length){
+      entryStatus.textContent="삭제할 셀이 없습니다.";
+      return;
+    }
     manualCells.pop();
+    renderManualCells();
     entryStatus.textContent=`마지막 셀을 삭제했습니다. 현재 ${manualCells.length}셀입니다.`;
-    // 남은 셀 재표시를 위해 임시 위치에서 add 로직 대신 직접 갱신
-    const cards=document.getElementById("brailleCellCards");
-    const summary=document.getElementById("brailleCellSummary");
-    if(cards){
-      cards.innerHTML="";
-      manualCells.forEach((cell,i)=>{
-        const el=document.createElement("div");el.className="braille-cell-card";
-        let meanings=[];try{if(typeof cellMeaning==="function")meanings=cellMeaning(cell)}catch(e){}
-        el.innerHTML=`<span class="braille-cell-number">${i+1}셀</span><span class="braille-cell-symbol">${cell.unicode}</span>
-        <span class="braille-cell-dots">${cell.dots.join("·")}번 점</span><span class="braille-cell-rule">${meanings.length?meanings.join(" · "):"문맥 해석 필요"}</span>`;
-        cards.appendChild(el);
-      });
-    }
-    if(summary){
-      try{const d=decodeKoreanBraille(manualCells);summary.innerHTML=`<strong>판독된 점형:</strong> ${manualCells.map(c=>c.unicode).join("")}<br><strong>2024 한국 점자 규정 기준 한글 해석:</strong> <span class="braille-korean-result">${d.text||"해석할 수 없음"}</span>`}catch(e){}
-    }
-    redrawOverlay();
   });
 
-  function resize(delta){
-    cellScale=Math.max(.55,Math.min(2.2,cellScale+delta));
-    sizeLabel.textContent=`셀 크기 ${Math.round(cellScale*100)}%`;
-    redrawOverlay();
-  }
-  smaller?.addEventListener("click",()=>resize(-.1));
-  larger?.addEventListener("click",()=>resize(.1));
-
-  // 새 사진/새 선택 영역에서는 입력 셀 초기화
-  const analyze=document.getElementById("brailleAnalyzeButton");
   analyze?.addEventListener("click",()=>{
-    manualCells=[];resetCurrent();cursor.visible=false;
+    // 기존 분석 코드가 선택영역을 캔버스에 그린 다음에 깨끗한 원본을 별도 캔버스에 보관한다.
     setTimeout(()=>{
-      entryStatus.textContent="사진 위로 마우스를 움직이면 6점 셀 틀이 나타납니다. 첫 글자에 맞춰 클릭해 주세요.";
-    },80);
+      manualCells=[];
+      selected.clear();
+      sizeConfirmed=false;
+      calibrating=false;
+      resizing=false;
+      cursor={x:0,y:0,visible:false,locked:false};
+      initialCellSize();
+      cacheCleanImage();
+      updateSizeLabel();
+      syncPicker();
+      addBtn.disabled=true;
+      renderManualCells();
+      entryStatus.textContent="먼저 사진의 첫 번째 점자 한 글자 위를 클릭하세요. 셀을 고정한 뒤 오른쪽 아래 보라색 조절점을 드래그해 실제 점자 크기에 맞춰 주세요.";
+      resetToClean();
+    },160);
   });
+
+  // 이미 분석 결과가 보이는 상태에서 스크립트가 로드된 경우를 위한 초기값
+  initialCellSize();
+  updateSizeLabel();
+  syncPicker();
 })();
 </script>
 
