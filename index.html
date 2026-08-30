@@ -6778,6 +6778,51 @@ html:not(.whale-browser) body.contrast #brailleStoryView .story-sixdot span{
 }
 </style>
 
+
+<style id="gmgj-v62-story-sixdot-number-cleanup">
+/* v62: 일반 고대비에서 1~6 숫자 뒤 네모 배경 제거
+   원형 흰 테두리는 유지, 네이버 웨일 관련 스타일은 변경하지 않음 */
+@media (forced-colors: active){
+  html:not(.whale-browser) #brailleStoryView .story-sixdot span{
+    background:#000!important;
+    border:2px solid #fff!important;
+    border-radius:50%!important;
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+    outline:0!important;
+    box-shadow:none!important;
+    text-shadow:none!important;
+    forced-color-adjust:none!important;
+    -webkit-forced-color-adjust:none!important;
+  }
+
+  html:not(.whale-browser) #brailleStoryView .story-sixdot span::before,
+  html:not(.whale-browser) #brailleStoryView .story-sixdot span::after{
+    content:none!important;
+    display:none!important;
+    background:transparent!important;
+    border:0!important;
+    outline:0!important;
+    box-shadow:none!important;
+  }
+}
+
+/* 사이트 자체 일반 고대비 클래스에서도 동일 처리 */
+html:not(.whale-browser).high-contrast #brailleStoryView .story-sixdot span,
+html:not(.whale-browser) body.high-contrast #brailleStoryView .story-sixdot span,
+html:not(.whale-browser).contrast #brailleStoryView .story-sixdot span,
+html:not(.whale-browser) body.contrast #brailleStoryView .story-sixdot span{
+  background:#000!important;
+  border:2px solid #fff!important;
+  border-radius:50%!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  outline:0!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
