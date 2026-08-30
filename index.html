@@ -5512,6 +5512,15 @@ html.whale-browser body.high-contrast .selection-handle{
 }
 </style>
 
+
+<style id="gmgj-v30-auto-cell-guide">
+.braille-correction-guide p{
+  max-width:820px;
+  margin-left:auto;
+  margin-right:auto;
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -5821,14 +5830,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
 
       <div class="braille-correction-actions">
         <button type="button" id="brailleUndoCorrection" class="reader-secondary-btn" disabled>마지막 수정 취소</button>
-        <button type="button" id="brailleCellBoundaryMode" class="reader-secondary-btn">셀 구분선 지정</button>
-        <button type="button" id="brailleClearBoundaries" class="reader-secondary-btn" disabled>구분선 지우기</button>
         <button type="button" id="brailleReReadButton" class="reader-primary-btn">보정한 점으로 점형 판독하기</button>
-      </div>
-
-      <div id="brailleBoundaryHelp" class="braille-boundary-help" hidden>
-        <strong>셀 구분선 지정 중</strong>
-        <p>점자 글자와 글자 사이의 빈 공간을 사진에서 클릭하거나 터치해 주세요. 세로 구분선이 생기며, 다시 누르면 가까운 구분선을 삭제할 수 있습니다.</p>
       </div>
 
       <div id="brailleCellResult" class="braille-cell-result" hidden aria-live="polite">
@@ -5837,7 +5839,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
         <p id="brailleCellSummary" class="braille-cell-summary"></p>
       </div>
 
-      <p class="braille-detection-note">선택한 사진 영역에서 실제 점자 돌출점을 사용자가 직접 지정합니다. 필요하면 글자 사이에 셀 구분선을 지정하고, 지정한 점과 글자 경계를 기준으로 각 셀의 2열×3행 점형을 판독합니다.</p>
+      <p class="braille-detection-note">선택한 사진 영역에서 실제 점자 돌출점만 직접 지정해 주세요. 프로그램이 전체 점의 반복 간격을 분석해 글자 셀과 좌·우 열을 자동으로 구분하고 1~6번 점형을 판독합니다.</p>
     </div>
 
     <div id="brailleReaderNextStep" class="braille-reader-next-step">
@@ -7171,7 +7173,7 @@ window.addEventListener("hashchange",()=>{
   let detectedPoints=[];
   let correctionHistory=[];
   let markRadius=10;
-  let boundaryMode=false;
+  let boundaryMode=false; // v30: 기본 UI에서는 셀 경계를 자동 판정
   let cellBoundaries=[]; // canvas 좌표의 세로 셀 구분선
 
   function revokeCurrent(){
@@ -7704,84 +7706,150 @@ window.addEventListener("hashchange",()=>{
   }
 
   function inferBrailleCells(points){
-    if(!points.length) return {cells:[],confidence:"낮음"};
+    if(points.length<1) return {cells:[],confidence:"낮음"};
 
     const rowFit=fitThreeRows(points);
     if(!rowFit) return {cells:[],confidence:"낮음"};
 
-    // 사용자가 셀 구분선을 지정한 경우: 이 구분을 최우선으로 사용
-    if(cellBoundaries.length){
-      const xs=points.map(p=>p.x);
-      const minX=Math.min(...xs)-1, maxX=Math.max(...xs)+1;
-      const cuts=[minX,...cellBoundaries.filter(x=>x>minX&&x<maxX).sort((a,b)=>a-b),maxX];
-      const cells=[];
+    // 1. 모든 점을 공통 3행에 먼저 배치한다.
+    const pts=points.map(p=>{
+      const rr=nearestRow(p.y,rowFit);
+      return {...p,row:rr.row,rowDist:rr.dist};
+    }).filter(p=>p.rowDist<=rowFit.step*.72);
 
-      for(let ci=0;ci<cuts.length-1;ci++){
-        const left=cuts[ci], right=cuts[ci+1];
-        const pts=points.filter(p=>p.x>=left && p.x<=(ci===cuts.length-2?right:right-0.0001));
-        if(!pts.length) continue;
+    if(!pts.length) return {cells:[],confidence:"낮음"};
 
-        // 각 셀 안에서는 점들의 x를 최대 2개 열로 묶음
-        let cols;
-        const ux=[...new Set(pts.map(p=>Math.round(p.x)))];
-        if(ux.length===1){
-          cols=[{mean:ux[0],values:ux}];
-        }else{
-          cols=kmeans1D(pts.map(p=>p.x),2);
-        }
-        cols=cols.sort((a,b)=>a.mean-b.mean);
-
-        const dots=[];
-        pts.forEach(p=>{
-          const rr=nearestRow(p.y,rowFit);
-          if(rr.dist>rowFit.step*.68) return;
-
-          let col=0;
-          if(cols.length>1){
-            const d0=Math.abs(p.x-cols[0].mean), d1=Math.abs(p.x-cols[1].mean);
-            col=d1<d0?1:0;
-          }
-
-          const dotNum=col===0 ? [1,2,3][rr.row] : [4,5,6][rr.row];
-          if(!dots.includes(dotNum)) dots.push(dotNum);
-        });
-
-        dots.sort((a,b)=>a-b);
-        if(dots.length){
-          cells.push({
-            index:cells.length+1,
-            dots,
-            unicode:dotPatternToUnicode(dots)
-          });
+    // 2. 같은 행의 점 사이 x거리에서 '한 셀 내부 좌우열 간격' 후보를 찾는다.
+    const diffs=[];
+    for(let r=0;r<3;r++){
+      const xs=pts.filter(p=>p.row===r).map(p=>p.x).sort((a,b)=>a-b);
+      for(let i=0;i<xs.length;i++){
+        for(let j=i+1;j<xs.length;j++){
+          const d=xs[j]-xs[i];
+          if(d>5) diffs.push(d);
         }
       }
+    }
+    if(!diffs.length){
+      // 한 열만 존재하는 극단적 경우: y간격을 점자 셀 가로간격의 근사값으로 사용
+      diffs.push(rowFit.step*.95);
+    }
+    diffs.sort((a,b)=>a-b);
 
-      return {
-        cells,
-        confidence:cells.length ? "사용자 셀 구분 기준" : "낮음"
-      };
+    const small=diffs.slice(0,Math.max(1,Math.ceil(diffs.length*.35)));
+    let colGap=median(small);
+    colGap=Math.max(7,colGap);
+
+    // 3. 셀 시작 간격(cell pitch)을 전체 점에서 탐색.
+    //    핵심: 각 셀을 따로 판단하지 않고 하나의 전역 좌/우 열 위상으로 맞춘다.
+    const xsAll=pts.map(p=>p.x);
+    const minX=Math.min(...xsAll), maxX=Math.max(...xsAll);
+    const span=Math.max(1,maxX-minX);
+
+    const pitchCandidates=[];
+    for(let i=0;i<xsAll.length;i++){
+      for(let j=i+1;j<xsAll.length;j++){
+        const d=Math.abs(xsAll[i]-xsAll[j]);
+        if(d>colGap*1.55 && d<colGap*4.8) pitchCandidates.push(d);
+      }
+    }
+    pitchCandidates.push(colGap*2.05,colGap*2.25,colGap*2.45,colGap*2.7,colGap*3.0);
+
+    const uniqPitch=[];
+    pitchCandidates.sort((a,b)=>a-b).forEach(v=>{
+      if(!uniqPitch.some(q=>Math.abs(q-v)<Math.max(3,v*.06))) uniqPitch.push(v);
+    });
+
+    let best=null;
+    for(const pitch of uniqPitch){
+      if(pitch<=colGap*1.45) continue;
+      const maxCells=Math.max(1,Math.ceil(span/pitch)+2);
+
+      // 어떤 실제 점도 왼쪽열 또는 오른쪽열일 수 있으므로 두 경우 모두에서 x0 후보 생성
+      const phaseCandidates=[];
+      pts.forEach(p=>{
+        for(let col=0;col<2;col++){
+          for(let k=0;k<=maxCells;k++){
+            phaseCandidates.push(p.x-k*pitch-col*colGap);
+          }
+        }
+      });
+      phaseCandidates.sort((a,b)=>a-b);
+      const phases=[];
+      phaseCandidates.forEach(v=>{
+        if(!phases.some(q=>Math.abs(q-v)<Math.max(2,colGap*.07))) phases.push(v);
+      });
+
+      for(const x0 of phases){
+        let err=0;
+        const assignments=[];
+        const occupied=new Set();
+
+        for(const p of pts){
+          let slot=null;
+          const approx=Math.round((p.x-x0)/pitch);
+          for(let cell=Math.max(0,approx-1);cell<=approx+1;cell++){
+            for(let col=0;col<2;col++){
+              const sx=x0+cell*pitch+col*colGap;
+              const dx=Math.abs(p.x-sx);
+              if(!slot || dx<slot.dx) slot={cell,col,sx,dx};
+            }
+          }
+          if(!slot) continue;
+
+          const key=`${slot.cell}-${slot.col}-${p.row}`;
+          let localErr=Math.pow(slot.dx/colGap,2);
+          if(occupied.has(key)) localErr+=2.5;
+          occupied.add(key);
+          err+=localErr;
+          assignments.push({...p,...slot});
+        }
+
+        err/=Math.max(1,assignments.length);
+
+        if(assignments.length){
+          const cellIds=assignments.map(a=>a.cell);
+          const lo=Math.min(...cellIds), hi=Math.max(...cellIds);
+          const used=new Set(cellIds).size;
+          // 불필요하게 빈 셀을 많이 만드는 해를 억제
+          err+=(hi-lo+1-used)*.12;
+
+          // 좌/우열 간격과 셀 간격이 너무 비슷한 비정상 해 억제
+          if(pitch-colGap<colGap*.55) err+=.5;
+        }
+
+        if(!best || err<best.err){
+          best={err,pitch,colGap,x0,assignments};
+        }
+      }
     }
 
-    // 구분선을 지정하지 않은 경우에는 기존 자동 격자 추정 사용
-    const grid=fitHorizontalBrailleGrid(points,rowFit);
-    if(!grid) return {cells:[],confidence:"낮음"};
+    if(!best || !best.assignments.length) return {cells:[],confidence:"낮음"};
 
+    // 4. 사용된 셀 번호를 왼쪽부터 연속 번호로 정규화
+    const ids=[...new Set(best.assignments.map(a=>a.cell))].sort((a,b)=>a-b);
+    const remap=new Map(ids.map((v,i)=>[v,i]));
     const cells=[];
-    for(let ci=0;ci<grid.cellCount;ci++){
+
+    ids.forEach(oldId=>{
       const dots=[];
-      grid.assignments.filter(a=>a.cell===ci).forEach(a=>{
-        const num=a.col===0 ? [1,2,3][a.row] : [4,5,6][a.row];
-        if(!dots.includes(num)) dots.push(num);
+      best.assignments.filter(a=>a.cell===oldId).forEach(a=>{
+        const n=a.col===0 ? [1,2,3][a.row] : [4,5,6][a.row];
+        if(!dots.includes(n)) dots.push(n);
       });
       dots.sort((a,b)=>a-b);
       if(dots.length){
-        cells.push({index:ci+1,dots,unicode:dotPatternToUnicode(dots)});
+        cells.push({
+          index:cells.length+1,
+          dots,
+          unicode:dotPatternToUnicode(dots)
+        });
       }
-    }
+    });
 
     let confidence="낮음";
-    if(grid.err<.12) confidence="높음";
-    else if(grid.err<.28) confidence="보통";
+    if(best.err<.10) confidence="높음";
+    else if(best.err<.24) confidence="보통";
 
     return {cells,confidence};
   }
@@ -7811,11 +7879,11 @@ window.addEventListener("hashchange",()=>{
     const unicodeText=inferred.cells.map(c=>c.unicode).join("");
     cellSummary.innerHTML=
       `<strong>판독된 점형:</strong> <span class="braille-unicode-result">${unicodeText}</span><br>`+
-      `<span>점형 판독 기준: ${inferred.confidence}. 셀 구분선을 지정한 경우 사용자가 지정한 글자 경계를 우선 적용했습니다.</span><br>`+
+      `<span>점형 판독 신뢰도: ${inferred.confidence}. 전체 점의 공통 행·열 위치와 반복되는 셀 간격을 기준으로 자동 구분했습니다.</span><br>`+
       `<span>현재 단계에서는 점형을 먼저 정확하게 판독하고, 한글 변환은 점형 판독이 안정된 뒤 한국 점자 규칙과 연결합니다.</span>`;
     cellResult.hidden=false;
     cellResult.scrollIntoView({behavior:"smooth",block:"nearest"});
-    status.textContent=`보정한 ${detectedPoints.length}개의 점으로 ${inferred.cells.length}개의 점형을 판독했습니다.`;
+    status.textContent=`직접 지정한 ${detectedPoints.length}개의 점으로 ${inferred.cells.length}개의 점형을 자동 구분해 판독했습니다.`;
   }
 
   rereadBtn?.addEventListener("click",()=>{
