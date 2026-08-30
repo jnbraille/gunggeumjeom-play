@@ -7174,13 +7174,8 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
       <p>점자는 한정된 6점 조합을 여러 목적으로 사용하기 때문에, 같은 점형이 문맥에 따라 다른 의미를 가질 수 있습니다. 숫자를 적을 때에는 <strong>수표</strong>를 먼저 적어 뒤의 점형이 숫자임을 알려 줍니다.</p>
       <div class="story-mini-fact"><strong>핵심</strong><span>점형만 보는 것이 아니라 앞뒤의 기호와 문맥까지 함께 읽어야 정확합니다.</span></div>
     </article>
-
-    <article class="story-card">
-      <h3>9. 문장 부호와 여러 전문 점자도 있습니다</h3>
-      <p>한국 점자 규정에는 한글 자모와 약자·약어뿐 아니라 <strong>숫자, 문장 부호, 기타 부호</strong>가 포함됩니다. 또 별도의 장에서 <strong>수학 점자, 과학 점자, 한국 음악 점자, 서양 음악 점자</strong>를 다루며, 부록에는 외국어 점자와 국제음성기호 점자도 실려 있습니다.</p>
-    </article>
 <article class="story-card story-knowledge-card">
-      <h3>10. 점자의 장점</h3>
+      <h3>9. 점자의 장점</h3>
       <div class="story-procon-grid">
         <div><strong>의사소통</strong><span>시각장애인의 중요한 의사소통 수단이며, 맹농인에게도 실질적인 의사소통 수단이 될 수 있습니다.</span></div>
         <div><strong>읽기</strong><span>필요한 부분을 자세히 읽거나 다시 확인하는 등 정독과 재확인이 가능합니다.</span></div>
@@ -7190,7 +7185,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
     </article>
 
     <article class="story-card story-knowledge-card">
-      <h3>11. 점자의 단점</h3>
+      <h3>10. 점자의 단점</h3>
       <div class="story-procon-grid">
         <div><strong>읽기 속도</strong><span>묵독이나 청독에 비해 읽는 속도가 느릴 수 있습니다.</span></div>
         <div><strong>자료 접근</strong><span>점자도서나 점자 간행물을 구하기 어려운 경우가 있습니다.</span></div>
@@ -7199,7 +7194,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
       </div>
     </article>
 <article class="story-card story-knowledge-card">
-      <h3>12. 점자와 관련된 기기와 소프트웨어</h3>
+      <h3>11. 점자와 관련된 기기와 소프트웨어</h3>
       <p>점자 자료를 제작할 때에는 <strong>점자 프린터</strong>와 <strong>점역 소프트웨어</strong>를 활용할 수 있습니다.</p>
       <div class="story-tool-grid">
         <div><strong>점자 프린터 예</strong><span>에베레스트 · 베이직디 · 브레일로</span></div>
@@ -14502,6 +14497,55 @@ html:not(.whale-browser) body.contrast #brailleStoryView .story-sixdot span > b{
 @media(max-width:680px){
   #brailleStoryView .story-history-one-line{
     overflow-x:auto;
+  }
+}
+</style>
+
+<style id="gmgj-v67-footer-story-polish">
+/* ===== 궁금점 이야기 1926년 항목: 윗칸과 같은 정렬 ===== */
+#brailleStoryView .story-history-one-line{
+  display:block!important;
+  overflow:visible!important;
+}
+#brailleStoryView .story-history-one-line > strong{
+  display:block!important;
+  margin:0 0 8px 0!important;
+  padding:0!important;
+}
+#brailleStoryView .story-history-one-line > span{
+  display:block!important;
+  white-space:normal!important;
+  margin:0!important;
+  padding:0!important;
+  line-height:1.65!important;
+}
+#brailleStoryView .story-history-one-line > span > strong{
+  display:inline!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+/* ===== PC 하단 푸터 좌우 여백 균형 ===== */
+@media (min-width:901px){
+  footer > .shell.foot{
+    width:min(1600px, calc(100% - 80px))!important;
+    max-width:1600px!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    box-sizing:border-box!important;
+  }
+  footer .foot-support{
+    padding-left:0!important;
+  }
+  footer .foot-center{
+    position:relative!important;
+    padding-right:0!important;
+  }
+  footer .footer-social-links{
+    right:0!important;
+    left:auto!important;
   }
 }
 </style>
