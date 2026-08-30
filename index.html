@@ -5548,6 +5548,64 @@ html.whale-browser body.high-contrast .selection-handle{
 }
 </style>
 
+
+<style id="gmgj-v36-cell-cursor">
+.braille-correction-guide,
+#brailleUndoCorrection,
+#brailleReReadButton{display:none!important}
+
+#brailleDetectionCanvas{cursor:none!important;touch-action:none!important}
+.braille-cell-cursor-tools{
+  max-width:760px;margin:16px auto;padding:16px;border:1px solid #a9c3ce;
+  border-radius:14px;background:#f7fbfb;text-align:center
+}
+.cell-size-tools,.cell-entry-actions{
+  display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap
+}
+.cell-size-tools button,.cell-entry-actions button{
+  min-height:44px;padding:8px 14px;border:1px solid #8faebb;border-radius:10px;
+  background:#fff;color:#142b48;font-weight:800;cursor:pointer
+}
+#brailleCellSizeLabel{min-width:100px;font-weight:800}
+.cell-cursor-help{margin:12px auto;line-height:1.55;word-break:keep-all}
+.braille-six-dot-picker{
+  display:grid;grid-template-columns:repeat(2,64px);grid-template-rows:repeat(3,64px);
+  gap:10px;justify-content:center;margin:14px auto
+}
+.braille-six-dot-picker button{
+  width:64px;height:64px;border:2px solid #52788b;border-radius:50%;
+  background:#fff;color:#142b48;font-size:1.15rem;font-weight:900;cursor:pointer
+}
+.braille-six-dot-picker button[aria-pressed="true"]{
+  background:#078f87;color:#fff;border-color:#078f87;
+  box-shadow:inset 0 0 0 5px #fff
+}
+#brailleAddCell.primary-action{background:#078f87;color:#fff;border-color:#078f87}
+#brailleAddCell:disabled{opacity:.5;cursor:not-allowed}
+.cell-entry-status{margin:12px 0 0;font-weight:800;line-height:1.5}
+@media(max-width:520px){
+  .braille-six-dot-picker{grid-template-columns:repeat(2,58px);grid-template-rows:repeat(3,58px)}
+  .braille-six-dot-picker button{width:58px;height:58px}
+  #brailleDetectionCanvas{cursor:crosshair!important}
+}
+body.high-contrast .braille-cell-cursor-tools,.high-contrast .braille-cell-cursor-tools{
+  background:#1f1f1f!important;color:#fff!important;border-color:#fff!important
+}
+body.high-contrast .braille-six-dot-picker button,.high-contrast .braille-six-dot-picker button,
+body.high-contrast .cell-size-tools button,.high-contrast .cell-size-tools button,
+body.high-contrast .cell-entry-actions button,.high-contrast .cell-entry-actions button{
+  background:#1f1f1f!important;color:#fff!important;border-color:#fff!important
+}
+body.high-contrast .braille-six-dot-picker button[aria-pressed="true"],
+.high-contrast .braille-six-dot-picker button[aria-pressed="true"]{
+  background:#078f87!important;color:#fff!important
+}
+@media(forced-colors:active){
+  .braille-cell-cursor-tools{background:Canvas;color:CanvasText;border-color:CanvasText}
+  .braille-six-dot-picker button[aria-pressed="true"]{background:Highlight;color:HighlightText}
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -5841,19 +5899,43 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
     <div class="braille-reader-controls">
       <button type="button" id="brailleChangeImage" class="reader-secondary-btn" hidden>다른 사진 선택</button>
       <button type="button" id="brailleReselectArea" class="reader-secondary-btn" hidden>영역 다시 선택</button>
-      <button type="button" id="brailleAnalyzeButton" class="reader-primary-btn" disabled aria-describedby="brailleReaderStatus">선택 영역에서 점 찍기</button>
+      <button type="button" id="brailleAnalyzeButton" class="reader-primary-btn" disabled aria-describedby="brailleReaderStatus">선택 영역에서 셀 입력하기</button>
     </div>
 
     <div id="brailleReaderStatus" class="braille-reader-status" role="status">
       사진을 촬영하거나 선택한 뒤, 점자가 있는 부분을 손가락이나 마우스로 드래그해 선택해 주세요.
     </div>
     <div id="brailleDetectionResult" class="braille-detection-result" hidden>
-      <h3>점자 점 직접 지정</h3>
-      <canvas id="brailleDetectionCanvas" aria-label="점자로 추정되는 점을 표시한 분석 이미지. 표시된 점을 선택하면 삭제하고 빈 곳을 선택하면 점을 추가할 수 있습니다."></canvas>
+      <h3>6점 셀로 점자 입력</h3>
+      <canvas id="brailleDetectionCanvas" aria-label="점자로 추정되는 점을 표시한 분석 이미지. 표시된 점을 선택하면 삭제하고 빈 곳을 선택하면 점을 추가할 수 있습니다.">
+<div id="brailleCellCursorTools" class="braille-cell-cursor-tools">
+  <div class="cell-size-tools" role="group" aria-label="6점 셀 크기 조절">
+    <button type="button" id="brailleCellSmaller">셀 작게</button>
+    <span id="brailleCellSizeLabel" aria-live="polite">셀 크기 100%</span>
+    <button type="button" id="brailleCellLarger">셀 크게</button>
+  </div>
+  <p class="cell-cursor-help">
+    사진 위에서 6점 셀 틀을 한 글자에 맞춘 뒤 클릭하세요. 위치를 정한 다음 아래 1~6점 중 실제로 돌출된 점만 선택하고 <strong>이 셀 추가</strong>를 누르세요.
+  </p>
+  <div id="brailleSixDotPicker" class="braille-six-dot-picker" aria-label="현재 셀의 점 선택">
+    <button type="button" data-dot="1" aria-pressed="false"><span>1</span></button>
+    <button type="button" data-dot="4" aria-pressed="false"><span>4</span></button>
+    <button type="button" data-dot="2" aria-pressed="false"><span>2</span></button>
+    <button type="button" data-dot="5" aria-pressed="false"><span>5</span></button>
+    <button type="button" data-dot="3" aria-pressed="false"><span>3</span></button>
+    <button type="button" data-dot="6" aria-pressed="false"><span>6</span></button>
+  </div>
+  <div class="cell-entry-actions">
+    <button type="button" id="brailleAddCell" class="primary-action" disabled>이 셀 추가</button>
+    <button type="button" id="brailleRemoveLastCell">마지막 셀 삭제</button>
+  </div>
+  <p id="brailleCellEntryStatus" class="cell-entry-status" aria-live="polite">아직 셀 위치를 지정하지 않았습니다.</p>
+</div>
+</canvas>
       <p id="brailleDetectionSummary"></p>
 
       <div class="braille-correction-guide">
-        <strong>실제 점자 위치를 직접 찍어 주세요.</strong>
+        <strong>6점 셀 틀을 점자 한 글자에 맞춰 주세요.</strong>
         <p>사진 속 실제 점자 돌출점의 중심을 클릭하거나 터치하면 빨간 원이 추가됩니다. 잘못 찍은 빨간 원은 다시 클릭하거나 터치하면 삭제됩니다.</p>
       </div>
 
@@ -7332,7 +7414,7 @@ window.addEventListener("hashchange",()=>{
     dragMode=null; dragHandle=null; startPoint=null; startSelection=null;
     stage.releasePointerCapture?.(e.pointerId);
     if(selection && selection.w>=minSelection && selection.h>=minSelection){
-      status.textContent="점자 영역이 선택되었습니다. 모서리 손잡이로 조정하거나 ‘선택 영역에서 점 찍기’를 눌러 주세요.";
+      status.textContent="점자 영역이 선택되었습니다. 모서리 손잡이로 조정하거나 ‘선택 영역에서 셀 입력하기’를 눌러 주세요.";
     }else clearSelection();
     e.preventDefault();
   }
@@ -7920,8 +8002,30 @@ window.addEventListener("hashchange",()=>{
     "2456":"하"
   };
 
+  // 모음+받침을 한 칸으로 적는 한글 점자 약자.
+  // 초성이 앞에 오면 그 초성과 결합하여 한 음절로 판독한다.
+  const KBR2024_SYLLABLE_ABBR={
+    "1456":{v:"ㅓ",t:"ㄱ",label:"억"},
+    "23456":{v:"ㅓ",t:"ㄴ",label:"언"},
+    "2345":{v:"ㅓ",t:"ㄹ",label:"얼"},
+    "16":{v:"ㅕ",t:"ㄴ",label:"연"},
+    "126":{v:"ㅕ",t:"ㄹ",label:"열"},
+    "12456":{v:"ㅕ",t:"ㅇ",label:"영"},
+    "1346":{v:"ㅗ",t:"ㄱ",label:"옥"},
+    "12356":{v:"ㅗ",t:"ㄴ",label:"온"},
+    "12346":{v:"ㅗ",t:"ㄹ",label:"올"},
+    "123456":{v:"ㅗ",t:"ㅇ",label:"옹"},
+    "13456":{v:"ㅜ",t:"ㄴ",label:"운"},
+    "1345":{v:"ㅜ",t:"ㄹ",label:"울"},
+    "1356":{v:"ㅡ",t:"ㄴ",label:"은"},
+    "2346":{v:"ㅡ",t:"ㄹ",label:"을"},
+    "12345":{v:"ㅣ",t:"ㄴ",label:"인"},
+    "2356":{v:"ㅏ",t:"ㅇ",label:"앙"}
+  };
+
   function abbreviationMeaning(cell){
-    return KBR2024_ABBR[dotKey(cell)] || "";
+    const k=dotKey(cell);
+    return KBR2024_ABBR[k] || (KBR2024_SYLLABLE_ABBR[k] && KBR2024_SYLLABLE_ABBR[k].label) || "";
   }
 
   const HANGUL_L=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
@@ -7999,8 +8103,21 @@ window.addEventListener("hashchange",()=>{
         }
       }
 
-      // 초성 + 중성 + (종성)
+      // 초성 + '모음+받침 약자'를 한 음절로 결합.
+      // 예: ㅌ(125) + 옹(123456) = 통, ㅈ(46) + 앙(2356) = 장.
       const ini=KBR2024.initial[k];
+      if(ini && i+1<cells.length){
+        const ak=dotKey(cells[i+1]);
+        const sa=KBR2024_SYLLABLE_ABBR[ak];
+        if(sa){
+          out.push(composeHangul(ini,sa.v,sa.t));
+          notes.push(`${i+1}~${i+2}셀은 초성 ${ini} + 약자 ‘${sa.label}’를 결합해 판독했습니다.`);
+          i+=2;
+          continue;
+        }
+      }
+
+      // 초성 + 중성 + (종성)
       if(ini){
         const vr=readVowel(cells,i+1);
         if(vr){
@@ -8028,6 +8145,15 @@ window.addEventListener("hashchange",()=>{
         }
         out.push(composeHangul("ㅇ",vr.v,fin));
         i=j; continue;
+      }
+
+      // 모음+받침 약자가 독립적으로 쓰인 경우 초성 ㅇ을 포함한 음절로 읽는다.
+      const standaloneAbbr=KBR2024_SYLLABLE_ABBR[k];
+      if(standaloneAbbr){
+        out.push(standaloneAbbr.label);
+        notes.push(`${i+1}셀은 약자 ‘${standaloneAbbr.label}’로 판독했습니다.`);
+        i++;
+        continue;
       }
 
       // 한 칸만으로 문맥 해석이 확정되지 않는 경우 점형은 그대로 보존한다.
@@ -8075,7 +8201,7 @@ window.addEventListener("hashchange",()=>{
       `<strong>판독된 점형:</strong> <span class="braille-unicode-result">${unicodeText}</span><br>`+
       `<strong>2024 한국 점자 규정 기준 한글 해석:</strong> <span class="braille-korean-result">${decodedSafe || "해석할 수 없음"}</span><br>`+
       `<span>점형 판독 신뢰도: ${inferred.confidence}. 왼쪽 위부터 1·2·3점, 오른쪽 위부터 4·5·6점으로 번호를 부여합니다.</span><br>`+
-      `<span class="braille-rule-note">초성·중성·종성, 초성 ㅇ 생략, 된소리표와 함께 2024 한국 점자 규정의 한 글자 약자를 판독에 적용합니다. 같은 점형이 자모와 약자로 함께 쓰이는 경우에는 앞뒤 셀의 조합 가능성을 함께 판단합니다.</span>`+
+      `<span class="braille-rule-note">초성·중성·종성, 초성 ㅇ 생략, 된소리표와 함께 2024 한국 점자 규정의 한 글자 약자와 모음·받침 약자를 판독에 적용합니다. 초성 뒤에 약자가 오면 한 음절로 결합해 문맥을 판독합니다.</span>`+
       (decoded.notes.length?`<br><span class="braille-rule-note">${decoded.notes.join(" ")}</span>`:"");
     cellResult.hidden=false;
     cellResult.scrollIntoView({behavior:"smooth",block:"nearest"});
@@ -8140,7 +8266,7 @@ window.addEventListener("hashchange",()=>{
 
         result.hidden=false;
         drawDetectedPoints();
-        status.textContent="선택 영역이 준비되었습니다. 실제 점자 돌출점의 중심을 하나씩 클릭하거나 터치해 표시해 주세요.";
+        status.textContent="선택 영역이 준비되었습니다. 마우스를 움직여 6점 셀 틀을 점자 한 글자 위에 맞춘 뒤 클릭하세요. 모바일에서는 사진을 터치해 셀 위치를 지정할 수 있습니다.";
         result.scrollIntoView({behavior:"smooth",block:"nearest"});
       }catch(err){
         console.error(err);
@@ -8158,6 +8284,173 @@ window.addEventListener("hashchange",()=>{
     }
   });
   window.addEventListener("pagehide",revokeCurrent);
+})();
+</script>
+
+
+<script id="gmgj-v36-cell-cursor">
+(function(){
+  const canvas=document.getElementById("brailleDetectionCanvas");
+  const result=document.getElementById("brailleDetectionResult");
+  const picker=document.getElementById("brailleSixDotPicker");
+  const addBtn=document.getElementById("brailleAddCell");
+  const removeBtn=document.getElementById("brailleRemoveLastCell");
+  const smaller=document.getElementById("brailleCellSmaller");
+  const larger=document.getElementById("brailleCellLarger");
+  const sizeLabel=document.getElementById("brailleCellSizeLabel");
+  const entryStatus=document.getElementById("brailleCellEntryStatus");
+  const reread=document.getElementById("brailleReReadButton");
+  if(!canvas||!picker||!addBtn)return;
+
+  let cursor={x:0,y:0,visible:false,locked:false};
+  let cellScale=1;
+  let selected=new Set();
+  let manualCells=[];
+
+  function dims(){
+    const base=Math.max(36,Math.min(canvas.width,canvas.height)*.15);
+    return {w:base*cellScale,h:base*1.55*cellScale};
+  }
+  function pointerXY(e){
+    const r=canvas.getBoundingClientRect();
+    return {x:(e.clientX-r.left)*(canvas.width/r.width),y:(e.clientY-r.top)*(canvas.height/r.height)};
+  }
+  function redrawOverlay(){
+    // 기존 함수가 전역 스코프에 있으면 원본 사진/표시를 먼저 다시 그림
+    try{ if(typeof drawDetectedPoints==="function") drawDetectedPoints(); }catch(e){}
+    if(!cursor.visible)return;
+    const ctx=canvas.getContext("2d"), d=dims();
+    const x=cursor.x-d.w/2,y=cursor.y-d.h/2;
+    ctx.save();
+    ctx.lineWidth=Math.max(2,canvas.width/450);
+    ctx.strokeStyle="#007f9b";
+    ctx.setLineDash([8,6]);
+    ctx.strokeRect(x,y,d.w,d.h);
+    ctx.setLineDash([]);
+    ctx.globalAlpha=.85;
+    ctx.strokeStyle="#007f9b";
+    ctx.beginPath();
+    ctx.moveTo(x+d.w/2,y);ctx.lineTo(x+d.w/2,y+d.h);
+    ctx.moveTo(x,y+d.h/3);ctx.lineTo(x+d.w,y+d.h/3);
+    ctx.moveTo(x,y+2*d.h/3);ctx.lineTo(x+d.w,y+2*d.h/3);
+    ctx.stroke();
+    // 6개 기준점
+    for(let row=0;row<3;row++)for(let col=0;col<2;col++){
+      const dot=col===0?row+1:row+4;
+      const px=x+d.w*(col?0.75:0.25),py=y+d.h*((row+.5)/3);
+      ctx.beginPath();ctx.arc(px,py,Math.max(5,d.w*.055),0,Math.PI*2);
+      ctx.fillStyle=selected.has(dot)?"#e11":"rgba(255,255,255,.75)";
+      ctx.fill();ctx.strokeStyle="#e11";ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function syncPicker(){
+    picker.querySelectorAll("[data-dot]").forEach(b=>{
+      b.setAttribute("aria-pressed",selected.has(+b.dataset.dot)?"true":"false");
+    });
+  }
+  function resetCurrent(){
+    selected.clear();syncPicker();cursor.locked=false;
+    addBtn.disabled=true;
+  }
+
+  canvas.addEventListener("pointermove",e=>{
+    if(cursor.locked)return;
+    cursor={...pointerXY(e),visible:true,locked:false};
+    redrawOverlay();
+  },true);
+  canvas.addEventListener("pointerleave",()=>{
+    if(!cursor.locked){cursor.visible=false;redrawOverlay();}
+  },true);
+  canvas.addEventListener("pointerdown",e=>{
+    e.preventDefault();e.stopImmediatePropagation();
+    cursor={...pointerXY(e),visible:true,locked:true};
+    addBtn.disabled=false;
+    entryStatus.textContent="셀 위치를 고정했습니다. 실제 돌출된 점만 아래 1~6점에서 선택해 주세요.";
+    redrawOverlay();
+  },true);
+
+  picker.addEventListener("click",e=>{
+    const b=e.target.closest("[data-dot]");if(!b)return;
+    const n=+b.dataset.dot;
+    selected.has(n)?selected.delete(n):selected.add(n);
+    syncPicker();redrawOverlay();
+  });
+
+  addBtn.addEventListener("click",()=>{
+    if(!cursor.locked)return;
+    if(!selected.size){
+      entryStatus.textContent="이 셀에 돌출된 점을 먼저 선택해 주세요.";return;
+    }
+    const dots=[...selected].sort((a,b)=>a-b);
+    manualCells.push({dots,unicode:String.fromCharCode(0x2800+dots.reduce((m,n)=>m|(1<<(n-1)),0))});
+
+    // 기존 판독 렌더러가 읽는 inferred 결과 대신 직접 셀 목록을 화면에 렌더
+    const cards=document.getElementById("brailleCellCards");
+    const summary=document.getElementById("brailleCellSummary");
+    const cellResult=document.getElementById("brailleCellResult");
+    if(cards&&summary&&cellResult){
+      cards.innerHTML="";
+      manualCells.forEach((cell,i)=>{
+        const el=document.createElement("div");el.className="braille-cell-card";
+        let meanings=[];
+        try{if(typeof cellMeaning==="function")meanings=cellMeaning(cell)}catch(e){}
+        el.innerHTML=`<span class="braille-cell-number">${i+1}셀</span>
+          <span class="braille-cell-symbol">${cell.unicode}</span>
+          <span class="braille-cell-dots">${cell.dots.join("·")}번 점</span>
+          <span class="braille-cell-rule">${meanings.length?meanings.join(" · "):"문맥 해석 필요"}</span>`;
+        cards.appendChild(el);
+      });
+      try{
+        const decoded=typeof decodeKoreanBraille==="function"?decodeKoreanBraille(manualCells):{text:"",notes:[]};
+        summary.innerHTML=`<strong>판독된 점형:</strong> <span class="braille-unicode-result">${manualCells.map(c=>c.unicode).join("")}</span><br>
+          <strong>2024 한국 점자 규정 기준 한글 해석:</strong> <span class="braille-korean-result">${decoded.text||"해석할 수 없음"}</span>`;
+      }catch(e){}
+      cellResult.hidden=false;
+    }
+    entryStatus.textContent=`${manualCells.length}셀을 입력했습니다. 다음 글자 위로 6점 셀 틀을 옮겨 주세요.`;
+    resetCurrent();redrawOverlay();
+  });
+
+  removeBtn?.addEventListener("click",()=>{
+    if(!manualCells.length){entryStatus.textContent="삭제할 셀이 없습니다.";return;}
+    manualCells.pop();
+    entryStatus.textContent=`마지막 셀을 삭제했습니다. 현재 ${manualCells.length}셀입니다.`;
+    // 남은 셀 재표시를 위해 임시 위치에서 add 로직 대신 직접 갱신
+    const cards=document.getElementById("brailleCellCards");
+    const summary=document.getElementById("brailleCellSummary");
+    if(cards){
+      cards.innerHTML="";
+      manualCells.forEach((cell,i)=>{
+        const el=document.createElement("div");el.className="braille-cell-card";
+        let meanings=[];try{if(typeof cellMeaning==="function")meanings=cellMeaning(cell)}catch(e){}
+        el.innerHTML=`<span class="braille-cell-number">${i+1}셀</span><span class="braille-cell-symbol">${cell.unicode}</span>
+        <span class="braille-cell-dots">${cell.dots.join("·")}번 점</span><span class="braille-cell-rule">${meanings.length?meanings.join(" · "):"문맥 해석 필요"}</span>`;
+        cards.appendChild(el);
+      });
+    }
+    if(summary){
+      try{const d=decodeKoreanBraille(manualCells);summary.innerHTML=`<strong>판독된 점형:</strong> ${manualCells.map(c=>c.unicode).join("")}<br><strong>2024 한국 점자 규정 기준 한글 해석:</strong> <span class="braille-korean-result">${d.text||"해석할 수 없음"}</span>`}catch(e){}
+    }
+    redrawOverlay();
+  });
+
+  function resize(delta){
+    cellScale=Math.max(.55,Math.min(2.2,cellScale+delta));
+    sizeLabel.textContent=`셀 크기 ${Math.round(cellScale*100)}%`;
+    redrawOverlay();
+  }
+  smaller?.addEventListener("click",()=>resize(-.1));
+  larger?.addEventListener("click",()=>resize(.1));
+
+  // 새 사진/새 선택 영역에서는 입력 셀 초기화
+  const analyze=document.getElementById("brailleAnalyzeButton");
+  analyze?.addEventListener("click",()=>{
+    manualCells=[];resetCurrent();cursor.visible=false;
+    setTimeout(()=>{
+      entryStatus.textContent="사진 위로 마우스를 움직이면 6점 셀 틀이 나타납니다. 첫 글자에 맞춰 클릭해 주세요.";
+    },80);
+  });
 })();
 </script>
 
