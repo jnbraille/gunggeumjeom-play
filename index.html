@@ -14324,3 +14324,76 @@ html.whale-browser #homeView .board-dot.on.whale-home-text-dot{
 </style>
 
 
+<style id="gmgj-v63-story-sixdot-b-cleanup">
+/* v63: 1~6 숫자를 감싸는 <b> 요소의 네모 배경 제거
+   원형 테두리는 유지, 웨일 스타일은 변경하지 않음 */
+
+/* 일반 화면에서도 불필요한 배경/테두리 제거 */
+#brailleStoryView .story-sixdot span > b{
+  display:inline!important;
+  padding:0!important;
+  margin:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  width:auto!important;
+  height:auto!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  text-shadow:none!important;
+}
+
+/* Windows/일반 고대비 강제색상 */
+@media (forced-colors: active){
+  html:not(.whale-browser) #brailleStoryView .story-sixdot span{
+    background:#000!important;
+    border:2px solid #fff!important;
+    border-radius:50%!important;
+    color:#fff!important;
+    box-sizing:border-box!important;
+    forced-color-adjust:none!important;
+    -webkit-forced-color-adjust:none!important;
+  }
+
+  html:not(.whale-browser) #brailleStoryView .story-sixdot span > b{
+    display:inline!important;
+    padding:0!important;
+    margin:0!important;
+    min-width:0!important;
+    min-height:0!important;
+    width:auto!important;
+    height:auto!important;
+    background:transparent!important;
+    background-color:transparent!important;
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+    border:0!important;
+    outline:0!important;
+    box-shadow:none!important;
+    border-radius:0!important;
+    text-shadow:none!important;
+    forced-color-adjust:none!important;
+    -webkit-forced-color-adjust:none!important;
+  }
+}
+
+/* 사이트 자체 고대비 클래스 */
+html:not(.whale-browser).high-contrast #brailleStoryView .story-sixdot span > b,
+html:not(.whale-browser) body.high-contrast #brailleStoryView .story-sixdot span > b,
+html:not(.whale-browser).contrast #brailleStoryView .story-sixdot span > b,
+html:not(.whale-browser) body.contrast #brailleStoryView .story-sixdot span > b{
+  background:transparent!important;
+  background-color:transparent!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  text-shadow:none!important;
+}
+</style>
+
