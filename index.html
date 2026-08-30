@@ -5337,6 +5337,56 @@ html.whale-browser .gmgj-word{
 }
 </style>
 
+
+<style id="gmgj-v26-high-contrast-nav-dotmark">
+/* 일반 고대비 모드에서도 메뉴의 '점' 마크를 메인 로고와 동일하게 유지 */
+body.high-contrast .nav-dotmark,
+body.contrast .nav-dotmark,
+html.high-contrast .nav-dotmark,
+.high-contrast .nav-dotmark{
+  background:#142b48 !important;
+  color:#fff !important;
+  border:2px solid #fff !important;
+  forced-color-adjust:none !important;
+}
+body.high-contrast .nav-dotmark-jeom,
+body.contrast .nav-dotmark-jeom,
+html.high-contrast .nav-dotmark-jeom,
+.high-contrast .nav-dotmark-jeom{
+  color:#fff !important;
+  background:transparent !important;
+  forced-color-adjust:none !important;
+}
+body.high-contrast .nav-dotmark-braille i,
+body.contrast .nav-dotmark-braille i,
+html.high-contrast .nav-dotmark-braille i,
+.high-contrast .nav-dotmark-braille i{
+  background:#fff !important;
+  border:0 !important;
+  forced-color-adjust:none !important;
+}
+
+/* OS/브라우저 강제 색상에서도 흰 알약 형태로 뒤집히지 않도록 함 */
+@media(forced-colors:active){
+  .nav-dotmark{
+    background:#142b48 !important;
+    color:#fff !important;
+    border:2px solid #fff !important;
+    forced-color-adjust:none !important;
+  }
+  .nav-dotmark-jeom{
+    color:#fff !important;
+    background:transparent !important;
+    forced-color-adjust:none !important;
+  }
+  .nav-dotmark-braille i{
+    background:#fff !important;
+    border:0 !important;
+    forced-color-adjust:none !important;
+  }
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
