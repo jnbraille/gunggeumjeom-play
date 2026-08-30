@@ -1,5 +1,13 @@
 <!doctype html><html lang="ko"><head>
 
+<script id="gmgj-v71-preload-state">
+(function(){
+  var root=document.documentElement;
+  root.classList.add("gmgj-loading");
+})();
+</script>
+
+
 <!-- 궁금점 PLAY 검색 노출용 메타정보 v18 -->
 <title>궁금점 PLAY | 전남점자도서관 점자 학습·점자판독</title>
 <meta name="description" content="전남점자도서관 시각장애인학습지원센터가 운영하는 궁금점 PLAY입니다. 점자 타자 연습, 오늘의 궁금점, 학습 기록, 사진 기반 점자판독 기능을 제공합니다.">
@@ -7099,24 +7107,15 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
     </article>
 
     <article class="story-card">
-      <h3>2. 점자는 어떻게 시작되었을까요?</h3>
-      <p>점자는 문명사적 관점에서 단순한 문자를 넘어 중요한 의미를 가집니다. 시각장애인에게 <strong>자신감</strong>을 주고, <strong>활자정보에 대한 접근성</strong>과 <strong>독립적 생활 능력</strong>을 높이며, <strong>고용과 사회참여에 대한 균등한 기회</strong>를 제공하는 데 도움을 줍니다.</p>
+  <h3>2. 점자는 어떻게 시작되었을까요?</h3>
 
-      <p>점자를 최초로 만들어 사용한 사람은 19세기 프랑스의 <strong>루이 브라유</strong>입니다.</p>
-      <div class="story-history-timeline" aria-label="점자의 역사">
-        <div><strong>1824년</strong><span>루이 브라유가 점자를 창안했습니다.</span></div>
-        <div><strong>1829년</strong><span>점자가 반포되었습니다.</span></div>
-        <div><strong>1837년</strong><span>문제점을 수정·보완했습니다.</span></div>
-        <div><strong>1882년</strong><span>유럽회의에서 브라유식 점자를 통일 점자로 채택했습니다.</span></div>
-      </div>
+  <p>점자를 최초로 만들어 사용한 사람은 19세기 프랑스에서 살았던 <strong>루이 브라유</strong>입니다. 루이 브라유는 <strong>1824년 점자를 창안</strong>했으며, <strong>1829년에 반포</strong>하고 <strong>1837년에 문제점을 수정·보완</strong>했습니다.</p>
 
-      <p>한글 점자는 1926년 당시 <strong>제생원 맹아부(서울맹학교 전신) 교사였던 송암 박두성</strong>이 창안했습니다. 그는 로제타 홀 여사가 뉴욕 점자를 개량해 만든 평양 점자의 불편함과 비효율성을 절감하고, 한글에 알맞은 점자를 연구했습니다.</p>
-      <div class="story-history-timeline" aria-label="한글 점자의 역사">
-        <div><strong>1920년</strong><span>제자들과 <strong>조선어 점자 연구위원회</strong>를 조직했습니다.</span></div>
-        <div><strong>1926년 11월 4일</strong><span>한글 점자의 원형인 <strong>훈맹정음</strong>을 창안했습니다.</span></div>
-      </div>
+  <p>당시에는 브라유식 점자, 뉴욕 점자, 미국 점자, 보스턴 선문자 등 여러 방식이 함께 사용되었습니다. 이처럼 다양한 점자 체계를 둘러싼 이른바 <strong>‘점 전쟁’</strong>은 30여 년간 지속되었으며, <strong>1882년 유럽회의에서 브라유식 점자가 통일 점자로 채택</strong>되었습니다.</p>
 
-      <p class="story-note">훈맹정음에는 초성 자음 13자, 종성 자음 14자, 모음 21자, 약자 27자, 약어 7개, 숫자와 문장 부호가 사용되었습니다. <strong>11월 4일</strong>은 한글 점자의 날입니다.</p>
+  <p>한글 점자는 1926년 당시 <strong>제생원 맹아부(서울맹학교 전신) 교사였던 송암 박두성</strong>이 창안했습니다. 송암 박두성은 로제타 홀 여사가 뉴욕 점자를 개량해 만든 <strong>평양 점자</strong>의 불편함과 비효율성을 절감하고 한글에 알맞은 점자를 연구했습니다.</p>
+
+  <p><strong>1920년</strong> 제자들과 <strong>조선어 점자 연구위원회</strong>를 조직하여 연구를 이어 갔으며, <strong>1926년 11월 4일</strong> 한글 점자의 원형인 <strong>훈맹정음</strong>을 창안했습니다. 이날을 기념하여 <strong>11월 4일을 한글 점자의 날</strong>로 기념하고 있습니다.</p>
 </article>
 
     <article class="story-card">
@@ -14639,4 +14638,31 @@ html:not(.whale-browser) body.contrast #brailleStoryView .story-sixdot span > b{
   }
 }
 </style>
+
+<style id="gmgj-v71-footer-logo-flash-fix">
+html.gmgj-loading footer img{
+  visibility:hidden!important;
+  opacity:0!important;
+}
+html.gmgj-ready footer img{
+  visibility:visible!important;
+  opacity:1!important;
+}
+</style>
+
+
+<script id="gmgj-v71-footer-logo-ready">
+(function(){
+  function revealFooterLogos(){
+    var root=document.documentElement;
+    root.classList.remove("gmgj-loading");
+    root.classList.add("gmgj-ready");
+  }
+  if(document.readyState === "complete"){
+    revealFooterLogos();
+  }else{
+    window.addEventListener("load", revealFooterLogos, {once:true});
+  }
+})();
+</script>
 
