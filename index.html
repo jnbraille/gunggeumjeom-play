@@ -5628,87 +5628,6 @@ html, body, button, input, select, textarea {
 </style>
 
 
-<style id="gmgj-v39-main-logo-dot-size">
-/* 메인 타이틀 '점' 옆 6점 크기 확대 */
-.gmgj-logo .gmgj-braille i::before{
-  width:5.5px !important;
-  height:5.5px !important;
-}
-@media (max-width:600px){
-  .gmgj-logo .gmgj-braille i::before{
-    width:5px !important;
-    height:5px !important;
-  }
-}
-</style>
-
-
-<style id="gmgj-v40-logo-dot-circle-fix">
-/* 메인 타이틀: '점' 옆 6개 점을 메뉴보다 확실히 크게 */
-.gmgj-logo .gmgj-braille{
-  display:grid !important;
-  grid-template-columns:repeat(2, 8px) !important;
-  grid-template-rows:repeat(3, 8px) !important;
-  gap:6px 7px !important;
-  align-content:center !important;
-  justify-content:center !important;
-}
-.gmgj-logo .gmgj-braille i{
-  width:8px !important;
-  height:8px !important;
-  min-width:8px !important;
-  min-height:8px !important;
-  display:block !important;
-  position:relative !important;
-}
-.gmgj-logo .gmgj-braille i::before{
-  content:"" !important;
-  position:absolute !important;
-  inset:0 !important;
-  width:8px !important;
-  height:8px !important;
-  min-width:8px !important;
-  min-height:8px !important;
-  border-radius:50% !important;
-}
-
-/* 아래 메뉴의 '점' 마크 외곽을 타원이 아닌 정원으로 고정 */
-.nav-braille-reader .nav-dotmark{
-  width:46px !important;
-  height:46px !important;
-  min-width:46px !important;
-  min-height:46px !important;
-  flex:0 0 46px !important;
-  aspect-ratio:1 / 1 !important;
-  border-radius:50% !important;
-  box-sizing:border-box !important;
-  padding:0 !important;
-}
-
-@media(max-width:600px){
-  .gmgj-logo .gmgj-braille{
-    grid-template-columns:repeat(2, 7px) !important;
-    grid-template-rows:repeat(3, 7px) !important;
-    gap:5px 6px !important;
-  }
-  .gmgj-logo .gmgj-braille i,
-  .gmgj-logo .gmgj-braille i::before{
-    width:7px !important;
-    height:7px !important;
-    min-width:7px !important;
-    min-height:7px !important;
-  }
-  .nav-braille-reader .nav-dotmark{
-    width:42px !important;
-    height:42px !important;
-    min-width:42px !important;
-    min-height:42px !important;
-    flex-basis:42px !important;
-  }
-}
-</style>
-
-
 <style id="gmgj-v41-direct-dot-mode">
 /* v41: 움직이는 6점 셀 대신, 사용자가 보이는 돌출점만 직접 지정 */
 #brailleCellCursorTools{display:none!important}
@@ -5770,109 +5689,188 @@ body.high-contrast .braille-correction-guide,
 </style>
 
 
-<style id="gmgj-v42-main-braille-dot-real-size">
-/* 메인 타이틀 '점' 옆 6개 점: 간격이 아니라 실제 점 자체를 크게 */
-.gmgj-logo .gmgj-braille{
-  grid-template-columns:repeat(2, 10px) !important;
-  grid-template-rows:repeat(3, 10px) !important;
-  column-gap:5px !important;
-  row-gap:5px !important;
+
+<style id="gmgj-v47-critical-logo-nav">
+/* ===== v47: HEAD에서 먼저 읽히는 최종 로고/메뉴 규칙 ===== */
+
+/* 메인 점 로고: 기존 6개 i 점은 처음부터 숨기고, 고정 SVG 6점 하나로 그림.
+   새로고침 시 작은 점이 잠깐 나타났다 사라지는 현상 방지. */
+header .gmgj-logo > .gmgj-dotmark {
+  width:1.48em!important;
+  height:1.48em!important;
+  min-width:1.48em!important;
+  min-height:1.48em!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:.10em!important;
+  padding:0!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+  background:#142b48!important;
+  background-color:#142b48!important;
+  border:2px solid #142b48!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  opacity:1!important;
+  forced-color-adjust:none!important;
+  -webkit-print-color-adjust:exact!important;
+  color-scheme:only light!important;
 }
-.gmgj-logo .gmgj-braille i{
-  width:10px !important;
-  height:10px !important;
-  min-width:10px !important;
-  min-height:10px !important;
+header .gmgj-logo > .gmgj-dotmark .gmgj-jeom {
+  display:inline-block!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-size:.72em!important;
+  font-weight:900!important;
+  line-height:1!important;
+  flex:0 0 auto!important;
+  transform:none!important;
+  opacity:1!important;
 }
-.gmgj-logo .gmgj-braille i::before{
-  width:10px !important;
-  height:10px !important;
-  min-width:10px !important;
-  min-height:10px !important;
-  border-radius:50% !important;
-  transform:none !important;
-  inset:0 !important;
+header .gmgj-logo > .gmgj-dotmark .gmgj-braille {
+  display:block!important;
+  width:.43em!important;
+  height:.64em!important;
+  min-width:.43em!important;
+  min-height:.64em!important;
+  flex:0 0 .43em!important;
+  margin:0!important;
+  padding:0!important;
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2234%22%20height%3D%2250%22%20viewBox%3D%220%200%2034%2050%22%3E%0A%3Ccircle%20cx%3D%228%22%20cy%3D%228%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%2226%22%20cy%3D%228%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%228%22%20cy%3D%2225%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%2226%22%20cy%3D%2225%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%228%22%20cy%3D%2242%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%2226%22%20cy%3D%2242%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E")!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:100% 100%!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  opacity:1!important;
+  forced-color-adjust:none!important;
+  -webkit-print-color-adjust:exact!important;
+}
+header .gmgj-logo > .gmgj-dotmark .gmgj-braille i,
+header .gmgj-logo > .gmgj-dotmark .gmgj-braille i::before,
+header .gmgj-logo > .gmgj-dotmark .gmgj-braille i::after {
+  display:none!important;
+  content:none!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
 }
 
-@media(max-width:600px){
-  .gmgj-logo .gmgj-braille{
-    grid-template-columns:repeat(2, 9px) !important;
-    grid-template-rows:repeat(3, 9px) !important;
-    column-gap:4px !important;
-    row-gap:4px !important;
-  }
-  .gmgj-logo .gmgj-braille i,
-  .gmgj-logo .gmgj-braille i::before{
-    width:9px !important;
-    height:9px !important;
-    min-width:9px !important;
-    min-height:9px !important;
-  }
-}
-</style>
-
-
-<style id="gmgj-v43-equal-nav-main-dots">
-/* PC 메뉴 5칸 동일 너비 */
-@media (min-width: 761px){
-  nav,
-  .main-nav,
-  .top-nav,
-  header nav{
-    grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
-  }
-  nav > button,
-  .main-nav > button,
-  .top-nav > button,
-  header nav > button{
-    min-width:0 !important;
-    width:auto !important;
-  }
+/* 사이트 자체 일반 고대비: 메뉴의 점과 동일하게 흰 원 테두리 유지 */
+html.high-contrast header .gmgj-logo > .gmgj-dotmark,
+body.high-contrast header .gmgj-logo > .gmgj-dotmark,
+.high-contrast header .gmgj-logo > .gmgj-dotmark,
+html.contrast header .gmgj-logo > .gmgj-dotmark,
+body.contrast header .gmgj-logo > .gmgj-dotmark,
+.contrast header .gmgj-logo > .gmgj-dotmark {
+  background:#142b48!important;
+  background-color:#142b48!important;
+  border:2px solid #fff!important;
 }
 
-/* 메인 타이틀 '점' 옆 6개 점: 실제 원 자체를 더 크게 */
-.gmgj-logo .gmgj-braille{
-  display:grid !important;
-  grid-template-columns:repeat(2, 12px) !important;
-  grid-template-rows:repeat(3, 12px) !important;
-  column-gap:4px !important;
-  row-gap:4px !important;
-  justify-content:center !important;
-  align-content:center !important;
+/* 웨일: 6점은 SVG 이미지라 웹 콘텐츠 다크모드가 CSS 흰색 점을 어둡게 바꾸지 못하게 함 */
+html.whale-browser header .gmgj-logo > .gmgj-dotmark {
+  background:#142b48!important;
+  background-color:#142b48!important;
+  filter:none!important;
+  forced-color-adjust:none!important;
+  color-scheme:only light!important;
 }
-.gmgj-logo .gmgj-braille i{
-  width:12px !important;
-  height:12px !important;
-  min-width:12px !important;
-  min-height:12px !important;
-  display:block !important;
-  position:relative !important;
-}
-.gmgj-logo .gmgj-braille i::before{
-  content:"" !important;
-  position:absolute !important;
-  inset:0 !important;
-  width:12px !important;
-  height:12px !important;
-  min-width:12px !important;
-  min-height:12px !important;
-  border-radius:50% !important;
-  transform:none !important;
+html.whale-browser header .gmgj-logo > .gmgj-dotmark .gmgj-braille {
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2234%22%20height%3D%2250%22%20viewBox%3D%220%200%2034%2050%22%3E%0A%3Ccircle%20cx%3D%228%22%20cy%3D%228%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%2226%22%20cy%3D%228%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%228%22%20cy%3D%2225%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%2226%22%20cy%3D%2225%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%228%22%20cy%3D%2242%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%2226%22%20cy%3D%2242%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E")!important;
+  filter:none!important;
+  opacity:1!important;
+  forced-color-adjust:none!important;
+  color-scheme:only light!important;
 }
 
-@media (max-width:760px){
-  .gmgj-logo .gmgj-braille{
-    grid-template-columns:repeat(2, 10px) !important;
-    grid-template-rows:repeat(3, 10px) !important;
-    column-gap:4px !important;
-    row-gap:4px !important;
+/* 강제 색상 모드에서도 로고 자체 명암 유지 */
+@media (forced-colors:active) {
+  header .gmgj-logo > .gmgj-dotmark {
+    forced-color-adjust:none!important;
+    background:#000!important;
+    border:2px solid #fff!important;
   }
-  .gmgj-logo .gmgj-braille i,
-  .gmgj-logo .gmgj-braille i::before{
-    width:10px !important;
-    height:10px !important;
-    min-width:10px !important;
-    min-height:10px !important;
+  header .gmgj-logo > .gmgj-dotmark .gmgj-jeom {
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+  }
+  header .gmgj-logo > .gmgj-dotmark .gmgj-braille {
+    forced-color-adjust:none!important;
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2234%22%20height%3D%2250%22%20viewBox%3D%220%200%2034%2050%22%3E%0A%3Ccircle%20cx%3D%228%22%20cy%3D%228%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%2226%22%20cy%3D%228%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%228%22%20cy%3D%2225%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%2226%22%20cy%3D%2225%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%228%22%20cy%3D%2242%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3Ccircle%20cx%3D%2226%22%20cy%3D%2242%22%20r%3D%226%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E")!important;
+  }
+}
+
+/* PC 메뉴: 정확히 5등분 + 모든 메뉴 같은 기본 글씨 크기 */
+@media (min-width:769px) {
+  header .shell nav {
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    gap:0!important;
+    width:100%!important;
+  }
+  header .shell nav > button {
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
+    padding:12px 6px!important;
+    font-size:1.22rem!important;
+    font-weight:700!important;
+    line-height:1.22!important;
+    white-space:nowrap!important;
+  }
+  header .shell nav > button .center-nav-title {
+    font-size:1em!important;
+    font-weight:700!important;
+    line-height:1.2!important;
+  }
+}
+
+/* 모바일: PC 5등분을 강제로 축소하지 않음. 2열 + 마지막 센터 전체폭 */
+@media (max-width:768px) {
+  header .shell nav {
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:0!important;
+    width:100%!important;
+  }
+  header .shell nav > button {
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
+    padding:13px 8px!important;
+    font-size:1.02rem!important;
+    font-weight:700!important;
+    line-height:1.25!important;
+    white-space:normal!important;
+    overflow:visible!important;
+  }
+  header .shell nav > button[data-view="guide"] {
+    grid-column:1/-1!important;
+  }
+  header .shell nav > button .center-nav-title {
+    font-size:.98rem!important;
+    font-weight:700!important;
+    line-height:1.25!important;
+    white-space:normal!important;
+  }
+  .nav-braille-reader .nav-dotmark {
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    min-height:40px!important;
+    flex:0 0 40px!important;
+    aspect-ratio:1/1!important;
+    border-radius:50%!important;
   }
 }
 </style>
@@ -8568,195 +8566,6 @@ window.addEventListener("hashchange",()=>{
 
 
 
-
-<style id="gmgj-v44-final-visible-fixes">
-/* v44 FINAL — PC 상단 메뉴는 정확히 5등분 */
-@media (min-width:761px){
-  .shell > nav{
-    display:grid !important;
-    grid-template-columns:repeat(5, minmax(0,1fr)) !important;
-    width:100% !important;
-  }
-  .shell > nav > button{
-    width:100% !important;
-    min-width:0 !important;
-    max-width:none !important;
-    box-sizing:border-box !important;
-  }
-}
-
-/* v44 FINAL — 메인 로고의 6점은 CSS 원이 아니라 '●' 문자이므로
-   문자 자체의 font-size를 직접 확대한다. 메뉴 로고에는 적용하지 않음. */
-header .gmgj-logo .gmgj-dotmark .gmgj-braille{
-  display:grid !important;
-  grid-template-columns:repeat(2, 13px) !important;
-  grid-template-rows:repeat(3, 13px) !important;
-  column-gap:3px !important;
-  row-gap:3px !important;
-  width:auto !important;
-  height:auto !important;
-}
-header .gmgj-logo .gmgj-dotmark .gmgj-braille i{
-  width:13px !important;
-  height:13px !important;
-  min-width:13px !important;
-  min-height:13px !important;
-  overflow:visible !important;
-}
-header .gmgj-logo .gmgj-dotmark .gmgj-braille i::before{
-  content:"●" !important;
-  left:50% !important;
-  top:50% !important;
-  width:auto !important;
-  height:auto !important;
-  min-width:0 !important;
-  min-height:0 !important;
-  font-size:13px !important;
-  line-height:1 !important;
-  transform:translate(-50%,-53%) !important;
-  color:#fff !important;
-  -webkit-text-fill-color:#fff !important;
-}
-
-/* 모바일은 로고 크기에 맞춰 약간 작게 */
-@media (max-width:760px){
-  header .gmgj-logo .gmgj-dotmark .gmgj-braille{
-    grid-template-columns:repeat(2, 11px) !important;
-    grid-template-rows:repeat(3, 11px) !important;
-    column-gap:3px !important;
-    row-gap:3px !important;
-  }
-  header .gmgj-logo .gmgj-dotmark .gmgj-braille i{
-    width:11px !important;
-    height:11px !important;
-    min-width:11px !important;
-    min-height:11px !important;
-  }
-  header .gmgj-logo .gmgj-dotmark .gmgj-braille i::before{
-    font-size:11px !important;
-  }
-}
-</style>
-
-
-<style id="gmgj-v45-hard-fix">
-/* ===== v45 최종 강제 적용 ===== */
-
-/* PC 메뉴 정확히 5등분 */
-@media (min-width:761px){
-  header .shell > nav{
-    display:grid!important;
-    grid-template-columns:repeat(5,minmax(0,1fr))!important;
-    grid-auto-columns:minmax(0,1fr)!important;
-    gap:0!important;
-    width:100%!important;
-  }
-  header .shell > nav > button{
-    width:100%!important;
-    min-width:0!important;
-    max-width:none!important;
-    flex:none!important;
-    font-size:1.22rem!important;
-    font-weight:700!important;
-  }
-  header .shell > nav > button .center-nav-title{
-    font-size:1em!important;
-    font-weight:700!important;
-    line-height:1.2!important;
-  }
-}
-
-/* 메인 타이틀의 '점' = 아래 메뉴와 같은 구조, 크기만 확대 */
-header .gmgj-logo > .gmgj-dotmark{
-  width:1.48em!important;
-  height:1.48em!important;
-  min-width:1.48em!important;
-  min-height:1.48em!important;
-  aspect-ratio:1 / 1!important;
-  border-radius:50%!important;
-  padding:0!important;
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:.10em!important;
-  overflow:hidden!important;
-  box-sizing:border-box!important;
-  background:#142b48!important;
-  border:0!important;
-}
-
-header .gmgj-logo > .gmgj-dotmark .gmgj-jeom{
-  display:inline-block!important;
-  font-size:.72em!important;
-  font-weight:900!important;
-  line-height:1!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  flex:0 0 auto!important;
-  transform:none!important;
-}
-
-/* 아래 메뉴처럼 실제 i 6개가 곧 점이 되게 함 */
-header .gmgj-logo > .gmgj-dotmark .gmgj-braille{
-  display:grid!important;
-  grid-template-columns:repeat(2,.155em)!important;
-  grid-template-rows:repeat(3,.155em)!important;
-  column-gap:.085em!important;
-  row-gap:.085em!important;
-  width:auto!important;
-  height:auto!important;
-  margin:0!important;
-  padding:0!important;
-  align-content:center!important;
-  justify-content:center!important;
-  flex:0 0 auto!important;
-}
-header .gmgj-logo > .gmgj-dotmark .gmgj-braille i{
-  display:block!important;
-  position:static!important;
-  width:.155em!important;
-  height:.155em!important;
-  min-width:.155em!important;
-  min-height:.155em!important;
-  border-radius:50%!important;
-  background:#fff!important;
-  border:0!important;
-  margin:0!important;
-  padding:0!important;
-  overflow:visible!important;
-}
-/* 이전 v44의 ● pseudo-element를 완전히 제거 */
-header .gmgj-logo > .gmgj-dotmark .gmgj-braille i::before,
-header .gmgj-logo > .gmgj-dotmark .gmgj-braille i::after{
-  content:none!important;
-  display:none!important;
-}
-
-/* 메뉴의 점 마크는 정원 유지 */
-.nav-braille-reader .nav-dotmark{
-  aspect-ratio:1 / 1!important;
-  width:46px!important;
-  height:46px!important;
-  min-width:46px!important;
-  min-height:46px!important;
-  border-radius:50%!important;
-  padding:0!important;
-  box-sizing:border-box!important;
-}
-
-@media(max-width:760px){
-  header .gmgj-logo > .gmgj-dotmark .gmgj-braille{
-    grid-template-columns:repeat(2,.15em)!important;
-    grid-template-rows:repeat(3,.15em)!important;
-  }
-  header .gmgj-logo > .gmgj-dotmark .gmgj-braille i{
-    width:.15em!important;
-    height:.15em!important;
-    min-width:.15em!important;
-    min-height:.15em!important;
-  }
-}
-</style>
 
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
@@ -13379,145 +13188,4 @@ html.whale-browser #homeView .board-dot.on.whale-home-text-dot{
 }
 </style>
 
-
-<style id="gmgj-v46-contrast-whale-mobile-final">
-/* ===== v46 최종 보정 ===== */
-
-/* PC: 메뉴 5칸 정확히 같은 폭 */
-@media (min-width:769px){
-  header .shell nav{
-    display:grid!important;
-    grid-template-columns:repeat(5,minmax(0,1fr))!important;
-    grid-auto-columns:minmax(0,1fr)!important;
-    width:100%!important;
-    gap:0!important;
-  }
-  header .shell nav > button{
-    width:100%!important;
-    min-width:0!important;
-    max-width:none!important;
-    font-size:1.22rem!important;
-    font-weight:700!important;
-    line-height:1.25!important;
-    padding:12px 6px!important;
-    box-sizing:border-box!important;
-    white-space:nowrap!important;
-  }
-  header .shell nav > button .center-nav-title{
-    font-size:1em!important;
-    font-weight:700!important;
-    line-height:1.2!important;
-  }
-}
-
-/* 모바일: PC의 5등분 규칙을 적용하지 않고 원래 반응형 형태로 복원
-   2칸씩 배치하고 마지막 센터 메뉴는 한 줄 전체 폭 사용 */
-@media (max-width:768px){
-  header .shell nav{
-    display:grid!important;
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    width:100%!important;
-    gap:0!important;
-  }
-  header .shell nav > button{
-    width:100%!important;
-    min-width:0!important;
-    max-width:none!important;
-    box-sizing:border-box!important;
-    padding:13px 8px!important;
-    font-size:1.02rem!important;
-    font-weight:700!important;
-    line-height:1.25!important;
-    white-space:normal!important;
-    overflow:visible!important;
-  }
-  header .shell nav > button[data-view="brailleReader"]{
-    white-space:normal!important;
-  }
-  header .shell nav > button[data-view="guide"]{
-    grid-column:1 / -1!important;
-  }
-  header .shell nav > button .center-nav-title{
-    font-size:.98rem!important;
-    font-weight:700!important;
-    line-height:1.25!important;
-    white-space:normal!important;
-  }
-  .nav-braille-reader .nav-dotmark{
-    width:40px!important;
-    height:40px!important;
-    min-width:40px!important;
-    min-height:40px!important;
-    flex:0 0 40px!important;
-  }
-  .nav-reader-label{
-    white-space:normal!important;
-  }
-}
-
-/* 일반 고대비: 메인 타이틀의 '점' 원에도 메뉴와 같은 흰 테두리 */
-html.high-contrast header .gmgj-logo > .gmgj-dotmark,
-body.high-contrast header .gmgj-logo > .gmgj-dotmark,
-.high-contrast header .gmgj-logo > .gmgj-dotmark{
-  border:2px solid #fff!important;
-  outline:0!important;
-  box-sizing:border-box!important;
-  background:#142b48!important;
-}
-
-/* 고대비에서도 메인 6점은 항상 흰색 */
-html.high-contrast header .gmgj-logo > .gmgj-dotmark .gmgj-braille i,
-body.high-contrast header .gmgj-logo > .gmgj-dotmark .gmgj-braille i,
-.high-contrast header .gmgj-logo > .gmgj-dotmark .gmgj-braille i{
-  background:#fff!important;
-  background-color:#fff!important;
-  border-color:#fff!important;
-  opacity:1!important;
-  filter:none!important;
-}
-
-/* 네이버 웨일: 웹 콘텐츠 다크모드에서도 메인 6점이 사라지지 않도록 색 변환 방지 */
-html.whale-browser header .gmgj-logo > .gmgj-dotmark{
-  background:#142b48!important;
-  background-color:#142b48!important;
-  color-scheme:only light!important;
-  forced-color-adjust:none!important;
-  -webkit-print-color-adjust:exact!important;
-  filter:none!important;
-  opacity:1!important;
-}
-html.whale-browser header .gmgj-logo > .gmgj-dotmark .gmgj-braille i{
-  background:#fff!important;
-  background-color:#fff!important;
-  border:1px solid #fff!important;
-  border-radius:50%!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  forced-color-adjust:none!important;
-  -webkit-print-color-adjust:exact!important;
-  mix-blend-mode:normal!important;
-  filter:none!important;
-  opacity:1!important;
-  box-shadow:0 0 0 1px #fff inset!important;
-}
-
-/* 시스템 강제색에서도 메인 원과 6점 구조를 유지 */
-@media (forced-colors:active){
-  header .gmgj-logo > .gmgj-dotmark{
-    forced-color-adjust:none!important;
-    background:#142b48!important;
-    border:2px solid #fff!important;
-  }
-  header .gmgj-logo > .gmgj-dotmark .gmgj-jeom{
-    color:#fff!important;
-    -webkit-text-fill-color:#fff!important;
-  }
-  header .gmgj-logo > .gmgj-dotmark .gmgj-braille i{
-    forced-color-adjust:none!important;
-    background:#fff!important;
-    border-color:#fff!important;
-    opacity:1!important;
-  }
-}
-</style>
 
