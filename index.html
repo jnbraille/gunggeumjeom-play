@@ -6333,6 +6333,83 @@ footer{
 }
 </style>
 
+
+<style id="gmgj-v58-footer-hc-fix">
+/* ===== v58 저작권 가운데 정렬 ===== */
+.footer-copyright{
+  text-align:center!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+}
+
+/* ===== 일반 고대비 모드: SNS 브랜드 로고 원형 유지 =====
+   네이버 웨일 다크모드 관련 스타일은 변경하지 않음 */
+body.high-contrast .footer-social-links .social-link,
+html.high-contrast .footer-social-links .social-link,
+body.contrast .footer-social-links .social-link,
+html.contrast .footer-social-links .social-link{
+  background:transparent!important;
+  border:0!important;
+  outline-offset:3px!important;
+  border-radius:12px!important;
+  overflow:visible!important;
+  forced-color-adjust:none!important;
+  -webkit-forced-color-adjust:none!important;
+}
+
+body.high-contrast .footer-social-links .social-link svg,
+html.high-contrast .footer-social-links .social-link svg,
+body.contrast .footer-social-links .social-link svg,
+html.contrast .footer-social-links .social-link svg{
+  display:block!important;
+  width:42px!important;
+  height:42px!important;
+  filter:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  forced-color-adjust:none!important;
+  -webkit-forced-color-adjust:none!important;
+}
+
+/* 기존 고대비 규칙이 SVG 색을 덮어쓰지 못하도록 브랜드 색상 고정 */
+body.high-contrast .footer-social-links .instagram svg rect,
+html.high-contrast .footer-social-links .instagram svg rect,
+body.contrast .footer-social-links .instagram svg rect,
+html.contrast .footer-social-links .instagram svg rect{
+  fill:url(#igGradient)!important;
+}
+body.high-contrast .footer-social-links .facebook svg circle,
+html.high-contrast .footer-social-links .facebook svg circle,
+body.contrast .footer-social-links .facebook svg circle,
+html.contrast .footer-social-links .facebook svg circle{
+  fill:#1877F2!important;
+}
+body.high-contrast .footer-social-links .youtube svg rect,
+html.high-contrast .footer-social-links .youtube svg rect,
+body.contrast .footer-social-links .youtube svg rect,
+html.contrast .footer-social-links .youtube svg rect{
+  fill:#FF0000!important;
+}
+body.high-contrast .footer-social-links .kakao svg circle,
+html.high-contrast .footer-social-links .kakao svg circle,
+body.contrast .footer-social-links .kakao svg circle,
+html.contrast .footer-social-links .kakao svg circle{
+  fill:#FEE500!important;
+}
+body.high-contrast .footer-social-links .homepage svg circle,
+html.high-contrast .footer-social-links .homepage svg circle,
+body.contrast .footer-social-links .homepage svg circle,
+html.contrast .footer-social-links .homepage svg circle{
+  fill:#ffffff!important;
+}
+body.high-contrast .footer-social-links .homepage svg path,
+html.high-contrast .footer-social-links .homepage svg path,
+body.contrast .footer-social-links .homepage svg path,
+html.contrast .footer-social-links .homepage svg path{
+  stroke:#0b8d86!important;
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
