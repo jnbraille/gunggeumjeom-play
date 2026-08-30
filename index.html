@@ -4411,7 +4411,7 @@ html.whale-browser .gmgj-word{
 </style>
 
 
-<style id="daily-improvement-v11">
+<style id="previous-study-improvement-v12">
 .daily-improvement-summary{
   text-align:center;
 }
@@ -4767,9 +4767,9 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
 <h2 class="title">나의 기록</h2>
 <div class="records-summary-persist">
   <div class="record daily-improvement-summary">
-    <b>전날 대비 전체 향상도</b>
+    <b>지난 학습 대비 전체 향상도</b>
     <div class="v" id="overallDailyImprovement">비교 기록 없음</div>
-    <small id="overallDailyComparison">오늘과 어제 모두 학습한 경우 표시됩니다.</small>
+    <small id="overallDailyComparison">이전 학습일과 오늘 모두 기록이 있는 경우 표시됩니다.</small>
   </div>
 </div>
 <div id="recordsGrid" class="records"></div>
@@ -4992,10 +4992,25 @@ function localDateKey(date=new Date()){
   return `${y}-${m}-${d}`;
 }
 
-function yesterdayDateKey(){
-  const d=new Date();
-  d.setDate(d.getDate()-1);
-  return localDateKey(d);
+function previousStudyDateKey(category=null){
+  const today=localDateKey();
+  const keys=Object.keys(rec.daily||{})
+    .filter(k=>k<today)
+    .sort()
+    .reverse();
+
+  for(const key of keys){
+    const day=rec.daily[key];
+    if(!day) continue;
+
+    if(category===null){
+      if(Number(day.total)>0) return key;
+    }else{
+      const r=day.cat && day.cat[category];
+      if(r && Number(r.total)>0) return key;
+    }
+  }
+  return null;
 }
 
 function ensureDailyRecord(dateKey){
@@ -5271,9 +5286,11 @@ function stats(){
   liveMetrics();
   saveLearningRecord();
 
-  const todayRecord=(rec.daily||{})[localDateKey()]||null;
-  const yesterdayRecord=(rec.daily||{})[yesterdayDateKey()]||null;
-  const overallImprovement=improvementData(dailyRate(todayRecord),dailyRate(yesterdayRecord));
+  const todayKey=localDateKey();
+  const todayRecord=(rec.daily||{})[todayKey]||null;
+  const previousOverallKey=previousStudyDateKey();
+  const previousOverallRecord=previousOverallKey ? (rec.daily||{})[previousOverallKey]||null : null;
+  const overallImprovement=improvementData(dailyRate(todayRecord),dailyRate(previousOverallRecord));
   const overallDailyImprovement=document.getElementById("overallDailyImprovement");
   const overallDailyComparison=document.getElementById("overallDailyComparison");
 
@@ -5284,8 +5301,8 @@ function stats(){
   }
   if(overallDailyComparison){
     overallDailyComparison.textContent=overallImprovement
-      ? `어제 ${overallImprovement.yesterday}% → 오늘 ${overallImprovement.today}%`
-      : "오늘과 어제 모두 학습한 경우 표시됩니다.";
+      ? `${previousOverallKey} ${overallImprovement.yesterday}% → 오늘 ${overallImprovement.today}%`
+      : "이전 학습일과 오늘 모두 기록이 있는 경우 표시됩니다.";
   }
 
   homeTotal.textContent=rec.total;
@@ -5314,20 +5331,22 @@ function stats(){
     rate.textContent="정답률 "+pct(r.correct,r.total)+"%";
 
     const todayCatRate=categoryDailyRate(todayRecord,c);
-    const yesterdayCatRate=categoryDailyRate(yesterdayRecord,c);
-    const catImprovement=improvementData(todayCatRate,yesterdayCatRate);
+    const previousCatKey=previousStudyDateKey(c);
+    const previousCatRecord=previousCatKey ? (rec.daily||{})[previousCatKey]||null : null;
+    const previousCatRate=categoryDailyRate(previousCatRecord,c);
+    const catImprovement=improvementData(todayCatRate,previousCatRate);
 
     const improvement=document.createElement("small");
     improvement.className="category-daily-improvement "+improvementClass(catImprovement);
     improvement.textContent=catImprovement
-      ? "전날 대비 "+improvementLabel(catImprovement)
-      : "전날 대비 비교 기록 없음";
+      ? "지난 학습 대비 "+improvementLabel(catImprovement)
+      : "지난 학습 대비 비교 기록 없음";
 
     const comparison=document.createElement("small");
     comparison.className="category-daily-comparison";
     comparison.textContent=catImprovement
-      ? `어제 ${catImprovement.yesterday}% → 오늘 ${catImprovement.today}%`
-      : "오늘·어제 모두 학습 시 비교";
+      ? `${previousCatKey} ${catImprovement.yesterday}% → 오늘 ${catImprovement.today}%`
+      : "이전 학습일·오늘 모두 기록 시 비교";
 
     e.append(title,total,rate,improvement,comparison);
 
