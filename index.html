@@ -5387,6 +5387,114 @@ html.high-contrast .nav-dotmark-braille i,
 }
 </style>
 
+
+<style id="gmgj-v27-cell-boundary">
+.braille-boundary-help{
+  max-width:820px;
+  margin:10px auto 14px;
+  padding:12px 16px;
+  border:1px solid #9ebac6;
+  border-radius:12px;
+  background:#f7fbff;
+  text-align:center;
+  line-height:1.55;
+  word-break:keep-all;
+}
+.braille-boundary-help p{margin:5px 0 0}
+#brailleCellBoundaryMode.active{
+  outline:3px solid #0067c5;
+  outline-offset:2px;
+}
+@media(max-width:768px){
+  .braille-boundary-help{margin:10px 6px}
+}
+@media(forced-colors:active){
+  .braille-boundary-help{
+    background:Canvas !important;
+    color:CanvasText !important;
+    border-color:CanvasText !important;
+  }
+}
+</style>
+
+
+<style id="gmgj-v28-selection-high-contrast-fix">
+/* 고대비/웨일에서도 선택한 영역 안의 사진이 가려지지 않도록 유지 */
+.braille-selection-box{
+  background:rgba(255,255,255,.04) !important;
+  forced-color-adjust:none !important;
+}
+.braille-selection-stage .selection-shade{
+  forced-color-adjust:none !important;
+}
+
+/* 앱 자체 고대비 모드 */
+body.high-contrast .braille-selection-box,
+body.contrast .braille-selection-box,
+html.high-contrast .braille-selection-box,
+.high-contrast .braille-selection-box{
+  background:transparent !important;
+  border:3px solid #00e6d5 !important;
+  forced-color-adjust:none !important;
+}
+body.high-contrast .selection-handle,
+body.contrast .selection-handle,
+html.high-contrast .selection-handle,
+.high-contrast .selection-handle{
+  background:#111 !important;
+  border:3px solid #fff !important;
+  box-shadow:0 0 0 2px #00e6d5 !important;
+  forced-color-adjust:none !important;
+}
+body.high-contrast .selection-shade,
+body.contrast .selection-shade,
+html.high-contrast .selection-shade,
+.high-contrast .selection-shade{
+  background:rgba(0,0,0,.42) !important;
+  opacity:1 !important;
+  forced-color-adjust:none !important;
+}
+
+/* 네이버 웨일의 고대비/다크 환경 */
+html.whale-browser .braille-selection-box,
+html.whale-browser body.high-contrast .braille-selection-box,
+html.whale-browser .high-contrast .braille-selection-box{
+  background:transparent !important;
+  border:3px solid #00e6d5 !important;
+  forced-color-adjust:none !important;
+}
+html.whale-browser .selection-handle,
+html.whale-browser body.high-contrast .selection-handle{
+  background:#111 !important;
+  border:3px solid #fff !important;
+  box-shadow:0 0 0 2px #00e6d5 !important;
+  forced-color-adjust:none !important;
+}
+
+/* Windows/브라우저 강제 색상에서도 선택박스 내부를 불투명하게 만들지 않음 */
+@media(forced-colors:active){
+  .braille-selection-box{
+    background:transparent !important;
+    border:3px solid Highlight !important;
+    forced-color-adjust:none !important;
+  }
+  .selection-handle{
+    background:#111 !important;
+    border:3px solid #fff !important;
+    box-shadow:0 0 0 2px #00e6d5 !important;
+    forced-color-adjust:none !important;
+  }
+  .selection-shade{
+    background:rgba(0,0,0,.42) !important;
+    opacity:1 !important;
+    forced-color-adjust:none !important;
+  }
+  #brailleSelectionStage #braillePreviewImage{
+    forced-color-adjust:none !important;
+  }
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -5696,7 +5804,14 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
 
       <div class="braille-correction-actions">
         <button type="button" id="brailleUndoCorrection" class="reader-secondary-btn" disabled>마지막 수정 취소</button>
+        <button type="button" id="brailleCellBoundaryMode" class="reader-secondary-btn">셀 구분선 지정</button>
+        <button type="button" id="brailleClearBoundaries" class="reader-secondary-btn" disabled>구분선 지우기</button>
         <button type="button" id="brailleReReadButton" class="reader-primary-btn">보정한 점으로 점형 판독하기</button>
+      </div>
+
+      <div id="brailleBoundaryHelp" class="braille-boundary-help" hidden>
+        <strong>셀 구분선 지정 중</strong>
+        <p>점자 글자와 글자 사이의 빈 공간을 사진에서 클릭하거나 터치해 주세요. 세로 구분선이 생기며, 다시 누르면 가까운 구분선을 삭제할 수 있습니다.</p>
       </div>
 
       <div id="brailleCellResult" class="braille-cell-result" hidden aria-live="polite">
@@ -5705,7 +5820,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
         <p id="brailleCellSummary" class="braille-cell-summary"></p>
       </div>
 
-      <p class="braille-detection-note">자동 탐지 뒤 사용자가 점 위치를 보정하면, 보정된 점들의 상대적인 행·열 간격을 사진 크기에 맞춰 계산해 점형을 판독합니다.</p>
+      <p class="braille-detection-note">자동 탐지 뒤 사용자가 점 위치를 보정하고, 필요하면 글자 사이에 셀 구분선을 지정할 수 있습니다. 지정한 구분선을 우선 사용해 각 셀의 2열×3행 점형을 판독합니다.</p>
     </div>
 
     <div id="brailleReaderNextStep" class="braille-reader-next-step">
@@ -7013,6 +7128,9 @@ window.addEventListener("hashchange",()=>{
   const summary=document.getElementById("brailleDetectionSummary");
   const undoBtn=document.getElementById("brailleUndoCorrection");
   const rereadBtn=document.getElementById("brailleReReadButton");
+  const boundaryModeBtn=document.getElementById("brailleCellBoundaryMode");
+  const clearBoundariesBtn=document.getElementById("brailleClearBoundaries");
+  const boundaryHelp=document.getElementById("brailleBoundaryHelp");
   const cellResult=document.getElementById("brailleCellResult");
   const cellCards=document.getElementById("brailleCellCards");
   const cellSummary=document.getElementById("brailleCellSummary");
@@ -7036,6 +7154,8 @@ window.addEventListener("hashchange",()=>{
   let detectedPoints=[];
   let correctionHistory=[];
   let markRadius=10;
+  let boundaryMode=false;
+  let cellBoundaries=[]; // canvas 좌표의 세로 셀 구분선
 
   function revokeCurrent(){
     if(currentObjectUrl){
@@ -7086,6 +7206,11 @@ window.addEventListener("hashchange",()=>{
     detectedPoints=[];
     correctionHistory=[];
     baseImageData=null;
+    cellBoundaries=[];
+    boundaryMode=false;
+    if(boundaryModeBtn) boundaryModeBtn.classList.remove("active");
+    if(boundaryHelp) boundaryHelp.hidden=true;
+    if(clearBoundariesBtn) clearBoundariesBtn.disabled=true;
     if(undoBtn) undoBtn.disabled=true;
     if(cellResult) cellResult.hidden=true;
   }
@@ -7186,7 +7311,6 @@ window.addEventListener("hashchange",()=>{
       ctx.beginPath();
       ctx.arc(d.x,d.y,d.r||markRadius,0,Math.PI*2);
       ctx.fill(); ctx.stroke();
-      // 작은 번호는 점을 구분하기 위한 보조표시
       if(detectedPoints.length<=40){
         ctx.fillStyle="rgba(255,255,255,.94)";
         ctx.font=`bold ${Math.max(10,Math.round(markRadius*.9))}px sans-serif`;
@@ -7195,6 +7319,20 @@ window.addEventListener("hashchange",()=>{
         ctx.fillStyle="rgba(255,255,255,.10)";
       }
     });
+
+    // 사용자가 지정한 셀 구분선
+    if(cellBoundaries.length){
+      ctx.setLineDash([8,6]);
+      ctx.lineWidth=Math.max(2,Math.round(Math.min(canvas.width,canvas.height)/300));
+      ctx.strokeStyle="#0067c5";
+      cellBoundaries.slice().sort((a,b)=>a-b).forEach(x=>{
+        ctx.beginPath();
+        ctx.moveTo(x,0);
+        ctx.lineTo(x,canvas.height);
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+    }
     ctx.restore();
     summary.textContent=detectedPoints.length
       ? `현재 점 ${detectedPoints.length}개가 선택되어 있습니다. 잘못 표시된 원은 터치하여 삭제하고, 빠진 점은 사진을 터치하여 추가해 주세요.`
@@ -7213,7 +7351,29 @@ window.addEventListener("hashchange",()=>{
   canvas.addEventListener("pointerdown",(e)=>{
     if(!baseImageData) return;
     const p=canvasPointFromEvent(e);
-    // 화면에서 손가락으로 누르기 쉽게 실제 반경보다 넓게 판정
+
+    if(boundaryMode){
+      const displayScale=canvas.width/canvas.getBoundingClientRect().width;
+      const hit=Math.max(16*displayScale,markRadius*2.5);
+      let nearest=-1,dist=Infinity;
+      cellBoundaries.forEach((x,i)=>{
+        const d=Math.abs(x-p.x);
+        if(d<dist){dist=d;nearest=i;}
+      });
+      if(nearest>=0 && dist<=hit){
+        cellBoundaries.splice(nearest,1);
+        status.textContent="가까운 셀 구분선을 삭제했습니다.";
+      }else{
+        cellBoundaries.push(p.x);
+        cellBoundaries.sort((a,b)=>a-b);
+        status.textContent="셀 구분선을 추가했습니다.";
+      }
+      if(clearBoundariesBtn) clearBoundariesBtn.disabled=cellBoundaries.length===0;
+      drawDetectedPoints();
+      e.preventDefault();
+      return;
+    }
+
     const hitRadius=Math.max(markRadius*2.1,22*(canvas.width/canvas.getBoundingClientRect().width));
     let best=-1,bestD=Infinity;
     detectedPoints.forEach((d,i)=>{
@@ -7240,6 +7400,23 @@ window.addEventListener("hashchange",()=>{
     undoBtn.disabled=correctionHistory.length===0;
     drawDetectedPoints();
     status.textContent="마지막 점 수정을 취소했습니다.";
+  });
+
+  boundaryModeBtn?.addEventListener("click",()=>{
+    boundaryMode=!boundaryMode;
+    boundaryModeBtn.classList.toggle("active",boundaryMode);
+    boundaryModeBtn.textContent=boundaryMode ? "셀 구분선 지정 완료" : "셀 구분선 지정";
+    if(boundaryHelp) boundaryHelp.hidden=!boundaryMode;
+    status.textContent=boundaryMode
+      ? "점자 글자와 글자 사이의 빈 공간을 눌러 셀 구분선을 지정해 주세요."
+      : "셀 구분선 지정이 완료되었습니다. 점형 판독하기를 눌러 주세요.";
+  });
+
+  clearBoundariesBtn?.addEventListener("click",()=>{
+    cellBoundaries=[];
+    clearBoundariesBtn.disabled=true;
+    drawDetectedPoints();
+    status.textContent="셀 구분선을 모두 지웠습니다.";
   });
 
   function median(values){
@@ -7510,46 +7687,86 @@ window.addEventListener("hashchange",()=>{
   }
 
   function inferBrailleCells(points){
-    if(!points.length) return {cells:[],confidence:"낮음",grid:null};
+    if(!points.length) return {cells:[],confidence:"낮음"};
 
     const rowFit=fitThreeRows(points);
-    if(!rowFit) return {cells:[],confidence:"낮음",grid:null};
+    if(!rowFit) return {cells:[],confidence:"낮음"};
 
+    // 사용자가 셀 구분선을 지정한 경우: 이 구분을 최우선으로 사용
+    if(cellBoundaries.length){
+      const xs=points.map(p=>p.x);
+      const minX=Math.min(...xs)-1, maxX=Math.max(...xs)+1;
+      const cuts=[minX,...cellBoundaries.filter(x=>x>minX&&x<maxX).sort((a,b)=>a-b),maxX];
+      const cells=[];
+
+      for(let ci=0;ci<cuts.length-1;ci++){
+        const left=cuts[ci], right=cuts[ci+1];
+        const pts=points.filter(p=>p.x>=left && p.x<=(ci===cuts.length-2?right:right-0.0001));
+        if(!pts.length) continue;
+
+        // 각 셀 안에서는 점들의 x를 최대 2개 열로 묶음
+        let cols;
+        const ux=[...new Set(pts.map(p=>Math.round(p.x)))];
+        if(ux.length===1){
+          cols=[{mean:ux[0],values:ux}];
+        }else{
+          cols=kmeans1D(pts.map(p=>p.x),2);
+        }
+        cols=cols.sort((a,b)=>a.mean-b.mean);
+
+        const dots=[];
+        pts.forEach(p=>{
+          const rr=nearestRow(p.y,rowFit);
+          if(rr.dist>rowFit.step*.68) return;
+
+          let col=0;
+          if(cols.length>1){
+            const d0=Math.abs(p.x-cols[0].mean), d1=Math.abs(p.x-cols[1].mean);
+            col=d1<d0?1:0;
+          }
+
+          const dotNum=col===0 ? [1,2,3][rr.row] : [4,5,6][rr.row];
+          if(!dots.includes(dotNum)) dots.push(dotNum);
+        });
+
+        dots.sort((a,b)=>a-b);
+        if(dots.length){
+          cells.push({
+            index:cells.length+1,
+            dots,
+            unicode:dotPatternToUnicode(dots)
+          });
+        }
+      }
+
+      return {
+        cells,
+        confidence:cells.length ? "사용자 셀 구분 기준" : "낮음"
+      };
+    }
+
+    // 구분선을 지정하지 않은 경우에는 기존 자동 격자 추정 사용
     const grid=fitHorizontalBrailleGrid(points,rowFit);
-    if(!grid) return {cells:[],confidence:"낮음",grid:null};
+    if(!grid) return {cells:[],confidence:"낮음"};
 
     const cells=[];
     for(let ci=0;ci<grid.cellCount;ci++){
       const dots=[];
       grid.assignments.filter(a=>a.cell===ci).forEach(a=>{
-        // 점자 표준 번호: 왼쪽 1,2,3 / 오른쪽 4,5,6
         const num=a.col===0 ? [1,2,3][a.row] : [4,5,6][a.row];
         if(!dots.includes(num)) dots.push(num);
       });
       dots.sort((a,b)=>a-b);
       if(dots.length){
-        cells.push({
-          index:ci+1,
-          dots,
-          unicode:dotPatternToUnicode(dots)
-        });
+        cells.push({index:ci+1,dots,unicode:dotPatternToUnicode(dots)});
       }
     }
 
-    // 격자 적합 오차 기준의 간단한 신뢰도
     let confidence="낮음";
     if(grid.err<.12) confidence="높음";
     else if(grid.err<.28) confidence="보통";
 
-    return {
-      cells,
-      confidence,
-      grid:{
-        ...grid,
-        rowCenters:rowFit.centers,
-        rowStep:rowFit.step
-      }
-    };
+    return {cells,confidence};
   }
 
   function renderCellResult(){
@@ -7577,7 +7794,7 @@ window.addEventListener("hashchange",()=>{
     const unicodeText=inferred.cells.map(c=>c.unicode).join("");
     cellSummary.innerHTML=
       `<strong>판독된 점형:</strong> <span class="braille-unicode-result">${unicodeText}</span><br>`+
-      `<span>점형 판독 신뢰도: ${inferred.confidence}. 사진 속 점의 상대 간격을 기준으로 판독한 결과입니다.</span><br>`+
+      `<span>점형 판독 기준: ${inferred.confidence}. 셀 구분선을 지정한 경우 사용자가 지정한 글자 경계를 우선 적용했습니다.</span><br>`+
       `<span>현재 단계에서는 점형을 먼저 정확하게 판독하고, 한글 변환은 점형 판독이 안정된 뒤 한국 점자 규칙과 연결합니다.</span>`;
     cellResult.hidden=false;
     cellResult.scrollIntoView({behavior:"smooth",block:"nearest"});
