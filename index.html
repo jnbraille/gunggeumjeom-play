@@ -5811,6 +5811,72 @@ body.high-contrast .braille-correction-guide,
 }
 </style>
 
+
+<style id="gmgj-v43-equal-nav-main-dots">
+/* PC 메뉴 5칸 동일 너비 */
+@media (min-width: 761px){
+  nav,
+  .main-nav,
+  .top-nav,
+  header nav{
+    grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
+  }
+  nav > button,
+  .main-nav > button,
+  .top-nav > button,
+  header nav > button{
+    min-width:0 !important;
+    width:auto !important;
+  }
+}
+
+/* 메인 타이틀 '점' 옆 6개 점: 실제 원 자체를 더 크게 */
+.gmgj-logo .gmgj-braille{
+  display:grid !important;
+  grid-template-columns:repeat(2, 12px) !important;
+  grid-template-rows:repeat(3, 12px) !important;
+  column-gap:4px !important;
+  row-gap:4px !important;
+  justify-content:center !important;
+  align-content:center !important;
+}
+.gmgj-logo .gmgj-braille i{
+  width:12px !important;
+  height:12px !important;
+  min-width:12px !important;
+  min-height:12px !important;
+  display:block !important;
+  position:relative !important;
+}
+.gmgj-logo .gmgj-braille i::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  width:12px !important;
+  height:12px !important;
+  min-width:12px !important;
+  min-height:12px !important;
+  border-radius:50% !important;
+  transform:none !important;
+}
+
+@media (max-width:760px){
+  .gmgj-logo .gmgj-braille{
+    grid-template-columns:repeat(2, 10px) !important;
+    grid-template-rows:repeat(3, 10px) !important;
+    column-gap:4px !important;
+    row-gap:4px !important;
+  }
+  .gmgj-logo .gmgj-braille i,
+  .gmgj-logo .gmgj-braille i::before{
+    width:10px !important;
+    height:10px !important;
+    min-width:10px !important;
+    min-height:10px !important;
+  }
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -8496,6 +8562,58 @@ window.addEventListener("hashchange",()=>{
       }
     },0);
   });
+})();
+</script>
+
+
+<script id="gmgj-v43-answer-spacing-fix">
+(function(){
+  const targetTitle="새로운 MP4 Player를 출시했다.";
+
+  function fixAnswerSpacing(){
+    const all=[...document.querySelectorAll("body *")];
+    const titleEl=all.find(el=>el.children.length===0 && el.textContent.trim()===targetTitle);
+    if(!titleEl) return;
+
+    // 현재 문제 영역의 상위 컨테이너에서 정답형 섹션 탐색
+    let scope=titleEl.closest("main, section, article, .view, .practice-card, .question-wrap") || document;
+    const answerHeads=[...scope.querySelectorAll("*")].filter(el =>
+      /정답\s*점형을\s*확인하세요/.test(el.textContent||"")
+    );
+    if(!answerHeads.length) return;
+
+    const head=answerHeads[0];
+    let answerBox=head.nextElementSibling;
+    while(answerBox && !/braille|answer|correct/i.test(answerBox.className||"") && answerBox.children.length<2){
+      answerBox=answerBox.nextElementSibling;
+    }
+    if(!answerBox) return;
+
+    // 앱의 공백 표시 요소를 폭/색/aria-label 기준으로 탐색.
+    const spacers=[...answerBox.querySelectorAll("*")].filter(el=>{
+      const cls=(el.className||"").toString();
+      const aria=el.getAttribute?.("aria-label")||"";
+      const txt=(el.textContent||"").trim();
+      return /space|blank|띄어쓰기|separator|gap/i.test(cls+" "+aria) ||
+             (txt==="" && getComputedStyle(el).display!=="none" &&
+              parseFloat(getComputedStyle(el).width||"0")>12);
+    });
+
+    // 해당 답안에서 문제로 표시된 내부 공백은 1개만 제거.
+    // 실제 단어 사이 공백은 유지해야 하므로 중앙부의 불필요한 spacer를 우선 대상으로 함.
+    if(spacers.length){
+      const candidates=spacers.filter((el,i)=>i>0 && i<spacers.length-1);
+      const victim=candidates[Math.floor(candidates.length/2)];
+      if(victim){
+        victim.style.display="none";
+        victim.setAttribute("aria-hidden","true");
+      }
+    }
+  }
+
+  document.addEventListener("click",()=>setTimeout(fixAnswerSpacing,30),true);
+  window.addEventListener("load",()=>setTimeout(fixAnswerSpacing,80));
+  setTimeout(fixAnswerSpacing,200);
 })();
 </script>
 
