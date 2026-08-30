@@ -5642,6 +5642,72 @@ html, body, button, input, select, textarea {
 }
 </style>
 
+
+<style id="gmgj-v40-logo-dot-circle-fix">
+/* 메인 타이틀: '점' 옆 6개 점을 메뉴보다 확실히 크게 */
+.gmgj-logo .gmgj-braille{
+  display:grid !important;
+  grid-template-columns:repeat(2, 8px) !important;
+  grid-template-rows:repeat(3, 8px) !important;
+  gap:6px 7px !important;
+  align-content:center !important;
+  justify-content:center !important;
+}
+.gmgj-logo .gmgj-braille i{
+  width:8px !important;
+  height:8px !important;
+  min-width:8px !important;
+  min-height:8px !important;
+  display:block !important;
+  position:relative !important;
+}
+.gmgj-logo .gmgj-braille i::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  width:8px !important;
+  height:8px !important;
+  min-width:8px !important;
+  min-height:8px !important;
+  border-radius:50% !important;
+}
+
+/* 아래 메뉴의 '점' 마크 외곽을 타원이 아닌 정원으로 고정 */
+.nav-braille-reader .nav-dotmark{
+  width:46px !important;
+  height:46px !important;
+  min-width:46px !important;
+  min-height:46px !important;
+  flex:0 0 46px !important;
+  aspect-ratio:1 / 1 !important;
+  border-radius:50% !important;
+  box-sizing:border-box !important;
+  padding:0 !important;
+}
+
+@media(max-width:600px){
+  .gmgj-logo .gmgj-braille{
+    grid-template-columns:repeat(2, 7px) !important;
+    grid-template-rows:repeat(3, 7px) !important;
+    gap:5px 6px !important;
+  }
+  .gmgj-logo .gmgj-braille i,
+  .gmgj-logo .gmgj-braille i::before{
+    width:7px !important;
+    height:7px !important;
+    min-width:7px !important;
+    min-height:7px !important;
+  }
+  .nav-braille-reader .nav-dotmark{
+    width:42px !important;
+    height:42px !important;
+    min-width:42px !important;
+    min-height:42px !important;
+    flex-basis:42px !important;
+  }
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
