@@ -32,7 +32,7 @@
 
 <style>
 :root{--teal:#07837b;--navy:#142b48;--line:#dce8e8;--muted:#66737c;--good:#249344;--bad:#df3030}
-*{box-sizing:border-box}body{margin:0;font-family:"함초롬바탕","HCR Batang","Noto Serif KR","Noto Serif CJK KR","Batang","바탕","Times New Roman",serif;color:var(--navy);background:#fff}button{font:inherit}.shell{max-width:1400px;margin:auto;padding:0 24px}
+*{box-sizing:border-box}body{margin:0;font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;color:var(--navy);background:#fff}button{font:inherit}.shell{max-width:1400px;margin:auto;padding:0 24px}
 .brand{display:grid;grid-template-columns:110px 1fr auto;gap:22px;align-items:center;padding:16px 0}.logo{width:105px;height:105px;object-fit:contain}.brand h1{font-size:3.2rem;margin:0}.brand h1 span{color:#16a59b}.tag{font-size:1.15rem;font-weight:700;margin-top:7px}.org{font-weight:800}.support{max-width:340px;width:100%}
 nav{display:grid;grid-template-columns:repeat(4,1fr);background:var(--teal);border-radius:18px 18px 0 0;overflow:hidden}nav button{border:0;background:transparent;color:#fff;padding:15px;font-weight:800;cursor:pointer}nav button.active{background:#fff;color:var(--teal)}
 main{background:linear-gradient(#f7fbff,#fff);border:1px solid #e3eded;border-top:0;padding:26px;border-radius:0 0 20px 20px}.view{display:none}.view.active{display:block}
@@ -164,10 +164,7 @@ body{
 
 
 /* v12.5: 한컴윤고딕 우선 적용 - 폰트 파일은 포함하지 않음 */
-button,input,select,textarea{font-family:inherit}
-h1,h2,h3,h4,p,div,span,small,strong,b,label{font-family:inherit}
-#practiceView[data-category="옛글자"] .prompt{
-  font-family:"한컴윤고딕","Hancom Yoon Gothic","Noto Sans CJK KR","Noto Sans KR","Malgun Gothic","맑은 고딕","Batang","바탕",sans-serif!important;
+button,input,select,textarea{font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
   font-size:1.8rem!important;
   letter-spacing:0!important;
   word-break:keep-all;
@@ -177,22 +174,22 @@ h1,h2,h3,h4,p,div,span,small,strong,b,label{font-family:inherit}
 /* v12.6 전체 글꼴 통일 및 문장부호 식별성 강화 */
 html,body,button,input,select,textarea,
 h1,h2,h3,h4,p,div,span,small,strong,b,label,nav{
-  font-family:"함초롬바탕","HCR Batang","Noto Serif KR","Noto Serif CJK KR","Batang","바탕","Times New Roman",serif!important;
+  font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
 }
 .prompt{
-  font-family:"함초롬바탕","HCR Batang","Noto Serif KR","Noto Serif CJK KR","Batang","바탕","Times New Roman",serif!important;
+  font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
   font-weight:700!important;
   font-variant-ligatures:none!important;
   letter-spacing:.02em!important;
 }
 #practiceView[data-category="문장부호"] .prompt{
-  font-family:"Times New Roman","Noto Serif KR","함초롬바탕","HCR Batang","Batang","바탕",serif!important;
+  font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
   font-size:3rem!important;
   font-weight:500!important;
   letter-spacing:.08em!important;
 }
 #practiceView[data-category="옛글자"] .prompt{
-  font-family:"함초롬바탕","HCR Batang","Noto Serif KR","Noto Serif CJK KR","Batang","바탕",serif!important;
+  font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
   font-size:1.8rem!important;
   letter-spacing:0!important;
   line-height:1.7!important;
@@ -557,14 +554,14 @@ nav button{
   gap:.38em!important;
 }
 #practiceView[data-category="문장부호"] .punct-symbol{
-  font-family:"Times New Roman","Noto Serif KR","함초롬바탕","HCR Batang","Batang","바탕",serif!important;
+  font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
   font-size:3.15rem!important;
   font-weight:500!important;
   line-height:1.15!important;
   letter-spacing:.03em!important;
 }
 #practiceView[data-category="문장부호"] .punct-name{
-  font-family:"함초롬바탕","HCR Batang","Noto Serif KR","Noto Serif CJK KR","Batang","바탕",serif!important;
+  font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
   font-size:1.05rem!important;
   font-weight:600!important;
   line-height:1.35!important;
@@ -1381,7 +1378,7 @@ kbd{
   letter-spacing:.04em!important;
 }
 #practiceView[data-category="로마자"] .roman-name{
-  font-family:"함초롬바탕","HCR Batang","Noto Serif KR","Batang","바탕",serif!important;
+  font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
   font-size:1rem!important;
   font-weight:600!important;
   line-height:1.35!important;
@@ -2069,7 +2066,7 @@ kbd{
 }
 .bag-fu{
   color:#ffd84d!important;
-  font-family:"Noto Serif CJK KR","Batang","바탕",serif!important;
+  font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
   font-size:1.25rem!important;
   font-weight:900!important;
   line-height:1!important;
@@ -5606,6 +5603,13 @@ body.high-contrast .braille-six-dot-picker button[aria-pressed="true"],
 }
 </style>
 
+
+<style id="gmgj-v37-font-stability">
+html, body, button, input, select, textarea {
+  font-family: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif !important;
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -5915,7 +5919,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
     <button type="button" id="brailleCellLarger">셀 크게</button>
   </div>
   <p class="cell-cursor-help">
-    사진 위에서 6점 셀 틀을 한 글자에 맞춘 뒤 클릭하세요. 위치를 정한 다음 아래 1~6점 중 실제로 돌출된 점만 선택하고 <strong>이 셀 추가</strong>를 누르세요.
+    사진 위에서 마우스를 움직이면 6점 셀 틀이 하나만 따라옵니다. 점자 한 글자에 맞춘 뒤 클릭해 위치를 고정하고, 아래 1~6점 중 실제로 돌출된 점만 선택한 다음 <strong>이 셀 추가</strong>를 누르세요.
   </p>
   <div id="brailleSixDotPicker" class="braille-six-dot-picker" aria-label="현재 셀의 점 선택">
     <button type="button" data-dot="1" aria-pressed="false"><span>1</span></button>
@@ -8316,31 +8320,58 @@ window.addEventListener("hashchange",()=>{
     return {x:(e.clientX-r.left)*(canvas.width/r.width),y:(e.clientY-r.top)*(canvas.height/r.height)};
   }
   function redrawOverlay(){
-    // 기존 함수가 전역 스코프에 있으면 원본 사진/표시를 먼저 다시 그림
-    try{ if(typeof drawDetectedPoints==="function") drawDetectedPoints(); }catch(e){}
+    const ctx=canvas.getContext("2d");
+
+    // 중요: 매 프레임마다 원본 선택영역으로 완전히 되돌린 뒤
+    // 현재 위치의 셀 틀만 한 번 그린다. 이전 셀 틀 잔상이 누적되지 않는다.
+    try{
+      if(typeof baseImageData!=="undefined" && baseImageData &&
+         baseImageData.width===canvas.width && baseImageData.height===canvas.height){
+        ctx.putImageData(baseImageData,0,0);
+      }else if(typeof drawDetectedPoints==="function"){
+        drawDetectedPoints();
+      }
+    }catch(e){
+      try{ if(typeof drawDetectedPoints==="function") drawDetectedPoints(); }catch(_){}
+    }
+
     if(!cursor.visible)return;
-    const ctx=canvas.getContext("2d"), d=dims();
+
+    const d=dims();
     const x=cursor.x-d.w/2,y=cursor.y-d.h/2;
     ctx.save();
+
+    // 셀 틀은 선명하지만 사진을 가리지 않도록 선만 표시
     ctx.lineWidth=Math.max(2,canvas.width/450);
     ctx.strokeStyle="#007f9b";
     ctx.setLineDash([8,6]);
     ctx.strokeRect(x,y,d.w,d.h);
+
     ctx.setLineDash([]);
-    ctx.globalAlpha=.85;
     ctx.strokeStyle="#007f9b";
+    ctx.globalAlpha=.95;
     ctx.beginPath();
     ctx.moveTo(x+d.w/2,y);ctx.lineTo(x+d.w/2,y+d.h);
     ctx.moveTo(x,y+d.h/3);ctx.lineTo(x+d.w,y+d.h/3);
     ctx.moveTo(x,y+2*d.h/3);ctx.lineTo(x+d.w,y+2*d.h/3);
     ctx.stroke();
-    // 6개 기준점
+
+    // 6개 기준점: 선택 전에는 속이 투명한 작은 원, 선택하면 빨간 원
     for(let row=0;row<3;row++)for(let col=0;col<2;col++){
       const dot=col===0?row+1:row+4;
       const px=x+d.w*(col?0.75:0.25),py=y+d.h*((row+.5)/3);
-      ctx.beginPath();ctx.arc(px,py,Math.max(5,d.w*.055),0,Math.PI*2);
-      ctx.fillStyle=selected.has(dot)?"#e11":"rgba(255,255,255,.75)";
-      ctx.fill();ctx.strokeStyle="#e11";ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(px,py,Math.max(4,d.w*.045),0,Math.PI*2);
+      if(selected.has(dot)){
+        ctx.fillStyle="rgba(225,20,20,.82)";
+        ctx.fill();
+        ctx.strokeStyle="#fff";
+      }else{
+        ctx.fillStyle="rgba(255,255,255,.12)";
+        ctx.fill();
+        ctx.strokeStyle="#e11";
+      }
+      ctx.stroke();
     }
     ctx.restore();
   }
@@ -8354,10 +8385,15 @@ window.addEventListener("hashchange",()=>{
     addBtn.disabled=true;
   }
 
+  let overlayRAF=0;
   canvas.addEventListener("pointermove",e=>{
     if(cursor.locked)return;
     cursor={...pointerXY(e),visible:true,locked:false};
-    redrawOverlay();
+    if(overlayRAF) cancelAnimationFrame(overlayRAF);
+    overlayRAF=requestAnimationFrame(()=>{
+      redrawOverlay();
+      overlayRAF=0;
+    });
   },true);
   canvas.addEventListener("pointerleave",()=>{
     if(!cursor.locked){cursor.visible=false;redrawOverlay();}
