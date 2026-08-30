@@ -7100,19 +7100,23 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
 
     <article class="story-card">
       <h3>2. 점자는 어떻게 시작되었을까요?</h3>
-      <p>오늘날 널리 쓰이는 6점식 점자는 프랑스의 <strong>루이 브라유(Louis Braille)</strong>가 19세기에 정리한 체계에서 출발했습니다. </p>
-      <p>우리나라에서는 <strong>송암 박두성 선생</strong>을 중심으로 한글에 맞는 점자 체계가 연구되었고, 1926년 <strong>훈맹정음</strong>이 발표되었습니다. 이후 여러 차례 정비를 거쳐 오늘날의 한국 점자 규정으로 이어졌습니다.</p>
-    
-      <div class="story-history-timeline" aria-label="점자와 한글 점자 역사">
+      <p>점자는 문명사적 관점에서 단순한 문자를 넘어 중요한 의미를 가집니다. 시각장애인에게 <strong>자신감</strong>을 주고, <strong>활자정보에 대한 접근성</strong>과 <strong>독립적 생활 능력</strong>을 높이며, <strong>고용과 사회참여에 대한 균등한 기회</strong>를 제공하는 데 도움을 줍니다.</p>
+
+      <p>점자를 최초로 만들어 사용한 사람은 19세기 프랑스의 <strong>루이 브라유</strong>입니다.</p>
+      <div class="story-history-timeline" aria-label="점자의 역사">
         <div><strong>1824년</strong><span>루이 브라유가 점자를 창안했습니다.</span></div>
-        <div><strong>1829년</strong><span>브라유식 점자가 반포되었습니다.</span></div>
+        <div><strong>1829년</strong><span>점자가 반포되었습니다.</span></div>
         <div><strong>1837년</strong><span>문제점을 수정·보완했습니다.</span></div>
-        <div><strong>1882년</strong><span>자료에서는 유럽회의에서 브라유식 점자가 통일 점자로 채택되었다고 정리합니다.</span></div>
-        <div><strong>1920년</strong><span>송암 박두성 선생이 제자들과 조선어 점자 연구위원회를 조직했습니다.</span></div>
-        <div class="story-history-one-line"><strong>1926년 11월 4일</strong><span>한글 점자의 원형인 <strong>훈맹정음</strong>을 창안했습니다.</span></div>
+        <div><strong>1882년</strong><span>유럽회의에서 브라유식 점자를 통일 점자로 채택했습니다.</span></div>
       </div>
-      <p>점자는 19세기 프랑스의 <strong>루이 브라유</strong>가 만든 체계에서 출발해 발전해 왔습니다. 한글 점자는 당시 제생원 맹아부 교사였던 <strong>송암 박두성</strong> 선생이 기존 점자의 불편함과 비효율성을 개선하고 한글에 맞게 연구하여 완성했습니다.</p>
-      <p class="story-note"><strong>11월 4일</strong>은 오늘날 한글 점자의 날로 기념되고 있습니다.</p>
+
+      <p>한글 점자는 1926년 당시 <strong>제생원 맹아부(서울맹학교 전신) 교사였던 송암 박두성</strong>이 창안했습니다. 그는 로제타 홀 여사가 뉴욕 점자를 개량해 만든 평양 점자의 불편함과 비효율성을 절감하고, 한글에 알맞은 점자를 연구했습니다.</p>
+      <div class="story-history-timeline" aria-label="한글 점자의 역사">
+        <div><strong>1920년</strong><span>제자들과 <strong>조선어 점자 연구위원회</strong>를 조직했습니다.</span></div>
+        <div><strong>1926년 11월 4일</strong><span>한글 점자의 원형인 <strong>훈맹정음</strong>을 창안했습니다.</span></div>
+      </div>
+
+      <p class="story-note">훈맹정음에는 초성 자음 13자, 종성 자음 14자, 모음 21자, 약자 27자, 약어 7개, 숫자와 문장 부호가 사용되었습니다. <strong>11월 4일</strong>은 한글 점자의 날입니다.</p>
 </article>
 
     <article class="story-card">
@@ -14546,6 +14550,92 @@ html:not(.whale-browser) body.contrast #brailleStoryView .story-sixdot span > b{
   footer .footer-social-links{
     right:0!important;
     left:auto!important;
+  }
+}
+</style>
+
+<style id="gmgj-v69-footer-social-layout-fix">
+/* ===== PC 푸터: 기관명/SNS/연락처를 서로 겹치지 않게 재배치 ===== */
+@media (min-width:901px){
+  footer > .shell.foot{
+    width:min(1600px, calc(100% - 80px))!important;
+    max-width:1600px!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    box-sizing:border-box!important;
+  }
+
+  footer .foot-center{
+    position:relative!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-rows:auto auto!important;
+    column-gap:26px!important;
+    row-gap:12px!important;
+    align-items:center!important;
+    padding-right:0!important;
+  }
+
+  footer .foot-center-title{
+    grid-column:1!important;
+    grid-row:1!important;
+    min-width:0!important;
+    margin:0!important;
+  }
+
+  footer .footer-social-links{
+    position:static!important;
+    grid-column:2!important;
+    grid-row:1!important;
+    justify-self:end!important;
+    align-self:center!important;
+    transform:none!important;
+    margin:0!important;
+    right:auto!important;
+    left:auto!important;
+    top:auto!important;
+    flex-wrap:nowrap!important;
+    gap:12px!important;
+  }
+
+  footer .foot-center-info{
+    grid-column:1 / -1!important;
+    grid-row:2!important;
+    min-width:0!important;
+    width:100%!important;
+    margin:0!important;
+    padding:0!important;
+  }
+
+  footer .contact-desktop-original{
+    display:block!important;
+    white-space:normal!important;
+    line-height:1.6!important;
+    word-break:keep-all!important;
+  }
+}
+
+/* 중간 폭 PC/태블릿 가로 화면에서도 SNS가 연락처를 덮지 않도록 */
+@media (min-width:769px) and (max-width:1100px){
+  footer .foot-center{
+    grid-template-columns:1fr!important;
+  }
+  footer .foot-center-title{
+    grid-column:1!important;
+    grid-row:1!important;
+  }
+  footer .footer-social-links{
+    grid-column:1!important;
+    grid-row:2!important;
+    justify-self:start!important;
+    margin-top:8px!important;
+  }
+  footer .foot-center-info{
+    grid-column:1!important;
+    grid-row:3!important;
   }
 }
 </style>
