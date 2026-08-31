@@ -7551,6 +7551,17 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
     <span class="sr-only">홈페이지</span>
   </a>
 </div>
+
+<div class="gmgj-visitor-counter" aria-label="궁금점 PLAY 누적 방문 횟수">
+  <span class="gmgj-visitor-label">누적 방문 횟수</span>
+  <img
+    class="gmgj-visitor-count-img"
+    src="https://www.daniel-marschall.de/counter/counter.php?id=gunggeumjeom-play-jnbraille-20260831&amp;format=graphic&amp;theme=digital"
+    alt="궁금점 PLAY 누적 방문 횟수"
+    decoding="async"
+  >
+</div>
+
 <div class="foot-center-info">
 <span class="contact-desktop-original">주소 : 전남광주통합특별시 목포시 산정로 148, 4층&nbsp;&nbsp;|&nbsp;&nbsp;대표전화 : 061-801-6322&nbsp;&nbsp;|&nbsp;&nbsp;팩스 : 061-284-6332&nbsp;&nbsp;|&nbsp;&nbsp;전자우편 : 8016322@braille.kr</span>
 <span class="contact-mobile-three-lines">
@@ -14674,4 +14685,73 @@ html.gmgj-ready footer img{
   }
 })();
 </script>
+
+
+
+<style id="gmgj-v75-visitor-counter">
+@media (min-width:1101px){
+  footer .foot-center{
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-rows:auto auto;
+    column-gap:28px;
+    row-gap:10px;
+    align-items:center;
+  }
+  footer .foot-center-title{
+    grid-column:1;
+    grid-row:1;
+  }
+  footer .footer-social-links{
+    grid-column:2;
+    grid-row:1;
+    justify-self:end;
+  }
+  footer .foot-center-info{
+    grid-column:1;
+    grid-row:2;
+    min-width:0;
+  }
+  footer .gmgj-visitor-counter{
+    grid-column:2;
+    grid-row:2;
+    justify-self:end;
+  }
+}
+.gmgj-visitor-counter{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:9px;
+  white-space:nowrap;
+  color:inherit;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.2;
+}
+.gmgj-visitor-label{
+  color:inherit;
+}
+.gmgj-visitor-count-img{
+  display:block;
+  width:auto;
+  height:24px;
+  max-width:150px;
+  object-fit:contain;
+}
+@media (max-width:1100px){
+  footer .gmgj-visitor-counter{
+    width:100%;
+    justify-content:center;
+    margin-top:4px;
+  }
+}
+@media (forced-colors:active){
+  .gmgj-visitor-count-img{
+    forced-color-adjust:auto;
+  }
+  .gmgj-visitor-counter{
+    color:CanvasText;
+  }
+}
+</style>
 
