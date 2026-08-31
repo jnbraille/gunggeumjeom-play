@@ -14680,7 +14680,7 @@ html.gmgj-ready footer img{
 </script>
 
 
-<style id="gmgj-v79-device-total-counter">
+<style id="gmgj-v80-device-total-counter">
 .fund-text .gmgj-visitor-counter{
   display:flex;
   align-items:center;
@@ -14744,15 +14744,17 @@ html.gmgj-ready footer img{
 }
 </style>
 
-<script id="gmgj-v79-device-total-counter-script">
+
+<script id="gmgj-v80-device-60min-counter-script">
 (function(){
   var DISPLAY = document.getElementById('gmgjDeviceTotalCount');
   if (!DISPLAY) return;
 
   var STORAGE_ID = 'gmgjPlayDeviceVisitorIdV1';
-  var STORAGE_COUNTED = 'gmgjPlayDeviceVisitorCountedV1';
+  var STORAGE_LAST = 'gmgjPlayVisitorLastCountAtV1';
   var BASE_URL = 'https://counterapi.com/api/jnbraille.github.io/deviceVisitor/gunggeumjeom-play';
-  var START_NUMBER = 2; // 기존 v78 카운터에 표시되던 2를 기준값으로 이어감
+  var START_NUMBER = 2;
+  var COOLDOWN_MS = 60 * 60 * 1000; // 60분
 
   function makeId(){
     if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -14780,16 +14782,17 @@ html.gmgj-ready footer img{
   }
 
   var deviceId;
+  var now = Date.now();
+  var lastCountAt = 0;
+
   try {
     deviceId = getDeviceId();
+    lastCountAt = Number(localStorage.getItem(STORAGE_LAST) || 0);
   } catch(e) {
     deviceId = makeId();
   }
 
-  var alreadyCounted = false;
-  try {
-    alreadyCounted = localStorage.getItem(STORAGE_COUNTED) === '1';
-  } catch(e) {}
+  var withinCooldown = lastCountAt > 0 && (now - lastCountAt) < COOLDOWN_MS;
 
   var params = new URLSearchParams({
     unique: 'true',
@@ -14797,7 +14800,13 @@ html.gmgj-ready footer img{
     startNumber: String(START_NUMBER)
   });
 
-  if (alreadyCounted) params.set('readOnly', 'true');
+  if (withinCooldown) {
+    params.set('readOnly', 'true');
+  } else {
+    // 60분이 지난 재방문은 새 방문으로 집계되도록 시간구간을 userId에 포함
+    var slot = Math.floor(now / COOLDOWN_MS);
+    params.set('userId', deviceId + '-' + slot);
+  }
 
   fetch(BASE_URL + '?' + params.toString(), { mode:'cors', cache:'no-store' })
     .then(function(res){
@@ -14806,8 +14815,8 @@ html.gmgj-ready footer img{
     })
     .then(function(data){
       render(data && data.value);
-      if (!alreadyCounted) {
-        try { localStorage.setItem(STORAGE_COUNTED, '1'); } catch(e) {}
+      if (!withinCooldown) {
+        try { localStorage.setItem(STORAGE_LAST, String(now)); } catch(e) {}
       }
     })
     .catch(function(){
