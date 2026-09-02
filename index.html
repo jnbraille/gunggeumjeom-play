@@ -8575,7 +8575,8 @@ function nextSpellingV17(){
         x.disabled=false;
         x.setAttribute("aria-disabled","true");
       });
-      const isCorrect=(opt===spellingCurrent.answer);
+      const normalizeSpellingOption=(value)=>String(value||"").replace(/^\s*\([^)]*\)\s*/,"").trim();
+      const isCorrect=(normalizeSpellingOption(opt)===normalizeSpellingOption(spellingCurrent.answer));
       playFeedbackSound(isCorrect);
       const fb=document.getElementById("spellingFb");
       if(fb){
@@ -8604,7 +8605,7 @@ function nextSpellingV17(){
       }else{
         btn.classList.add("wrong","selected-answer");
         [...box.children].forEach(x=>{
-          if(x!==btn && x.textContent.trim()===spellingCurrent.answer){
+          if(x!==btn && normalizeSpellingOption(x.textContent)===normalizeSpellingOption(spellingCurrent.answer)){
             x.classList.add("correct-answer");
           }
         });
