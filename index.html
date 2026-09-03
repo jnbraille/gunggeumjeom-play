@@ -7387,8 +7387,20 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
         <div id="typed" class="typed" tabindex="0" aria-label="점자 입력"></div>
 
         <div id="mobileBrailleInput" class="mobile-braille-input" aria-label="모바일 6점 점자 입력">
-          <div class="mobile-braille-title">모바일 6점 입력</div>
-          <div class="mobile-braille-help">입력할 점을 선택한 뒤 <b>점자 한 칸 입력</b>을 누르세요.</div>
+          <div class="mobile-braille-title">모바일 입력</div>
+
+          <div id="mobileTextEntryWrap" class="mobile-text-entry-wrap" hidden>
+            <div class="mobile-braille-help">단어·문장 연습은 휴대폰 점자 키보드로 연속 입력할 수 있습니다.</div>
+            <label for="mobileTextEntry" class="mobile-text-entry-label">점자 키보드 입력</label>
+            <textarea id="mobileTextEntry" class="mobile-text-entry" rows="4" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="여기를 눌러 휴대폰 점자 키보드로 입력하세요."></textarea>
+            <div class="mobile-text-entry-actions">
+              <button type="button" id="mobileTextDelete">전체 지우기</button>
+              <button type="button" id="mobileTextSubmit">제출</button>
+            </div>
+          </div>
+
+          <div id="mobileSixDotWrap">
+          <div class="mobile-braille-help">점 조합을 누르면 점형이 바로 입력됩니다. 잘못 입력했을 때는 삭제를 누르세요.</div>
           <div class="mobile-braille-cell" role="group" aria-label="점자 1점부터 6점까지">
             <button type="button" class="mobile-dot" data-dot="1" aria-pressed="false" aria-label="1점">1</button>
             <button type="button" class="mobile-dot" data-dot="4" aria-pressed="false" aria-label="4점">4</button>
@@ -7398,12 +7410,12 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
             <button type="button" class="mobile-dot" data-dot="6" aria-pressed="false" aria-label="6점">6</button>
           </div>
           <div class="mobile-braille-actions">
-            <button type="button" id="mobileCommitCell">점자 한 칸 입력</button>
             <button type="button" id="mobileSpace">띄어쓰기</button>
             <button type="button" id="mobileDelete">삭제</button>
             <button type="button" id="mobileSubmit">제출</button>
           </div>
           <div id="mobileBrailleStatus" class="mobile-braille-status" aria-live="polite">선택된 점 없음</div>
+          </div>
         </div>
 
         <div class="hint desktop-input-hint">F D S / J K L 입력 · Backspace/Delete 삭제 · Space 띄어쓰기 · Enter 제출</div><div class="spacing-guide-notice" aria-label="띄어쓰기 표시 안내">띄어쓰기는 빨간 밑줄로 표시됩니다.</div>
@@ -14896,12 +14908,20 @@ html.gmgj-ready footer img{
     refreshDots();
   }
 
+  let mobileCommitTimer=null;
+
   dots.forEach(btn=>{
     btn.addEventListener("click", ()=>{
       if(typeof grading!=="undefined" && grading) return;
       const n=Number(btn.dataset.dot);
       if(selected.has(n)) selected.delete(n); else selected.add(n);
       refreshDots();
+
+      /* 점 조합 입력 후 잠시 기다렸다가 자동으로 한 칸 입력 */
+      clearTimeout(mobileCommitTimer);
+      mobileCommitTimer=setTimeout(()=>{
+        if(selected.size) commitSelectedCell(false);
+      }, 420);
     });
   });
 
@@ -14919,12 +14939,7 @@ html.gmgj-ready footer img{
     clearDots();
     return true;
   }
-
-  document.getElementById("mobileCommitCell")?.addEventListener("click", ()=>{
-    commitSelectedCell(true);
-  });
-
-  document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
+document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
     if(typeof grading!=="undefined" && grading) return;
     if(typeof beginTypingClock==="function") beginTypingClock();
     input += " ";
@@ -14956,15 +14971,70 @@ html.gmgj-ready footer img{
     clearDots();
   });
 
+
+  const mobileTextEntryWrap = document.getElementById("mobileTextEntryWrap");
+  const mobileSixDotWrap = document.getElementById("mobileSixDotWrap");
+  const mobileTextEntry = document.getElementById("mobileTextEntry");
+
+  function currentCategory(){
+    return document.getElementById("practiceView")?.dataset.category || "";
+  }
+
+  function textKeyboardMode(){
+    const c=currentCategory();
+    return c==="단어" || c==="문장";
+  }
+
+  function syncMobileInputMode(){
+    const textMode=textKeyboardMode();
+    if(mobileTextEntryWrap) mobileTextEntryWrap.hidden=!textMode;
+    if(mobileSixDotWrap) mobileSixDotWrap.hidden=textMode;
+
+    if(textMode && mobileTextEntry){
+      mobileTextEntry.value = (typeof input==="string" ? input : "");
+      setTimeout(()=>mobileTextEntry.focus({preventScroll:true}), 0);
+    }
+  }
+
+  mobileTextEntry?.addEventListener("input", ()=>{
+    if(typeof grading!=="undefined" && grading) return;
+    if(typeof beginTypingClock==="function") beginTypingClock();
+    input = mobileTextEntry.value;
+    if(typeof draw==="function") draw();
+    if(typeof liveMetrics==="function") liveMetrics();
+  });
+
+  document.getElementById("mobileTextDelete")?.addEventListener("click", ()=>{
+    if(typeof grading!=="undefined" && grading) return;
+    if(mobileTextEntry) mobileTextEntry.value="";
+    input="";
+    if(typeof draw==="function") draw();
+    if(typeof liveMetrics==="function") liveMetrics();
+    mobileTextEntry?.focus();
+  });
+
+  document.getElementById("mobileTextSubmit")?.addEventListener("click", ()=>{
+    if(typeof grading!=="undefined" && grading) return;
+    if(mobileTextEntry) input=mobileTextEntry.value;
+    if(typeof input==="string") input=input.trim();
+    if(typeof draw==="function") draw();
+    if(typeof submit==="function") submit();
+  });
+
   // PC에서는 보이지 않고 모바일/터치 환경에서만 표시
   function updateVisibility(){
     box.hidden = !mobileMode();
+    if(!box.hidden) syncMobileInputMode();
   }
   updateVisibility();
   window.addEventListener("resize", updateVisibility);
 
   // 새 문제로 넘어갈 때 선택 중인 점 초기화
-  const observer = new MutationObserver(clearDots);
+  const observer = new MutationObserver(()=>{
+    clearDots();
+    if(mobileTextEntry) mobileTextEntry.value="";
+    syncMobileInputMode();
+  });
   const prompt = document.getElementById("prompt");
   if(prompt) observer.observe(prompt,{childList:true,subtree:true,characterData:true});
 
@@ -14976,5 +15046,104 @@ html.gmgj-ready footer img{
 #selectGrid .lesson .go::before{
   content:""!important;
   display:none!important;
+}
+</style>
+
+<style id="gmgj-v98-mobile-text-keyboard-style">
+@media (max-width:768px){
+  .mobile-text-entry-wrap{
+    display:block;
+    margin-top:8px;
+  }
+  .mobile-text-entry-wrap[hidden]{display:none!important}
+  #mobileSixDotWrap[hidden]{display:none!important}
+  .mobile-text-entry-label{
+    display:block;
+    text-align:left;
+    font-weight:800;
+    color:#12395b;
+    margin:8px 0 6px;
+  }
+  .mobile-text-entry{
+    box-sizing:border-box;
+    width:100%;
+    min-height:118px;
+    resize:vertical;
+    border:2px solid #76949f;
+    border-radius:12px;
+    padding:14px;
+    background:#fff;
+    color:#12395b;
+    font-size:1.08rem;
+    line-height:1.6;
+    -webkit-appearance:none;
+    appearance:none;
+  }
+  .mobile-text-entry:focus{
+    outline:3px solid #bde3df;
+    outline-offset:2px;
+    border-color:#0b8d86;
+  }
+  .mobile-text-entry-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    margin-top:10px;
+  }
+  .mobile-text-entry-actions button{
+    min-height:50px;
+    border:2px solid #76949f;
+    border-radius:12px;
+    background:#fff;
+    color:#12395b;
+    font-weight:800;
+    font-size:1rem;
+  }
+  #mobileTextSubmit{
+    background:#e7f5f4;
+    border-color:#0b8d86;
+    color:#006d68;
+  }
+}
+@media (forced-colors:active){
+  html:not(.whale-browser) .mobile-text-entry,
+  html:not(.whale-browser) .mobile-text-entry-actions button{
+    border:2px solid ButtonText!important;
+  }
+}
+</style>
+
+<style id="gmgj-v99-mobile-input-sticky">
+@media (max-width:768px){
+  #mobileBrailleInput:not([hidden]){
+    position:sticky!important;
+    top:8px!important;
+    z-index:50!important;
+    margin:10px auto 14px!important;
+    box-shadow:0 4px 14px rgba(0,0,0,.12);
+  }
+
+  /* 짧은 점형 연습에서는 문제 바로 아래에 보이도록 간격 최소화 */
+  #practiceView .answer-area,
+  #practiceView .input-area{
+    scroll-margin-top:220px;
+  }
+
+  .mobile-braille-cell{
+    grid-template-columns:repeat(2,68px)!important;
+    grid-template-rows:repeat(3,68px)!important;
+    gap:8px 24px!important;
+    margin:6px auto 12px!important;
+  }
+
+  .mobile-dot{
+    width:68px!important;
+    height:68px!important;
+    font-size:1.25rem!important;
+  }
+
+  .mobile-braille-actions{
+    grid-template-columns:repeat(3,1fr)!important;
+  }
 }
 </style>
