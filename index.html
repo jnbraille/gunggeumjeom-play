@@ -7060,7 +7060,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
     <span class="gmgj-braille"><img class="gmgj-sixdot-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAABCCAYAAAAsejQrAAAArklEQVR4nO2XSwrAIAwFtfe/c7ourZqfYmVmWZLHowg6pQDAUqpmSETktVirajc79/KE9r5r8eZ2C4+WvaUjuc3C2jLW0tHcz8KrS1jmh2d4Nyg8mzMKWy8F7XxGbvMPryxhmeseiVG493qO5A7PcGs5+paYlQsAAPAAa9aCNWPNSblnKNLOUHg2WHPWPNaMNQMAwC/AmrVgzVhzUu4ZirQzFJ4N1pw1jzVjzQA+btIf2EzzwUSKAAAAAElFTkSuQmCC" alt=""></span>
   </span>
   <span class="gmgj-play">PLAY</span>
-</div><div><div class="tag"><span>일상에서 만난 점자,</span><br class="mobile-tag-break"> <span>배움으로 이어지다</span></div><div class="org">전남점자도서관 시각장애인학습지원센터</div></div><div class="fund-message">
+</div><div><div class="tag"><span>일상에서 만난 점자,</span><br class="mobile-tag-break"> <span>배움으로 이어지다</span></div><div class="org gmgj-center-menu-label">전남점자도서관 시각장애인학습지원센터</div></div><div class="fund-message">
   <button type="button" id="fundAudioBtn" class="fund-audio-btn" aria-label="식스럭식스닷 음원 재생" aria-pressed="false" title="식스럭식스닷 음원 재생">
     <span class="lucky-bag-icon" aria-hidden="true">
       <span class="bag-knot"></span>
@@ -14921,7 +14921,7 @@ html.gmgj-ready footer img{
       clearTimeout(mobileCommitTimer);
       mobileCommitTimer=setTimeout(()=>{
         if(selected.size) commitSelectedCell(false);
-      }, 300);
+      }, 420);
     });
   });
 
@@ -15387,6 +15387,38 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
     border:2px solid ButtonText!important;
     background:Canvas!important;
     color:CanvasText!important;
+  }
+}
+</style>
+
+<style id="gmgj-v104-mobile-center-menu-one-line">
+@media (max-width:768px){
+  #homeView .menu-grid > *:last-child,
+  #homeView .home-menu > *:last-child,
+  #homeView .nav-grid > *:last-child,
+  #homeView .menu > *:last-child{
+    white-space:nowrap!important;
+  }
+
+  #homeView .menu-grid > *:last-child *,
+  #homeView .home-menu > *:last-child *,
+  #homeView .nav-grid > *:last-child *,
+  #homeView .menu > *:last-child *{
+    font-size:inherit!important;
+    line-height:1.25!important;
+    white-space:nowrap!important;
+  }
+}
+</style>
+
+<style id="gmgj-v104-center-menu-label-exact">
+@media (max-width:768px){
+  .gmgj-center-menu-label{
+    font-size:1rem!important;
+    line-height:1.2!important;
+    white-space:nowrap!important;
+    word-break:keep-all!important;
+    letter-spacing:-.055em!important;
   }
 }
 </style>
