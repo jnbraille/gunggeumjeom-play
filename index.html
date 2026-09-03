@@ -15651,3 +15651,41 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
   }
 }
 </style>
+
+
+<script id="gmgj-v112-mobile-feedback-audio">
+(function(){
+  if(typeof playFeedbackSound!=="function" || typeof ensureFeedbackAudio!=="function") return;
+
+  const originalPlayFeedbackSound=playFeedbackSound;
+
+  window.playFeedbackSound=function(ok){
+    try{
+      const ctx=ensureFeedbackAudio();
+      if(!ctx) return;
+
+      if(ctx.state==="suspended"){
+        const resumed=ctx.resume();
+        if(resumed && typeof resumed.then==="function"){
+          resumed.then(()=>originalPlayFeedbackSound(ok)).catch(()=>{});
+          return;
+        }
+      }
+      originalPlayFeedbackSound(ok);
+    }catch(e){
+      try{ originalPlayFeedbackSound(ok); }catch(_){}
+    }
+  };
+
+  /* 모바일 Safari는 사용자 터치 동작 안에서 오디오 컨텍스트를
+     먼저 깨워 두어야 안정적으로 소리가 난다. */
+  ["touchend","pointerup","click"].forEach(function(evt){
+    document.addEventListener(evt,function(){
+      try{
+        const ctx=ensureFeedbackAudio();
+        if(ctx && ctx.state==="suspended") ctx.resume();
+      }catch(e){}
+    },{passive:true});
+  });
+})();
+</script>
