@@ -15600,3 +15600,54 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
   }
 }
 </style>
+
+<style id="gmgj-v111-exact-mobile-fix">
+@media (max-width:768px){
+
+  /* 기존 하단 채점 결과 영역 제거:
+     모바일은 문제 위 #mobileTopResult에서 정답/오답을 표시함 */
+  #practiceView .feedback-column #result,
+  #practiceView #result.result{
+    display:none!important;
+    height:0!important;
+    min-height:0!important;
+    max-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    overflow:hidden!important;
+  }
+
+  #practiceView .feedback-column{
+    margin:0!important;
+    padding:0!important;
+    min-height:0!important;
+    border:0!important;
+  }
+
+  /* 답안보기를 눌렀을 때 정답 점형 영역은 그대로 표시 */
+  #practiceView .feedback-column #answerPanel[hidden]{
+    display:none!important;
+  }
+
+  /* 모바일 상단 5개 메뉴 세로 폭 축소 */
+  header .shell nav > button,
+  header .shell nav button[data-view]{
+    height:60px!important;
+    min-height:60px!important;
+    max-height:60px!important;
+    padding-top:4px!important;
+    padding-bottom:4px!important;
+  }
+
+  header .shell nav button[data-view]{
+    font-size:1.12rem!important;
+    line-height:1.15!important;
+  }
+
+  header .shell nav button[data-view="guide"] .center-nav-title{
+    font-size:1.03rem!important;
+    line-height:1.15!important;
+  }
+}
+</style>
