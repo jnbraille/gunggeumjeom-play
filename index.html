@@ -7385,7 +7385,28 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
       <div class="panel sep">
         <span class="label">점자 입력</span>
         <div id="typed" class="typed" tabindex="0" aria-label="점자 입력"></div>
-        <div class="hint">F D S / J K L 입력 · Backspace/Delete 삭제 · Space 띄어쓰기 · Enter 제출</div><div class="spacing-guide-notice" aria-label="띄어쓰기 표시 안내">띄어쓰기는 빨간 밑줄로 표시됩니다.</div>
+
+        <div id="mobileBrailleInput" class="mobile-braille-input" aria-label="모바일 6점 점자 입력">
+          <div class="mobile-braille-title">모바일 6점 입력</div>
+          <div class="mobile-braille-help">입력할 점을 선택한 뒤 <b>점자 한 칸 입력</b>을 누르세요.</div>
+          <div class="mobile-braille-cell" role="group" aria-label="점자 1점부터 6점까지">
+            <button type="button" class="mobile-dot" data-dot="1" aria-pressed="false" aria-label="1점">1</button>
+            <button type="button" class="mobile-dot" data-dot="4" aria-pressed="false" aria-label="4점">4</button>
+            <button type="button" class="mobile-dot" data-dot="2" aria-pressed="false" aria-label="2점">2</button>
+            <button type="button" class="mobile-dot" data-dot="5" aria-pressed="false" aria-label="5점">5</button>
+            <button type="button" class="mobile-dot" data-dot="3" aria-pressed="false" aria-label="3점">3</button>
+            <button type="button" class="mobile-dot" data-dot="6" aria-pressed="false" aria-label="6점">6</button>
+          </div>
+          <div class="mobile-braille-actions">
+            <button type="button" id="mobileCommitCell">점자 한 칸 입력</button>
+            <button type="button" id="mobileSpace">띄어쓰기</button>
+            <button type="button" id="mobileDelete">삭제</button>
+            <button type="button" id="mobileSubmit">제출</button>
+          </div>
+          <div id="mobileBrailleStatus" class="mobile-braille-status" aria-live="polite">선택된 점 없음</div>
+        </div>
+
+        <div class="hint desktop-input-hint">F D S / J K L 입력 · Backspace/Delete 삭제 · Space 띄어쓰기 · Enter 제출</div><div class="spacing-guide-notice" aria-label="띄어쓰기 표시 안내">띄어쓰기는 빨간 밑줄로 표시됩니다.</div>
       </div>
       <div class="feedback-column">
         <div id="result" class="result">
@@ -14748,3 +14769,193 @@ html.gmgj-ready footer img{
 }
 </style>
 
+
+
+<style id="gmgj-v96-mobile-six-dot-style">
+#mobileBrailleInput{display:none}
+@media (max-width:768px){
+  #mobileBrailleInput:not([hidden]){
+    display:block!important;
+    margin:18px auto 8px;
+    padding:16px 14px;
+    max-width:430px;
+    border:2px solid #8da6af;
+    border-radius:18px;
+    background:#f7fbfb;
+    text-align:center;
+  }
+  .desktop-input-hint{display:none!important}
+  .mobile-braille-title{
+    font-size:1.15rem;
+    font-weight:800;
+    color:#12395b;
+    margin-bottom:5px;
+  }
+  .mobile-braille-help{
+    font-size:.92rem;
+    line-height:1.45;
+    color:#425b67;
+    margin-bottom:14px;
+  }
+  .mobile-braille-cell{
+    display:grid;
+    grid-template-columns:repeat(2,82px);
+    grid-template-rows:repeat(3,82px);
+    gap:10px 28px;
+    justify-content:center;
+    margin:8px auto 16px;
+  }
+  .mobile-dot{
+    width:82px;
+    height:82px;
+    border-radius:50%;
+    border:3px solid #76949f;
+    background:#fff;
+    color:#12395b;
+    font-size:1.45rem;
+    font-weight:800;
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mobile-dot.selected{
+    background:#0b8d86;
+    color:#fff;
+    border-color:#0b8d86;
+  }
+  .mobile-braille-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+  }
+  .mobile-braille-actions button{
+    min-height:50px;
+    border:2px solid #76949f;
+    border-radius:12px;
+    background:#fff;
+    color:#12395b;
+    font-weight:800;
+    font-size:1rem;
+    touch-action:manipulation;
+  }
+  #mobileCommitCell,
+  #mobileSubmit{
+    background:#e7f5f4;
+    border-color:#0b8d86;
+    color:#006d68;
+  }
+  .mobile-braille-status{
+    min-height:24px;
+    margin-top:10px;
+    font-size:.92rem;
+    font-weight:700;
+    color:#425b67;
+  }
+}
+@media (forced-colors:active){
+  html:not(.whale-browser) #mobileBrailleInput,
+  html:not(.whale-browser) .mobile-dot,
+  html:not(.whale-browser) .mobile-braille-actions button{
+    border:2px solid ButtonText!important;
+  }
+  html:not(.whale-browser) .mobile-dot.selected{
+    background:Highlight!important;
+    color:HighlightText!important;
+  }
+}
+</style>
+
+
+<script id="gmgj-v96-mobile-six-dot-input">
+(function(){
+  const box = document.getElementById("mobileBrailleInput");
+  if(!box) return;
+
+  const dots = [...box.querySelectorAll(".mobile-dot")];
+  const status = document.getElementById("mobileBrailleStatus");
+  const selected = new Set();
+
+  function mobileMode(){
+    return window.matchMedia("(max-width: 768px)").matches ||
+           ("ontouchstart" in window && window.innerWidth <= 900);
+  }
+
+  function refreshDots(){
+    dots.forEach(btn=>{
+      const on = selected.has(Number(btn.dataset.dot));
+      btn.classList.toggle("selected", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    if(status){
+      const arr=[...selected].sort((a,b)=>a-b);
+      status.textContent = arr.length ? ("선택된 점: "+arr.join(", ")+"점") : "선택된 점 없음";
+    }
+  }
+
+  function clearDots(){
+    selected.clear();
+    refreshDots();
+  }
+
+  dots.forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      if(typeof grading!=="undefined" && grading) return;
+      const n=Number(btn.dataset.dot);
+      if(selected.has(n)) selected.delete(n); else selected.add(n);
+      refreshDots();
+    });
+  });
+
+  document.getElementById("mobileCommitCell")?.addEventListener("click", ()=>{
+    if(typeof grading!=="undefined" && grading) return;
+    if(!selected.size){
+      if(status) status.textContent="먼저 입력할 점을 선택하세요.";
+      return;
+    }
+    if(typeof beginTypingClock==="function") beginTypingClock();
+    if(typeof braille==="function"){
+      input += braille([...selected]);
+      if(typeof typedCells!=="undefined") typedCells++;
+      if(typeof draw==="function") draw();
+      if(typeof liveMetrics==="function") liveMetrics();
+    }
+    clearDots();
+  });
+
+  document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
+    if(typeof grading!=="undefined" && grading) return;
+    if(typeof beginTypingClock==="function") beginTypingClock();
+    input += " ";
+    if(typeof typedCells!=="undefined") typedCells++;
+    if(typeof draw==="function") draw();
+    if(typeof liveMetrics==="function") liveMetrics();
+    clearDots();
+  });
+
+  document.getElementById("mobileDelete")?.addEventListener("click", ()=>{
+    if(typeof grading!=="undefined" && grading) return;
+    input=[...input].slice(0,-1).join("");
+    if(typeof draw==="function") draw();
+    if(typeof liveMetrics==="function") liveMetrics();
+    clearDots();
+  });
+
+  document.getElementById("mobileSubmit")?.addEventListener("click", ()=>{
+    if(typeof submit==="function") submit();
+    clearDots();
+  });
+
+  // PC에서는 보이지 않고 모바일/터치 환경에서만 표시
+  function updateVisibility(){
+    box.hidden = !mobileMode();
+  }
+  updateVisibility();
+  window.addEventListener("resize", updateVisibility);
+
+  // 새 문제로 넘어갈 때 선택 중인 점 초기화
+  const observer = new MutationObserver(clearDots);
+  const prompt = document.getElementById("prompt");
+  if(prompt) observer.observe(prompt,{childList:true,subtree:true,characterData:true});
+
+  refreshDots();
+})();
+</script>
