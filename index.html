@@ -8123,7 +8123,7 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.
 function shuffle(n){let a=[...Array(n).keys()];for(let i=n-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function makeQueue(c){return shuffle(DATA[c].length)}
 function openPractice(c){
-  if(isMobilePractice() && c!=="맞춤법"){mobilePracticeNotice();return;}
+  /* v93 테스트: 모바일에서도 모든 점자 타자 연습 메뉴 진입 허용 */
   document.getElementById("practiceView").dataset.category=c;
   wrongOnlyMode=false;
   cat=c;round=0;queue=makeQueue(c);
