@@ -14982,7 +14982,7 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
 
   function textKeyboardMode(){
     const c=currentCategory();
-    return c==="단어" || c==="문장";
+    return false; /* v101: 단어·문장도 앱 6점 입력 사용 */
   }
 
   function syncMobileInputMode(){
@@ -15268,6 +15268,125 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
     display:flex!important;
     flex-direction:column!important;
     gap:4px!important;
+  }
+}
+</style>
+
+
+<script id="gmgj-v101-mobile-result-top">
+(function(){
+  function mobile(){ return window.matchMedia("(max-width:768px)").matches; }
+
+  function ensureTopResult(){
+    const practice=document.getElementById("practiceView");
+    const prompt=document.getElementById("prompt");
+    if(!practice || !prompt) return null;
+
+    let box=document.getElementById("mobileTopResult");
+    if(!box){
+      box=document.createElement("div");
+      box.id="mobileTopResult";
+      box.className="mobile-top-result";
+      box.setAttribute("aria-live","assertive");
+      box.hidden=true;
+
+      /* 문제 바로 윗줄 */
+      const parent=prompt.parentElement;
+      parent.insertBefore(box,prompt);
+    }
+    return box;
+  }
+
+  function findResultSource(){
+    const ids=["result","feedback","judge","gradingResult","answerResult","resultMsg"];
+    for(const id of ids){
+      const el=document.getElementById(id);
+      if(el && el.textContent.trim()) return el;
+    }
+    return null;
+  }
+
+  function syncResult(){
+    if(!mobile()) return;
+    const box=ensureTopResult();
+    if(!box) return;
+
+    const src=findResultSource();
+    const txt=src ? src.textContent.trim() : "";
+
+    if(txt){
+      box.textContent=txt;
+      box.hidden=false;
+
+      const low=txt.toLowerCase();
+      box.classList.toggle("is-correct",
+        txt.includes("정답") || txt.includes("맞았습니다") || low.includes("correct"));
+      box.classList.toggle("is-wrong",
+        txt.includes("오답") || txt.includes("틀렸") || low.includes("wrong"));
+    }
+  }
+
+  function clearTop(){
+    const box=document.getElementById("mobileTopResult");
+    if(box){ box.textContent=""; box.hidden=true; box.className="mobile-top-result"; }
+  }
+
+  document.addEventListener("click",function(e){
+    const t=e.target.closest && e.target.closest("button");
+    if(!t) return;
+
+    if(t.id==="mobileSubmit" || t.id==="submitBtn" ||
+       /제출/.test(t.textContent||"")){
+      setTimeout(syncResult,30);
+      setTimeout(syncResult,120);
+    }
+
+    if(/다음|새 문제|다시/.test(t.textContent||"")){
+      setTimeout(clearTop,0);
+    }
+  },true);
+
+  const prompt=document.getElementById("prompt");
+  if(prompt){
+    new MutationObserver(clearTop).observe(prompt,{
+      childList:true,subtree:true,characterData:true
+    });
+  }
+
+  window.addEventListener("resize",()=>{ if(!mobile()) clearTop(); });
+  ensureTopResult();
+})();
+</script>
+
+<style id="gmgj-v101-mobile-result-top-style">
+@media (max-width:768px){
+  #mobileTopResult{
+    box-sizing:border-box;
+    width:100%;
+    margin:2px 0 6px!important;
+    padding:8px 10px!important;
+    border:2px solid #12395b;
+    border-radius:10px;
+    background:#fff;
+    color:#12395b;
+    font-size:1rem!important;
+    line-height:1.35!important;
+    font-weight:900!important;
+    text-align:center;
+  }
+  #mobileTopResult[hidden]{display:none!important}
+  #mobileTopResult.is-correct{border-width:3px}
+  #mobileTopResult.is-wrong{border-width:3px}
+
+  /* v101: 단어·문장도 동일한 앱 6점 입력판 사용 */
+  #mobileTextEntryWrap{display:none!important}
+  #mobileSixDotWrap{display:block!important}
+}
+@media (forced-colors:active){
+  html:not(.whale-browser) #mobileTopResult{
+    border:2px solid ButtonText!important;
+    background:Canvas!important;
+    color:CanvasText!important;
   }
 }
 </style>
