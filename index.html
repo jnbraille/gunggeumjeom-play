@@ -14917,11 +14917,11 @@ html.gmgj-ready footer img{
       if(selected.has(n)) selected.delete(n); else selected.add(n);
       refreshDots();
 
-      /* 점 조합 입력 후 잠시 기다렸다가 자동으로 한 칸 입력 */
+      /* 점 조합 입력 후 짧게 기다렸다가 자동으로 한 칸 입력 */
       clearTimeout(mobileCommitTimer);
       mobileCommitTimer=setTimeout(()=>{
         if(selected.size) commitSelectedCell(false);
-      }, 420);
+      }, 160);
     });
   });
 
