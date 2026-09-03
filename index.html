@@ -15444,3 +15444,23 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
   }
 }
 </style>
+
+<style id="gmgj-v106-mobile-result-colors">
+@media (max-width:768px){
+  #mobileTopResult.is-correct{
+    color:#0057B8!important;
+    border-color:#0057B8!important;
+  }
+  #mobileTopResult.is-wrong{
+    color:#D00000!important;
+    border-color:#D00000!important;
+  }
+}
+@media (forced-colors:active){
+  html:not(.whale-browser) #mobileTopResult.is-correct,
+  html:not(.whale-browser) #mobileTopResult.is-wrong{
+    color:CanvasText!important;
+    border-color:ButtonText!important;
+  }
+}
+</style>
