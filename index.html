@@ -14905,20 +14905,23 @@ html.gmgj-ready footer img{
     });
   });
 
-  document.getElementById("mobileCommitCell")?.addEventListener("click", ()=>{
-    if(typeof grading!=="undefined" && grading) return;
+  function commitSelectedCell(showEmptyMessage=true){
+    if(typeof grading!=="undefined" && grading) return false;
     if(!selected.size){
-      if(status) status.textContent="먼저 입력할 점을 선택하세요.";
-      return;
+      if(showEmptyMessage && status) status.textContent="먼저 입력할 점을 선택하세요.";
+      return false;
     }
     if(typeof beginTypingClock==="function") beginTypingClock();
-    if(typeof braille==="function"){
-      input += braille([...selected]);
-      if(typeof typedCells!=="undefined") typedCells++;
-      if(typeof draw==="function") draw();
-      if(typeof liveMetrics==="function") liveMetrics();
-    }
+    input += braille([...selected]);
+    if(typeof typedCells!=="undefined") typedCells++;
+    if(typeof draw==="function") draw();
+    if(typeof liveMetrics==="function") liveMetrics();
     clearDots();
+    return true;
+  }
+
+  document.getElementById("mobileCommitCell")?.addEventListener("click", ()=>{
+    commitSelectedCell(true);
   });
 
   document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
@@ -14940,6 +14943,15 @@ html.gmgj-ready footer img{
   });
 
   document.getElementById("mobileSubmit")?.addEventListener("click", ()=>{
+    if(typeof grading!=="undefined" && grading) return;
+
+    /* 마지막 점형을 선택한 상태에서 바로 제출해도 그 점형을 먼저 입력한다. */
+    if(selected.size) commitSelectedCell(false);
+
+    /* 모바일에서 실수로 생긴 앞뒤 공백은 채점에서 제외한다. */
+    if(typeof input==="string") input=input.trim();
+
+    if(typeof draw==="function") draw();
     if(typeof submit==="function") submit();
     clearDots();
   });
@@ -14959,3 +14971,10 @@ html.gmgj-ready footer img{
   refreshDots();
 })();
 </script>
+
+<style id="gmgj-v97-mobile-practice-go-dot-remove">
+#selectGrid .lesson .go::before{
+  content:""!important;
+  display:none!important;
+}
+</style>
