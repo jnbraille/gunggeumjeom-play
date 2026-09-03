@@ -7060,7 +7060,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
     <span class="gmgj-braille"><img class="gmgj-sixdot-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAABCCAYAAAAsejQrAAAArklEQVR4nO2XSwrAIAwFtfe/c7ourZqfYmVmWZLHowg6pQDAUqpmSETktVirajc79/KE9r5r8eZ2C4+WvaUjuc3C2jLW0tHcz8KrS1jmh2d4Nyg8mzMKWy8F7XxGbvMPryxhmeseiVG493qO5A7PcGs5+paYlQsAAPAAa9aCNWPNSblnKNLOUHg2WHPWPNaMNQMAwC/AmrVgzVhzUu4ZirQzFJ4N1pw1jzVjzQA+btIf2EzzwUSKAAAAAElFTkSuQmCC" alt=""></span>
   </span>
   <span class="gmgj-play">PLAY</span>
-</div><div><div class="tag"><span>일상에서 만난 점자,</span><br class="mobile-tag-break"> <span>배움으로 이어지다</span></div><div class="org gmgj-center-menu-label">전남점자도서관 시각장애인학습지원센터</div></div><div class="fund-message">
+</div><div><div class="tag"><span>일상에서 만난 점자, 배움으로 이어지다</span></div><div class="org gmgj-center-menu-label">전남점자도서관 시각장애인학습지원센터</div></div><div class="fund-message">
   <button type="button" id="fundAudioBtn" class="fund-audio-btn" aria-label="식스럭식스닷 음원 재생" aria-pressed="false" title="식스럭식스닷 음원 재생">
     <span class="lucky-bag-icon" aria-hidden="true">
       <span class="bag-knot"></span>
@@ -7237,7 +7237,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
   </div>
 </section>
 
-<section id="homeView" class="view active"><div class="hero"><div><h2>망설이지 말고 시작하세요,<br><em class="mobile-firststep">점자 학습의 가장 쉬운 첫걸음</em></h2></div><div id="board" class="board"></div></div><h2 class="title">단계별 학습하기</h2><div id="homeGrid" class="grid"></div><div class="bottom"><div class="card"><h3>오늘의 학습 현황</h3><div class="big"><span id="homeTotal">0</span>문제</div><div>정답률 <b id="homeRate">0%</b></div><div class="bar"><span id="homeBar"></span></div></div><div class="card"><h3>입력 방법</h3><div><kbd>F D S</kbd> / <kbd>J K L</kbd> 점자 입력</div><div><kbd>Backspace</kbd>/<kbd>Delete</kbd> 삭제 · <kbd>Space</kbd> 띄어쓰기 · <kbd>Enter</kbd> 제출</div></div></div></section>
+<section id="homeView" class="view active"><div class="hero"><div><h2>망설이지 말고 시작하세요,<br><em class="mobile-firststep">점자 학습의 가장 쉬운 첫걸음</em></h2></div><div id="board" class="board"></div></div><h2 class="title">단계별 학습하기</h2><div id="homeGrid" class="grid"></div><div class="bottom"><div class="card"><h3>오늘의 학습 현황</h3><div class="big"><span id="homeTotal">0</span>문제</div><div>정답률 <b id="homeRate">0%</b></div><div class="bar"><span id="homeBar"></span></div></div><div class="card"><h3>입력 방법</h3><div><kbd>F D S</kbd> / <kbd>J K L</kbd> 점자 입력</div><div><kbd>Backspace</kbd><span class="mobile-delete-slash">/</span><kbd>Delete</kbd> 삭제 · <kbd>Space</kbd> 띄어쓰기 · <kbd>Enter</kbd> 제출</div></div></div></section>
 
 
 <section id="brailleReaderView" class="view braille-reader-view" aria-labelledby="brailleReaderTitle">
@@ -7418,7 +7418,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
           </div>
         </div>
 
-        <div class="hint desktop-input-hint">F D S / J K L 입력 · Backspace&nbsp;&nbsp;/&nbsp;&nbsp;Delete 삭제 · Space 띄어쓰기 · Enter 제출</div><div class="spacing-guide-notice" aria-label="띄어쓰기 표시 안내">띄어쓰기는 빨간 밑줄로 표시됩니다.</div>
+        <div class="hint desktop-input-hint">F D S / J K L 입력 · Backspace/Delete 삭제 · Space 띄어쓰기 · Enter 제출</div><div class="spacing-guide-notice" aria-label="띄어쓰기 표시 안내">띄어쓰기는 빨간 밑줄로 표시됩니다.</div>
       </div>
       <div class="feedback-column">
         <div id="result" class="result">
@@ -12826,7 +12826,7 @@ img.logo{
         e.preventDefault();
         document.getElementById(buttonId)?.click();
       }
-      // Backspace&nbsp;&nbsp;/&nbsp;&nbsp;Delete/문자키는 절대 preventDefault/stopPropagation 하지 않음.
+      // Backspace/Delete/문자키는 절대 preventDefault/stopPropagation 하지 않음.
     });
   }
 
@@ -15690,24 +15690,26 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
 })();
 </script>
 
-<script id="gmgj-v115-backspace-delete-spacing">
-(function(){
-  function fixBackspaceDelete(){
-    if(!window.matchMedia("(max-width:768px)").matches) return;
-    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
-    const targets=[];
-    while(walker.nextNode()){
-      const n=walker.currentNode;
-      if(/Backspace\s*\/\s*Delete/.test(n.nodeValue||"")) targets.push(n);
-    }
-    targets.forEach(function(n){
-      n.nodeValue=n.nodeValue.replace(/Backspace\s*\/\s*Delete/g,"Backspace\u00A0\u00A0/\u00A0\u00A0Delete");
-    });
+<style id="gmgj-v116-mobile-three-fixes">
+@media (max-width:768px){
+
+  /* 소개 문구: 모바일에서도 한 줄 */
+  header .tag{
+    white-space:nowrap!important;
   }
-  if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",fixBackspaceDelete);
-  }else{
-    fixBackspaceDelete();
+
+  /* Backspace / Delete: 슬래시 앞뒤 실제 여백 */
+  .mobile-delete-slash{
+    display:inline-block!important;
+    margin-left:10px!important;
+    margin-right:10px!important;
   }
-})();
-</script>
+
+  /* 기관 메뉴: 다른 메뉴와 같은 글자 크기 */
+  header .shell nav button[data-view="guide"] .center-nav-title{
+    font-size:1.12rem!important;
+    font-weight:800!important;
+    line-height:1.15!important;
+  }
+}
+</style>
