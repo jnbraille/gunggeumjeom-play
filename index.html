@@ -15491,3 +15491,26 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
   }
 }
 </style>
+
+<style id="gmgj-v108-mobile-home-nav-font-up">
+@media (max-width:768px){
+  nav button[data-view]{
+    font-size:1.12rem!important;
+    font-weight:800!important;
+  }
+
+  nav button[data-view] > span,
+  nav button[data-view] .center-nav-title{
+    font-size:1.12rem!important;
+    font-weight:800!important;
+    line-height:1.2!important;
+  }
+
+  /* 긴 기관명은 한 줄을 유지하면서 다른 메뉴와 최대한 비슷한 크기로 */
+  nav button[data-view="guide"] .center-nav-title{
+    font-size:1.06rem!important;
+    letter-spacing:-0.065em!important;
+    white-space:nowrap!important;
+  }
+}
+</style>
