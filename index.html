@@ -15556,3 +15556,47 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
   }
 }
 </style>
+
+<style id="gmgj-v110-mobile-gap-nav-height-fix">
+@media (max-width:768px){
+
+  /* 홈 / 궁금점 이야기 / 점자 타자 연습 / 나의 기록 / 기관 메뉴 높이 축소 */
+  nav > button,
+  nav button[data-view]{
+    height:72px!important;
+    min-height:72px!important;
+    max-height:72px!important;
+    padding-top:5px!important;
+    padding-bottom:5px!important;
+  }
+
+  /* 모바일 연습 화면 하단에 남는 빈 회색/구분 영역 제거 */
+  #practiceView .panel:empty,
+  #practiceView .sep:empty,
+  #practiceView .exercise > div:empty,
+  #practiceView .practice > div:empty{
+    display:none!important;
+    height:0!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+  }
+
+  /* 입력/결과 영역 뒤에 불필요하게 확보된 세로 공간 제거 */
+  #practiceView .exercise,
+  #practiceView .practice,
+  #practiceView .panel.sep{
+    min-height:0!important;
+  }
+
+  #practiceView .panel.sep{
+    margin-bottom:4px!important;
+  }
+
+  /* 오래된 숨김 기능 영역이 공간을 차지하지 않도록 */
+  #practiceView [hidden]{
+    display:none!important;
+  }
+}
+</style>
