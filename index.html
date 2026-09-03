@@ -7418,7 +7418,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
           </div>
         </div>
 
-        <div class="hint desktop-input-hint">F D S / J K L 입력 · Backspace/Delete 삭제 · Space 띄어쓰기 · Enter 제출</div><div class="spacing-guide-notice" aria-label="띄어쓰기 표시 안내">띄어쓰기는 빨간 밑줄로 표시됩니다.</div>
+        <div class="hint desktop-input-hint">F D S / J K L 입력 · Backspace&nbsp;&nbsp;/&nbsp;&nbsp;Delete 삭제 · Space 띄어쓰기 · Enter 제출</div><div class="spacing-guide-notice" aria-label="띄어쓰기 표시 안내">띄어쓰기는 빨간 밑줄로 표시됩니다.</div>
       </div>
       <div class="feedback-column">
         <div id="result" class="result">
@@ -12826,7 +12826,7 @@ img.logo{
         e.preventDefault();
         document.getElementById(buttonId)?.click();
       }
-      // Backspace/Delete/문자키는 절대 preventDefault/stopPropagation 하지 않음.
+      // Backspace&nbsp;&nbsp;/&nbsp;&nbsp;Delete/문자키는 절대 preventDefault/stopPropagation 하지 않음.
     });
   }
 
@@ -15687,5 +15687,27 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
       }catch(e){}
     },{passive:true});
   });
+})();
+</script>
+
+<script id="gmgj-v115-backspace-delete-spacing">
+(function(){
+  function fixBackspaceDelete(){
+    if(!window.matchMedia("(max-width:768px)").matches) return;
+    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    const targets=[];
+    while(walker.nextNode()){
+      const n=walker.currentNode;
+      if(/Backspace\s*\/\s*Delete/.test(n.nodeValue||"")) targets.push(n);
+    }
+    targets.forEach(function(n){
+      n.nodeValue=n.nodeValue.replace(/Backspace\s*\/\s*Delete/g,"Backspace\u00A0\u00A0/\u00A0\u00A0Delete");
+    });
+  }
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",fixBackspaceDelete);
+  }else{
+    fixBackspaceDelete();
+  }
 })();
 </script>
