@@ -7091,7 +7091,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
 </button>
   <button data-view="select">점자 타자 연습</button>
   <button data-view="records">나의 기록</button>
-  <button data-view="guide"><span class="center-nav-title">전남점자도서관<br>시각장애인학습지원센터</span></button>
+  <button data-view="guide"><span class="center-nav-title">전남점자도서관 시각장애인학습지원센터</span></button>
 </nav></div></header>
 <main class="shell">
 
@@ -15419,6 +15419,28 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
     white-space:nowrap!important;
     word-break:keep-all!important;
     letter-spacing:-.055em!important;
+  }
+}
+</style>
+
+<style id="gmgj-v105-center-nav-title-fix">
+@media (max-width:768px){
+  nav button[data-view="guide"]{
+    padding-left:8px!important;
+    padding-right:8px!important;
+  }
+
+  nav button[data-view="guide"] .center-nav-title{
+    display:block!important;
+    width:100%!important;
+    font-size:1rem!important;
+    font-weight:800!important;
+    line-height:1.25!important;
+    letter-spacing:-0.055em!important;
+    white-space:nowrap!important;
+    word-break:keep-all!important;
+    overflow:visible!important;
+    text-align:center!important;
   }
 }
 </style>
