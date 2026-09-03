@@ -15147,3 +15147,127 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
   }
 }
 </style>
+
+
+<style id="gmgj-v100-mobile-compact-practice">
+@media (max-width:768px){
+  #practiceView .practice{
+    padding-top:4px!important;
+  }
+
+  #practiceView .practice > h2{
+    margin:4px 0 6px!important;
+    font-size:1.05rem!important;
+  }
+
+  #practiceView .panel{
+    padding:8px 10px!important;
+    margin:0!important;
+  }
+
+  #practiceView .panel.sep{
+    border-radius:12px!important;
+  }
+
+  #practiceView .problem-head{
+    margin-bottom:4px!important;
+  }
+
+  #practiceView .problem-head .label,
+  #practiceView .panel.sep > .label{
+    font-size:.88rem!important;
+    margin:0!important;
+  }
+
+  #practiceView #prompt{
+    font-size:1.05rem!important;
+    line-height:1.35!important;
+    margin:4px 0!important;
+    min-height:auto!important;
+  }
+
+  #practiceView #rule{
+    font-size:.8rem!important;
+    margin-top:2px!important;
+  }
+
+  #practiceView #typed{
+    min-height:34px!important;
+    padding:5px 8px!important;
+    margin:3px 0 5px!important;
+    font-size:1.1rem!important;
+  }
+
+  #mobileBrailleInput:not([hidden]){
+    position:static!important;
+    top:auto!important;
+    z-index:auto!important;
+    margin:4px auto 0!important;
+    padding:8px 10px!important;
+    border-radius:12px!important;
+    box-shadow:none!important;
+  }
+
+  .mobile-braille-title{
+    display:none!important;
+  }
+
+  #mobileSixDotWrap .mobile-braille-help{
+    display:none!important;
+  }
+
+  .mobile-braille-cell{
+    grid-template-columns:repeat(2,56px)!important;
+    grid-template-rows:repeat(3,56px)!important;
+    gap:5px 18px!important;
+    margin:2px auto 7px!important;
+  }
+
+  .mobile-dot{
+    width:56px!important;
+    height:56px!important;
+    font-size:1rem!important;
+    border-width:2px!important;
+  }
+
+  .mobile-braille-actions{
+    grid-template-columns:repeat(3,1fr)!important;
+    gap:6px!important;
+  }
+
+  .mobile-braille-actions button{
+    min-height:38px!important;
+    padding:5px 4px!important;
+    font-size:.9rem!important;
+  }
+
+  .mobile-braille-status{
+    min-height:18px!important;
+    margin-top:4px!important;
+    font-size:.78rem!important;
+  }
+
+  #practiceView .live-metrics-top{
+    font-size:.75rem!important;
+    gap:5px!important;
+  }
+
+  #showAnswerBtn{
+    min-height:32px!important;
+    padding:4px 8px!important;
+    font-size:.8rem!important;
+  }
+
+  #sentenceSearchBar,
+  #punctuationSearchBar{
+    margin:4px 0!important;
+  }
+
+  /* 짧은 점형 연습에서는 문제+입력판이 최대한 붙어 보이도록 */
+  #practiceView .exercise{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:4px!important;
+  }
+}
+</style>
