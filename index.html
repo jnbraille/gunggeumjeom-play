@@ -15514,3 +15514,45 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
   }
 }
 </style>
+
+<style id="gmgj-v109-mobile-practice-prompt-font-up">
+@media (max-width:768px){
+  body:has(#practiceView[data-category="초성"]) #practiceView #prompt,
+  body:has(#practiceView[data-category="종성"]) #practiceView #prompt,
+  body:has(#practiceView[data-category="모음"]) #practiceView #prompt,
+  body:has(#practiceView[data-category="약자·약어"]) #practiceView #prompt,
+  body:has(#practiceView[data-category="단어"]) #practiceView #prompt,
+  body:has(#practiceView[data-category="문장"]) #practiceView #prompt{
+    font-size:1.32rem!important;
+    line-height:1.45!important;
+    font-weight:800!important;
+  }
+}
+</style>
+
+<script id="gmgj-v109-mobile-prompt-category-class">
+(function(){
+  const pv=document.getElementById("practiceView");
+  if(!pv) return;
+
+  const targets=new Set(["초성","종성","모음","약자·약어","단어","문장"]);
+
+  function sync(){
+    const c=pv.dataset.category||"";
+    pv.classList.toggle("gmgj-large-prompt", targets.has(c));
+  }
+
+  new MutationObserver(sync).observe(pv,{attributes:true,attributeFilter:["data-category"]});
+  sync();
+})();
+</script>
+
+<style id="gmgj-v109-mobile-prompt-category-fallback">
+@media (max-width:768px){
+  #practiceView.gmgj-large-prompt #prompt{
+    font-size:1.32rem!important;
+    line-height:1.45!important;
+    font-weight:800!important;
+  }
+}
+</style>
