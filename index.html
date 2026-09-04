@@ -7110,6 +7110,85 @@ html.gmgj-tablet-touch.contrast #practiceView .gmgj-tablet-spacing-inline{color:
   }
 }
 </style>
+
+<style id="gmgj-v127-mobile-seam-tablet-email">
+/* v127
+   1) iPhone/휴대폰 세로모드: 스크롤 중 화면을 가로지르는 회색 합성 레이어/그라데이션 이음선 방지.
+      카드 자체 디자인/테두리는 유지하고 바깥 렌더링 레이어만 단순화한다.
+   2) 태블릿 가로모드: 전자우편을 연락처 둘째 줄로 분리한다.
+*/
+@media (max-width:600px) and (orientation:portrait){
+  html, body,
+  main,
+  main > .shell,
+  #homeView,
+  #selectView,
+  #homeGrid,
+  #selectGrid{
+    background-color:#fff!important;
+    background-image:none!important;
+    background-attachment:scroll!important;
+    filter:none!important;
+    -webkit-filter:none!important;
+  }
+
+  main,
+  main > .shell,
+  #homeView,
+  #selectView,
+  #homeGrid,
+  #selectGrid,
+  #homeGrid .lesson,
+  #selectGrid .lesson{
+    transform:none!important;
+    -webkit-transform:none!important;
+    perspective:none!important;
+    will-change:auto!important;
+    contain:none!important;
+    isolation:auto!important;
+  }
+
+  #homeGrid .lesson,
+  #selectGrid .lesson{
+    -webkit-backface-visibility:visible!important;
+    backface-visibility:visible!important;
+    transition:none!important;
+  }
+
+  /* iOS에서 눌림/호버 잔상이 회색 띠처럼 남지 않도록 */
+  #homeGrid .lesson:hover,
+  #selectGrid .lesson:hover,
+  #homeGrid .lesson:active,
+  #selectGrid .lesson:active,
+  #homeGrid .lesson:focus,
+  #selectGrid .lesson:focus{
+    transform:none!important;
+    -webkit-transform:none!important;
+  }
+}
+
+/* 기본(PC/휴대폰): 기존 한 줄 연락처 모양 유지 */
+footer .gmgj-tablet-email-sep,
+footer .gmgj-tablet-email{
+  display:inline;
+}
+
+/* 아이패드/갤럭시 탭 가로모드: 전자우편만 다음 줄로 */
+@media (min-width:769px) and (max-width:1400px) and (orientation:landscape) and (pointer:coarse){
+  footer .gmgj-tablet-email-sep{display:none!important;}
+  footer .gmgj-tablet-email{
+    display:block!important;
+    margin-top:2px!important;
+    white-space:nowrap!important;
+  }
+  footer .foot-center-info,
+  footer .contact-desktop-original{
+    white-space:normal!important;
+    overflow:visible!important;
+  }
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -7864,7 +7943,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
   </a>
 </div>
 <div class="foot-center-info">
-<span class="contact-desktop-original">주소 : 전남광주통합특별시 목포시 산정로 148, 4층&nbsp;&nbsp;|&nbsp;&nbsp;대표전화 : 061-801-6322&nbsp;&nbsp;|&nbsp;&nbsp;팩스 : 061-284-6332&nbsp;&nbsp;|&nbsp;&nbsp;전자우편 : 8016322@braille.kr</span>
+<span class="contact-desktop-original">주소 : 전남광주통합특별시 목포시 산정로 148, 4층&nbsp;&nbsp;|&nbsp;&nbsp;대표전화 : 061-801-6322&nbsp;&nbsp;|&nbsp;&nbsp;팩스 : 061-284-6332<span class="gmgj-tablet-email-sep">&nbsp;&nbsp;|&nbsp;&nbsp;</span><span class="gmgj-tablet-email">전자우편 : 8016322@braille.kr</span></span>
 <span class="contact-mobile-three-lines">
   <span class="contact-mobile-line">주소 : 전남광주통합특별시 목포시 산정로 148, 4층</span>
   <span class="contact-mobile-line">대표전화 : 061-801-6322 <span class="contact-divider">|</span> 팩스 : 061-284-6332</span>
