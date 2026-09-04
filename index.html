@@ -8765,13 +8765,19 @@ function playFeedbackSound(ok){
   }catch(e){}
 }
 function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";sessionTotal++;if(ok)sessionCorrect++;rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;recordDailyAnswer(cat,ok);if(!ok)recordWrongQuestion(cat,q,input);if(ok&&wrongOnlyMode)removeWrongQuestion(cat,q);stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{if(ok&&finishWrongPracticeIfDone(cat))return;round++;if(round>=queue.length){round=0;queue=wrongOnlyMode?getWrongQueue(cat):makeQueue(cat)}if(wrongOnlyMode&&queue.length===0){finishWrongPracticeIfDone(cat);return}nextQuestion()},ok?1200:2000)}
-/* v131: v129의 FDS/JKL 점형 입력 구조는 그대로 유지하고, Space만 별도로 보강한다. */
+/* v132: 태블릿 물리 키보드는 e.key가 한글/입력기 상태에 따라 달라질 수 있어 e.code(KeyF/KeyD/KeyS/KeyJ/KeyK/KeyL)를 우선 사용한다. */
+function gmgjBraillePhysicalKey(e){
+  const byCode={KeyF:"f",KeyD:"d",KeyS:"s",KeyJ:"j",KeyK:"k",KeyL:"l"};
+  if(byCode[e.code]) return byCode[e.code];
+  const k=(e.key||"").toLowerCase();
+  return KD[k]?k:"";
+}
 document.onkeydown=e=>{
 if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput")) return;
-if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}const isSpaceKey=(e.key===" "||e.code==="Space"||e.key==="Spacebar"||e.keyCode===32||e.which===32);if(isSpaceKey){e.preventDefault();beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return}let k=(e.key||"").toLowerCase();if(KD[k]){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
+if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}const isSpaceKey=(e.key===" "||e.code==="Space"||e.key==="Spacebar"||e.keyCode===32||e.which===32);if(isSpaceKey){e.preventDefault();beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return}let k=gmgjBraillePhysicalKey(e);if(k){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
 document.onkeyup=e=>{
 if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput")) return;
-if(!V.practice.classList.contains("active")||grading)return;let k=e.key.toLowerCase();if(!KD[k])return;pressed.delete(k);if(!pressed.size&&chord.size){beginTypingClock();input+=braille([...chord]);typedCells++;chord.clear();draw();liveMetrics()}};
+if(!V.practice.classList.contains("active")||grading)return;let k=gmgjBraillePhysicalKey(e);if(!k)return;pressed.delete(k);if(!pressed.size&&chord.size){beginTypingClock();input+=braille([...chord]);typedCells++;chord.clear();draw();liveMetrics()}};
 
 /* v131: 태블릿 Safari의 Space 페이지 스크롤만 bubble 단계에서 차단.
    capture/stopPropagation을 쓰지 않아 FDS/JKL 점형 입력 이벤트에는 관여하지 않는다. */
