@@ -7189,6 +7189,53 @@ footer .gmgj-tablet-email{
 }
 </style>
 
+
+<style id="gmgj-v128-mobile-scroll-graybar-final">
+/* v128: iPhone/휴대폰 세로 스크롤 시 화면을 가로지르는 회색 합성 띠 제거.
+   PC/태블릿에는 적용하지 않음. */
+@media (max-width:600px) and (orientation:portrait) and (hover:none){
+  html, body{
+    background:#fff!important;
+    background-image:none!important;
+    -webkit-overflow-scrolling:auto!important;
+  }
+  main, main>.shell, #homeView, #selectView, #homeGrid, #selectGrid{
+    background:#fff!important;
+    background-image:none!important;
+    transform:none!important;
+    -webkit-transform:none!important;
+    filter:none!important;
+    -webkit-filter:none!important;
+    perspective:none!important;
+    will-change:auto!important;
+    contain:none!important;
+    isolation:auto!important;
+    -webkit-backface-visibility:visible!important;
+    backface-visibility:visible!important;
+  }
+  #homeGrid .lesson, #selectGrid .lesson,
+  #homeGrid .lesson:hover, #selectGrid .lesson:hover,
+  #homeGrid .lesson:active, #selectGrid .lesson:active,
+  #homeGrid .lesson:focus, #selectGrid .lesson:focus{
+    transform:none!important;
+    -webkit-transform:none!important;
+    transition:none!important;
+    animation:none!important;
+    will-change:auto!important;
+    contain:none!important;
+    isolation:auto!important;
+    -webkit-backface-visibility:visible!important;
+    backface-visibility:visible!important;
+    -webkit-tap-highlight-color:rgba(0,0,0,0)!important;
+  }
+  #homeGrid .lesson::before, #homeGrid .lesson::after,
+  #selectGrid .lesson::before, #selectGrid .lesson::after{
+    display:none!important;
+    content:none!important;
+  }
+}
+</style>
+
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -16127,7 +16174,7 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
     margin-right:10px!important;
   }
 }
-
+}
 
 /* v126: 휴대폰 세로모드 단계별 학습 카드의 움직이는 회색 가로줄 방지
    iOS/모바일 브라우저에서 :hover + transform이 스크롤 중 합성 레이어 경계로 남는 현상을 제거한다.
