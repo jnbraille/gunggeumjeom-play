@@ -16258,3 +16258,46 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
   }
 }
 </style>
+
+
+<!-- v137: 모바일 띄어쓰기 안내 위치 + 휴대폰/태블릿 화면 점자키보드 접힘 최종 보정 -->
+<style id="gmgj-v137-mobile-spacing-tablet-collapse-final">
+/* 휴대폰에서도 띄어쓰기 안내를 '점자 입력' 바로 옆에 표시 */
+@media (max-width:768px){
+  #practiceView .gmgj-tablet-spacing-inline{
+    display:inline-block!important;
+    margin:0 0 0 8px!important;
+    font-size:.78rem!important;
+    line-height:1.2!important;
+    vertical-align:middle!important;
+    color:#ef4444!important;
+    white-space:nowrap!important;
+  }
+  #practiceView .gmgj-spacing-original{display:none!important;}
+}
+/* 휴대폰/태블릿 모두 닫힘 상태를 파일의 모든 기존 CSS보다 마지막에 우선 적용 */
+@media (max-width:768px){
+  html #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{display:none!important;}
+}
+html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{display:none!important;}
+</style>
+<script id="gmgj-v137-tablet-collapse-reset">
+(function(){
+  function ensureClosedOnLoad(){
+    var isTablet=document.documentElement.classList.contains('gmgj-tablet-touch');
+    var isPhone=window.matchMedia('(max-width:768px)').matches;
+    if(!isTablet && !isPhone) return;
+    var mobile=document.getElementById('mobileBrailleInput');
+    var toggle=document.getElementById('gmgjTabletInputToggle');
+    if(!mobile || !toggle) return;
+    if(!mobile.dataset.gmgjV137InitialClosed){
+      mobile.classList.add('gmgj-tablet-collapsed');
+      toggle.textContent='화면 점자키보드 열기';
+      toggle.setAttribute('aria-expanded','false');
+      mobile.dataset.gmgjV137InitialClosed='1';
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',ensureClosedOnLoad);
+  else ensureClosedOnLoad();
+})();
+</script>
