@@ -6965,6 +6965,79 @@ html.gmgj-tablet-touch #practiceView #typed{
 }
 </style>
 
+
+
+<style id="gmgj-v123-tablet-ui-fixes">
+/* v123 - 태블릿 전용: PC/휴대폰은 변경하지 않음 */
+html.gmgj-tablet-touch .gmgj-tablet-input-toggle{
+  display:block;
+  width:min(430px,100%);
+  margin:12px auto 6px;
+  padding:11px 14px;
+  border:2px solid #0b8d86;
+  border-radius:12px;
+  background:#eaf7f6;
+  color:#075e5a;
+  font-weight:800;
+  text-align:center;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+html:not(.gmgj-tablet-touch) .gmgj-tablet-input-toggle{display:none!important}
+html.gmgj-tablet-touch #mobileBrailleInput.gmgj-tablet-collapsed{display:none!important}
+
+/* 태블릿에서는 정답/오답 결과를 문제보다 먼저 보이게 함 */
+html.gmgj-tablet-touch #practiceView .feedback-column.gmgj-tablet-feedback-top{
+  width:100%;
+  margin:0 0 10px;
+}
+html.gmgj-tablet-touch #practiceView .feedback-column.gmgj-tablet-feedback-top .result{
+  margin:0;
+}
+html.gmgj-tablet-touch #practiceView .feedback-column.gmgj-tablet-feedback-top .answer-panel{
+  margin-top:8px;
+}
+
+/* 태블릿 세로모드 헤더: 궁금점 PLAY/문구 겹침 방지 */
+@media (orientation:portrait){
+  html.gmgj-tablet-touch .brand{
+    grid-template-columns:96px minmax(0,1fr)!important;
+    grid-template-rows:auto auto auto!important;
+    column-gap:14px!important;
+    row-gap:7px!important;
+    align-items:center!important;
+  }
+  html.gmgj-tablet-touch .brand > .institution-logo-wrap{
+    grid-column:1!important;
+    grid-row:1 / span 2!important;
+    align-self:start!important;
+  }
+  html.gmgj-tablet-touch .brand > .gmgj-logo{
+    grid-column:2!important;
+    grid-row:1!important;
+    min-width:0!important;
+    justify-self:start!important;
+  }
+  html.gmgj-tablet-touch .brand > .gmgj-logo + div{
+    grid-column:2!important;
+    grid-row:2!important;
+    min-width:0!important;
+    margin:0!important;
+  }
+  html.gmgj-tablet-touch .brand > .fund-message{
+    grid-column:1 / -1!important;
+    grid-row:3!important;
+    justify-self:end!important;
+    max-width:100%!important;
+    margin-top:4px!important;
+  }
+  html.gmgj-tablet-touch .brand .tag,
+  html.gmgj-tablet-touch .brand .org{
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+}
+</style>
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -9912,6 +9985,62 @@ window.addEventListener("hashchange",()=>{
 
 
 
+
+
+<script id="gmgj-v123-tablet-ui-fixes-script">
+(function(){
+  function setupTabletUI(){
+    if(!document.documentElement.classList.contains('gmgj-tablet-touch')) return;
+
+    var exercise=document.querySelector('#practiceView .exercise');
+    var firstProblemPanel=exercise && exercise.querySelector(':scope > .panel.sep');
+    var feedback=exercise && exercise.querySelector(':scope > .feedback-column');
+    if(exercise && firstProblemPanel && feedback && !feedback.classList.contains('gmgj-tablet-feedback-top')){
+      exercise.insertBefore(feedback, firstProblemPanel);
+      feedback.classList.add('gmgj-tablet-feedback-top');
+    }
+
+    var mobile=document.getElementById('mobileBrailleInput');
+    if(!mobile) return;
+    var toggle=document.getElementById('gmgjTabletInputToggle');
+    if(!toggle){
+      toggle=document.createElement('button');
+      toggle.type='button';
+      toggle.id='gmgjTabletInputToggle';
+      toggle.className='gmgj-tablet-input-toggle';
+      toggle.setAttribute('aria-controls','mobileBrailleInput');
+      mobile.parentNode.insertBefore(toggle,mobile);
+    }
+
+    /* 태블릿에서는 기본 접힘. 기존 모바일 입력 기능 자체는 그대로 유지 */
+    if(!mobile.dataset.gmgjTabletToggleInit){
+      mobile.classList.add('gmgj-tablet-collapsed');
+      mobile.dataset.gmgjTabletToggleInit='1';
+    }
+
+    function sync(){
+      var closed=mobile.classList.contains('gmgj-tablet-collapsed');
+      toggle.textContent=closed ? '화면 점자키보드 열기' : '화면 점자키보드 닫기';
+      toggle.setAttribute('aria-expanded', closed ? 'false' : 'true');
+    }
+    sync();
+    if(!toggle.dataset.gmgjBound){
+      toggle.addEventListener('click',function(){
+        mobile.classList.toggle('gmgj-tablet-collapsed');
+        sync();
+      });
+      toggle.dataset.gmgjBound='1';
+    }
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',setupTabletUI);
+  }else{
+    setupTabletUI();
+  }
+  window.addEventListener('pageshow',setupTabletUI);
+})();
+</script>
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
