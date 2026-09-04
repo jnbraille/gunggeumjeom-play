@@ -10290,6 +10290,14 @@ window.addEventListener("hashchange",()=>{
   window.addEventListener('pageshow',setupTabletUI);
 })();
 </script>
+
+<!-- v136: 모바일/태블릿 화면 점자키보드 접힘 상태 최종 우선 적용 -->
+<style id="gmgj-v136-phone-tablet-collapse-final">
+#mobileBrailleInput.gmgj-tablet-collapsed,
+#mobileBrailleInput.gmgj-tablet-collapsed:not([hidden]){
+  display:none!important;
+}
+</style>
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
