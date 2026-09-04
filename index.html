@@ -7236,6 +7236,29 @@ footer .gmgj-tablet-email{
 }
 </style>
 
+
+<style id="gmgj-v135-mobile-sentence-braille-compact">
+/* v135: 휴대폰 문장연습에서 입력 점형과 답안보기 점형만 작게 표시 */
+@media (max-width:600px){
+  #practiceView[data-category="문장"] #typed,
+  #practiceView[data-category="문장"] #answerDots{gap:5px!important;row-gap:8px!important;}
+  #practiceView[data-category="문장"] #typed .input-cell,
+  #practiceView[data-category="문장"] #answerDots .input-cell{
+    grid-template-columns:repeat(2,10px)!important;
+    grid-template-rows:repeat(3,10px)!important;
+    gap:3px!important;
+    padding:2px!important;
+  }
+  #practiceView[data-category="문장"] #typed .input-dot,
+  #practiceView[data-category="문장"] #answerDots .input-dot{
+    width:10px!important;height:10px!important;
+  }
+  #practiceView[data-category="문장"] #typed .space-gap,
+  #practiceView[data-category="문장"] #answerDots .space-gap{
+    width:16px!important;height:34px!important;flex:0 0 16px!important;
+  }
+}
+</style>
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
