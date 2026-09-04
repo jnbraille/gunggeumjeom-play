@@ -15811,7 +15811,7 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
 </style>
 
 
-<script id="gmgj-v101-mobile-result-top">
+<script id="gmgj-v143-mobile-result-top-keyboard-fix">
 (function(){
   function mobile(){ return window.matchMedia("(max-width:768px)").matches; }
 
@@ -15889,6 +15889,33 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
     new MutationObserver(clearTop).observe(prompt,{
       childList:true,subtree:true,characterData:true
     });
+  }
+
+  /* v143: 휴대폰 일반/외부 키보드의 Enter 제출도 확실히 잡아
+     채점 직후 문제 위 결과를 직접 동기화한다. */
+  document.addEventListener("keydown",function(e){
+    if(!mobile()) return;
+    if(e.key!=="Enter" && e.code!=="Enter" && e.keyCode!==13) return;
+    const practice=document.getElementById("practiceView");
+    if(!practice || !practice.classList.contains("active")) return;
+    if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput")) return;
+    setTimeout(syncResult,0);
+    setTimeout(syncResult,40);
+    setTimeout(syncResult,120);
+  },false);
+
+  /* v142: 모바일에서 터치 제출뿐 아니라 블루투스 키보드 Enter 제출도
+     문제 위 정답/오답 표시가 갱신되도록 실제 채점 결과 변화를 감시 */
+  const resultText=document.getElementById("resultText");
+  const resultBox=document.getElementById("result");
+  const resultObserver=new MutationObserver(function(){
+    if(!mobile()) return;
+    setTimeout(syncResult,0);
+  });
+  if(resultText){
+    resultObserver.observe(resultText,{childList:true,subtree:true,characterData:true});
+  }else if(resultBox){
+    resultObserver.observe(resultBox,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:["class"]});
   }
 
   window.addEventListener("resize",()=>{ if(!mobile()) clearTop(); });
