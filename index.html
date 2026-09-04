@@ -8768,10 +8768,32 @@ function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=tru
 /* v129: 태블릿 Bluetooth/키보드 케이스의 FDS/JKL 입력과 Space/Spacebar/code=Space 띄어쓰기를 함께 지원한다. */
 document.onkeydown=e=>{
 if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput")) return;
-if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}const isSpaceKey=(e.key===" "||e.code==="Space"||e.key==="Spacebar"||e.keyCode===32||e.which===32);if(isSpaceKey){e.preventDefault();beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return}let k=(e.key||"").toLowerCase();if(KD[k]){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
+if(!V.practice.classList.contains("active"))return;
+const isSpaceKey=(e.key===" "||e.code==="Space"||e.key==="Spacebar"||e.keyCode===32||e.which===32);
+if(isSpaceKey){
+  /* v130: 태블릿 물리 키보드 스페이스는 Safari 스크롤보다 먼저 차단. 채점 중에는 입력만 하지 않고 스크롤은 막는다. */
+  e.preventDefault();
+  e.stopPropagation();
+  if(grading)return;
+  beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return;
+}
+if(e.key==="Enter"){e.preventDefault();submit();return}
+if(grading)return;
+if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}
+let k=(e.key||"").toLowerCase();if(KD[k]){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
 document.onkeyup=e=>{
 if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput")) return;
 if(!V.practice.classList.contains("active")||grading)return;let k=e.key.toLowerCase();if(!KD[k])return;pressed.delete(k);if(!pressed.size&&chord.size){beginTypingClock();input+=braille([...chord]);typedCells++;chord.clear();draw();liveMetrics()}};
+
+/* v130: iPad/Android 태블릿의 물리 키보드 Space 기본 페이지 스크롤 방지.
+   입력 처리는 위 document.onkeydown에서 한 번만 수행하므로 다른 기능은 변경하지 않는다. */
+window.addEventListener("keydown",function(e){
+  if(!document.documentElement.classList.contains("gmgj-tablet-touch"))return;
+  if(!V.practice.classList.contains("active"))return;
+  if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput"))return;
+  const isSpaceKey=(e.key===" "||e.code==="Space"||e.key==="Spacebar"||e.keyCode===32||e.which===32);
+  if(isSpaceKey)e.preventDefault();
+},{capture:true,passive:false});
 
 function validateAnswerBank(){
   const invalid=[];
