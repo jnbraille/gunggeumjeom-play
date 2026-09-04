@@ -7038,6 +7038,41 @@ html.gmgj-tablet-touch #practiceView .feedback-column.gmgj-tablet-feedback-top .
   }
 }
 </style>
+
+<style id="gmgj-v124-tablet-landscape-footer-spacing">
+/* v124 - 태블릿 전용. PC/휴대폰 레이아웃은 유지 */
+/* 기본 상태에서는 새 인라인 안내문을 숨기고 기존 안내문을 유지 */
+#practiceView .gmgj-tablet-spacing-inline{display:none!important;}
+
+/* 태블릿에서는 띄어쓰기 안내를 '점자 입력' 제목 바로 옆에 표시 */
+html.gmgj-tablet-touch #practiceView .gmgj-tablet-spacing-inline{
+  display:inline-block!important;
+  margin:0 0 0 12px!important;
+  font-size:.88rem!important;
+  line-height:1.2!important;
+  vertical-align:middle!important;
+  color:#ef4444!important;
+  white-space:nowrap!important;
+}
+html.gmgj-tablet-touch #practiceView .gmgj-spacing-original{display:none!important;}
+html.gmgj-tablet-touch.high-contrast #practiceView .gmgj-tablet-spacing-inline,
+html.gmgj-tablet-touch.contrast #practiceView .gmgj-tablet-spacing-inline{color:#fff!important;}
+@media (forced-colors: active){
+  html.gmgj-tablet-touch #practiceView .gmgj-tablet-spacing-inline{color:CanvasText!important;}
+}
+
+/* 태블릿 가로모드에서 하단 기관명이 '터' 한 글자만 다음 줄로 내려가지 않도록 한 줄 고정 */
+@media (orientation:landscape){
+  html.gmgj-tablet-touch footer .foot-center-title{
+    white-space:nowrap!important;
+    word-break:keep-all!important;
+    overflow-wrap:normal!important;
+    font-size:clamp(.86rem,1.7vw,1.08rem)!important;
+    letter-spacing:-.025em!important;
+    line-height:1.35!important;
+  }
+}
+</style>
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -7576,7 +7611,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
         <div id="rule" class="rule"></div>
       </div>
       <div class="panel sep">
-        <span class="label">점자 입력</span>
+        <span class="label">점자 입력</span><span class="spacing-guide-notice gmgj-tablet-spacing-inline" aria-label="띄어쓰기 표시 안내">띄어쓰기는 빨간 밑줄로 표시됩니다.</span>
         <div id="typed" class="typed" tabindex="0" aria-label="점자 입력"></div>
 
         <div id="mobileBrailleInput" class="mobile-braille-input" aria-label="모바일 6점 점자 입력">
@@ -7611,7 +7646,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
           </div>
         </div>
 
-        <div class="hint desktop-input-hint">F D S / J K L 입력 · Backspace/Delete 삭제 · Space 띄어쓰기 · Enter 제출</div><div class="spacing-guide-notice" aria-label="띄어쓰기 표시 안내">띄어쓰기는 빨간 밑줄로 표시됩니다.</div>
+        <div class="hint desktop-input-hint">F D S / J K L 입력 · Backspace/Delete 삭제 · Space 띄어쓰기 · Enter 제출</div><div class="spacing-guide-notice gmgj-spacing-original" aria-label="띄어쓰기 표시 안내">띄어쓰기는 빨간 밑줄로 표시됩니다.</div>
       </div>
       <div class="feedback-column">
         <div id="result" class="result">
