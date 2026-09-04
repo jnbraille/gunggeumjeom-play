@@ -6901,7 +6901,8 @@ html.gmgj-tablet-touch #mobileBrailleInput:not([hidden]){
   background:#f7fbfb;
   text-align:center;
 }
-html.gmgj-tablet-touch .desktop-input-hint{display:none!important}
+html.gmgj-tablet-touch .desktop-input-hint{display:block!important}
+  /* v122: 태블릿은 터치 6점 입력과 블루투스/키보드 케이스 FDS/JKL 입력을 동시에 지원 */
 html.gmgj-tablet-touch .mobile-braille-title{
   font-size:1.15rem;font-weight:800;color:#12395b;margin-bottom:5px;
 }
@@ -6951,6 +6952,16 @@ html.gmgj-tablet-touch #mobileSixDotWrap{display:block!important}
   html.gmgj-tablet-touch:not(.whale-browser) .mobile-dot.selected{
     background:Highlight!important;color:HighlightText!important;
   }
+}
+</style>
+
+
+<style id="gmgj-v121-tablet-typed-compact">
+/* v121: 태블릿에서만 점형 입력칸 높이를 줄여 문제와 입력칸을 한 화면에서 보기 쉽게 함.
+   PC와 휴대폰 레이아웃은 변경하지 않음. */
+html.gmgj-tablet-touch #practiceView #typed{
+  min-height:68px!important;
+  padding:6px 4px!important;
 }
 </style>
 
@@ -8483,6 +8494,7 @@ function playFeedbackSound(ok){
   }catch(e){}
 }
 function submit(){if(grading)return;pauseTypingClock();liveMetrics();grading=true;let ok=input===q.braille;playFeedbackSound(ok);document.getElementById("result").className="result "+(ok?"ok":"no");document.getElementById("resultSymbol").textContent=ok?"✓":"✕";document.getElementById("resultText").textContent=ok?"정답!":"오답!";sessionTotal++;if(ok)sessionCorrect++;rec.total++;if(ok)rec.correct++;rec.cat[cat]??={total:0,correct:0};rec.cat[cat].total++;if(ok)rec.cat[cat].correct++;recordDailyAnswer(cat,ok);if(!ok)recordWrongQuestion(cat,q,input);if(ok&&wrongOnlyMode)removeWrongQuestion(cat,q);stats();showCorrectAnswer();clearTimeout(timer);timer=setTimeout(()=>{if(ok&&finishWrongPracticeIfDone(cat))return;round++;if(round>=queue.length){round=0;queue=wrongOnlyMode?getWrongQueue(cat):makeQueue(cat)}if(wrongOnlyMode&&queue.length===0){finishWrongPracticeIfDone(cat);return}nextQuestion()},ok?1200:2000)}
+/* v122: 이 전역 키 입력은 태블릿에서도 유지되어 Bluetooth/키보드 케이스의 FDS/JKL 입력을 함께 지원한다. */
 document.onkeydown=e=>{
 if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput")) return;
 if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}if(e.key===" "){e.preventDefault();beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return}let k=e.key.toLowerCase();if(KD[k]){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
