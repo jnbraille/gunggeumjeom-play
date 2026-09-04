@@ -6967,8 +6967,8 @@ html.gmgj-tablet-touch #practiceView #typed{
 
 
 
-<style id="gmgj-v123-tablet-ui-fixes">
-/* v123 - 태블릿 전용: PC/휴대폰은 변경하지 않음 */
+<style id="gmgj-v134-phone-tablet-input-toggle-style">
+/* v134 - 태블릿/휴대폰: 화면 점자키보드를 버튼으로 열고 닫기 */
 html.gmgj-tablet-touch .gmgj-tablet-input-toggle{
   display:block;
   width:min(430px,100%);
@@ -6983,8 +6983,26 @@ html.gmgj-tablet-touch .gmgj-tablet-input-toggle{
   cursor:pointer;
   touch-action:manipulation;
 }
-html:not(.gmgj-tablet-touch) .gmgj-tablet-input-toggle{display:none!important}
-html.gmgj-tablet-touch #mobileBrailleInput.gmgj-tablet-collapsed{display:none!important}
+@media (min-width:769px){
+  html:not(.gmgj-tablet-touch) .gmgj-tablet-input-toggle{display:none!important}
+}
+@media (max-width:768px){
+  html:not(.gmgj-tablet-touch) .gmgj-tablet-input-toggle{
+    display:block!important;
+    width:min(430px,100%);
+    margin:12px auto 6px;
+    padding:11px 14px;
+    border:2px solid #0b8d86;
+    border-radius:12px;
+    background:#eaf7f6;
+    color:#075e5a;
+    font-weight:800;
+    text-align:center;
+    cursor:pointer;
+    touch-action:manipulation;
+  }
+}
+#mobileBrailleInput.gmgj-tablet-collapsed{display:none!important}
 
 /* 태블릿에서는 정답/오답 결과를 문제보다 먼저 보이게 함 */
 html.gmgj-tablet-touch #practiceView .feedback-column.gmgj-tablet-feedback-top{
@@ -7236,29 +7254,6 @@ footer .gmgj-tablet-email{
 }
 </style>
 
-
-<style id="gmgj-v135-mobile-sentence-braille-compact">
-/* v135: 휴대폰 문장연습에서 입력 점형과 답안보기 점형만 작게 표시 */
-@media (max-width:600px){
-  #practiceView[data-category="문장"] #typed,
-  #practiceView[data-category="문장"] #answerDots{gap:5px!important;row-gap:8px!important;}
-  #practiceView[data-category="문장"] #typed .input-cell,
-  #practiceView[data-category="문장"] #answerDots .input-cell{
-    grid-template-columns:repeat(2,10px)!important;
-    grid-template-rows:repeat(3,10px)!important;
-    gap:3px!important;
-    padding:2px!important;
-  }
-  #practiceView[data-category="문장"] #typed .input-dot,
-  #practiceView[data-category="문장"] #answerDots .input-dot{
-    width:10px!important;height:10px!important;
-  }
-  #practiceView[data-category="문장"] #typed .space-gap,
-  #practiceView[data-category="문장"] #answerDots .space-gap{
-    width:16px!important;height:34px!important;flex:0 0 16px!important;
-  }
-}
-</style>
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -10236,17 +10231,22 @@ window.addEventListener("hashchange",()=>{
 
 
 
-<script id="gmgj-v123-tablet-ui-fixes-script">
+<script id="gmgj-v134-phone-tablet-input-toggle-script">
 (function(){
   function setupTabletUI(){
-    if(!document.documentElement.classList.contains('gmgj-tablet-touch')) return;
+    var isTablet=document.documentElement.classList.contains('gmgj-tablet-touch');
+    var isPhone=window.matchMedia('(max-width:768px)').matches;
+    if(!isTablet && !isPhone) return;
 
-    var exercise=document.querySelector('#practiceView .exercise');
-    var firstProblemPanel=exercise && exercise.querySelector(':scope > .panel.sep');
-    var feedback=exercise && exercise.querySelector(':scope > .feedback-column');
-    if(exercise && firstProblemPanel && feedback && !feedback.classList.contains('gmgj-tablet-feedback-top')){
-      exercise.insertBefore(feedback, firstProblemPanel);
-      feedback.classList.add('gmgj-tablet-feedback-top');
+    /* 정답/오답 위치 변경은 기존처럼 태블릿에서만 적용 */
+    if(isTablet){
+      var exercise=document.querySelector('#practiceView .exercise');
+      var firstProblemPanel=exercise && exercise.querySelector(':scope > .panel.sep');
+      var feedback=exercise && exercise.querySelector(':scope > .feedback-column');
+      if(exercise && firstProblemPanel && feedback && !feedback.classList.contains('gmgj-tablet-feedback-top')){
+        exercise.insertBefore(feedback, firstProblemPanel);
+        feedback.classList.add('gmgj-tablet-feedback-top');
+      }
     }
 
     var mobile=document.getElementById('mobileBrailleInput');
@@ -10261,7 +10261,7 @@ window.addEventListener("hashchange",()=>{
       mobile.parentNode.insertBefore(toggle,mobile);
     }
 
-    /* 태블릿에서는 기본 접힘. 기존 모바일 입력 기능 자체는 그대로 유지 */
+    /* v134: 태블릿과 휴대폰 모두 화면 점자키보드는 기본 접힘. */
     if(!mobile.dataset.gmgjTabletToggleInit){
       mobile.classList.add('gmgj-tablet-collapsed');
       mobile.dataset.gmgjTabletToggleInit='1';
