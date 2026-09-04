@@ -16,6 +16,17 @@
 })();
 </script>
 
+<script id="gmgj-v120-tablet-touch-detect">
+(function(){
+  var ua=navigator.userAgent || "";
+  var isIPad=/iPad/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+  var isAndroidTablet=/Android/i.test(ua) && !/Mobile/i.test(ua);
+  if(isIPad || isAndroidTablet){
+    document.documentElement.classList.add("gmgj-tablet-touch");
+  }
+})();
+</script>
+
 
 <!-- 궁금점 PLAY 검색 노출용 메타정보 v119 -->
 <title>궁금점 PLAY | 전남점자도서관 시각장애인학습지원센터 점자 학습</title>
@@ -6873,6 +6884,73 @@ html:not(.whale-browser) body.contrast #brailleStoryView .story-sixdot span{
   outline:0!important;
   box-shadow:none!important;
   text-shadow:none!important;
+}
+</style>
+
+
+
+<style id="gmgj-v120-tablet-six-dot-style">
+/* iPad / Android tablet: keep desktop page layout, but show the same touch six-dot keyboard as mobile. */
+html.gmgj-tablet-touch #mobileBrailleInput:not([hidden]){
+  display:block!important;
+  margin:18px auto 8px;
+  padding:16px 14px;
+  max-width:430px;
+  border:2px solid #8da6af;
+  border-radius:18px;
+  background:#f7fbfb;
+  text-align:center;
+}
+html.gmgj-tablet-touch .desktop-input-hint{display:none!important}
+html.gmgj-tablet-touch .mobile-braille-title{
+  font-size:1.15rem;font-weight:800;color:#12395b;margin-bottom:5px;
+}
+html.gmgj-tablet-touch .mobile-braille-help{
+  font-size:.92rem;line-height:1.45;color:#425b67;margin-bottom:14px;
+}
+html.gmgj-tablet-touch .mobile-braille-cell{
+  display:grid;
+  grid-template-columns:repeat(2,82px);
+  grid-template-rows:repeat(3,82px);
+  gap:10px 28px;
+  justify-content:center;
+  margin:8px auto 16px;
+}
+html.gmgj-tablet-touch .mobile-dot{
+  width:82px;height:82px;border-radius:50%;
+  border:3px solid #76949f;background:#fff;color:#12395b;
+  font-size:1.45rem;font-weight:800;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+html.gmgj-tablet-touch .mobile-dot.selected{
+  background:#0b8d86;color:#fff;border-color:#0b8d86;
+}
+html.gmgj-tablet-touch .mobile-braille-actions{
+  display:grid;grid-template-columns:1fr 1fr;gap:9px;
+}
+html.gmgj-tablet-touch .mobile-braille-actions button{
+  min-height:50px;border:2px solid #76949f;border-radius:12px;
+  background:#fff;color:#12395b;font-weight:800;font-size:1rem;
+  touch-action:manipulation;
+}
+html.gmgj-tablet-touch #mobileCommitCell,
+html.gmgj-tablet-touch #mobileSubmit{
+  background:#e7f5f4;border-color:#0b8d86;color:#006d68;
+}
+html.gmgj-tablet-touch .mobile-braille-status{
+  min-height:24px;margin-top:10px;font-size:.92rem;font-weight:700;color:#425b67;
+}
+html.gmgj-tablet-touch #mobileTextEntryWrap{display:none!important}
+html.gmgj-tablet-touch #mobileSixDotWrap{display:block!important}
+@media (forced-colors:active){
+  html.gmgj-tablet-touch:not(.whale-browser) #mobileBrailleInput,
+  html.gmgj-tablet-touch:not(.whale-browser) .mobile-dot,
+  html.gmgj-tablet-touch:not(.whale-browser) .mobile-braille-actions button{
+    border:2px solid ButtonText!important;
+  }
+  html.gmgj-tablet-touch:not(.whale-browser) .mobile-dot.selected{
+    background:Highlight!important;color:HighlightText!important;
+  }
 }
 </style>
 
@@ -14918,7 +14996,11 @@ html.gmgj-ready footer img{
   const selected = new Set();
 
   function mobileMode(){
+    const ua = navigator.userAgent || "";
+    const isIPad = /iPad/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+    const isAndroidTablet = /Android/i.test(ua) && !/Mobile/i.test(ua);
     return window.matchMedia("(max-width: 768px)").matches ||
+           isIPad || isAndroidTablet ||
            ("ontouchstart" in window && window.innerWidth <= 900);
   }
 
