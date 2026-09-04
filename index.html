@@ -7073,6 +7073,43 @@ html.gmgj-tablet-touch.contrast #practiceView .gmgj-tablet-spacing-inline{color:
   }
 }
 </style>
+
+<style id="tablet-landscape-footer-contact-v125">
+/* v125: 태블릿 가로모드에서 하단 연락처(특히 팩스)가 잘리지 않도록 공간/글자 간격 조정. PC/휴대폰에는 적용하지 않음. */
+@media (min-width:769px) and (max-width:1400px) and (orientation:landscape) and (pointer:coarse){
+  footer .foot, footer .shell.foot{
+    grid-template-columns:minmax(350px,.78fr) minmax(0,1.42fr)!important;
+    gap:18px!important;
+    padding-left:20px!important;
+    padding-right:20px!important;
+  }
+  footer .foot-center{
+    padding-left:20px!important;
+    min-width:0!important;
+  }
+  footer .foot-center-title{
+    white-space:nowrap!important;
+    font-size:1.12rem!important;
+    letter-spacing:-.025em!important;
+  }
+  footer .foot-center-info{
+    width:100%!important;
+    max-width:100%!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    font-size:.82rem!important;
+    letter-spacing:-.045em!important;
+    line-height:1.6!important;
+    white-space:nowrap!important;
+    word-break:keep-all!important;
+    overflow:visible!important;
+  }
+  footer .contact-desktop-original{
+    display:block!important;
+    white-space:nowrap!important;
+  }
+}
+</style>
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
@@ -16009,6 +16046,30 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
     display:inline-block!important;
     margin-left:10px!important;
     margin-right:10px!important;
+  }
+}
+
+
+/* v126: 휴대폰 세로모드 단계별 학습 카드의 움직이는 회색 가로줄 방지
+   iOS/모바일 브라우저에서 :hover + transform이 스크롤 중 합성 레이어 경계로 남는 현상을 제거한다.
+   PC/태블릿 레이아웃에는 적용하지 않는다. */
+@media (max-width: 600px) and (orientation: portrait){
+  #homeGrid .lesson,
+  #selectGrid .lesson,
+  #homeGrid .lesson:hover,
+  #selectGrid .lesson:hover,
+  #homeGrid .lesson:active,
+  #selectGrid .lesson:active{
+    transform:none!important;
+    -webkit-transform:none!important;
+    transition:none!important;
+    will-change:auto!important;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #homeGrid,
+  #selectGrid{
+    overflow:visible!important;
+    contain:none!important;
   }
 }
 </style>
