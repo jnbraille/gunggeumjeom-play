@@ -7787,6 +7787,16 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
       </div>
       <div id="sentenceSearchStatus" aria-live="polite"></div>
     </div>
+    <div id="spellingSearchBar" role="search" aria-label="맞춤법 연습 문제 검색">
+      <div class="spelling-search-row">
+        <input id="spellingSearchInput" type="search" placeholder="맞춤법 검색 (예: 금세, 금새)" aria-label="맞춤법 문제 검색어">
+        <button id="spellingSearchButton" type="button">검색</button>
+        <button id="spellingSearchPrev" type="button">이전</button>
+        <button id="spellingSearchNext" type="button">다음</button>
+        <button id="spellingSearchClear" type="button">초기화</button>
+      </div>
+      <div id="spellingSearchStatus" aria-live="polite"></div>
+    </div>
     <div id="punctuationSearchBar" role="search" aria-label="문장부호 문제 검색">
       <div class="punct-search-row">
         <input id="punctuationSearchInput" type="search" placeholder="기호·명칭 검색 (예: ©, 앰퍼샌드, 네모, 로마 숫자)" aria-label="문장부호 검색어">
@@ -10435,6 +10445,198 @@ window.addEventListener("hashchange",()=>{
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init); else init();
 })();
 </script>
+
+<style id="gmgj-v147-spelling-search-style">
+#spellingSearchBar{
+  display:none;
+  max-width:900px;
+  margin:12px auto 16px;
+  padding:0 18px;
+  box-sizing:border-box;
+}
+#practiceView[data-category="맞춤법"] #spellingSearchBar{
+  display:block!important;
+}
+#spellingSearchBar .spelling-search-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+#spellingSearchInput{
+  flex:1;
+  min-width:220px;
+  height:44px;
+  padding:0 14px;
+  border:1.5px solid #8da6ae;
+  border-radius:10px;
+  font:inherit;
+  font-size:16px;
+  color:#102b4e;
+  background:#fff;
+}
+#spellingSearchButton,
+#spellingSearchPrev,
+#spellingSearchNext,
+#spellingSearchClear{
+  min-height:44px;
+  padding:0 13px;
+  border:1.5px solid #178b83;
+  border-radius:10px;
+  background:#fff;
+  color:#087d76;
+  font:inherit;
+  font-weight:800;
+  cursor:pointer;
+}
+#spellingSearchStatus{
+  min-height:1.4em;
+  margin-top:7px;
+  text-align:center;
+  color:#52697a;
+  font-size:14px;
+}
+.high-contrast #spellingSearchInput,
+.contrast #spellingSearchInput,
+.high-contrast #spellingSearchButton,
+.high-contrast #spellingSearchPrev,
+.high-contrast #spellingSearchNext,
+.high-contrast #spellingSearchClear,
+.contrast #spellingSearchButton,
+.contrast #spellingSearchPrev,
+.contrast #spellingSearchNext,
+.contrast #spellingSearchClear{
+  background:#202020!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border-color:#fff!important;
+}
+.high-contrast #spellingSearchStatus,
+.contrast #spellingSearchStatus{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+@media(max-width:700px){
+  #spellingSearchBar{padding:0 10px;}
+  #spellingSearchBar .spelling-search-row{flex-wrap:wrap;}
+  #spellingSearchInput{flex-basis:100%;width:100%;}
+  #spellingSearchButton,
+  #spellingSearchClear{flex:1;}
+}
+</style>
+<script id="gmgj-v147-spelling-search-script">
+(function(){
+  let spellingSearchResults=[];
+  let spellingSearchPos=-1;
+
+  function norm(v){
+    return String(v||"").toLowerCase().replace(/\s+/g,"").replace(/[()]/g,"");
+  }
+
+  function availableIndices(){
+    if(typeof wrongOnlyMode!=="undefined" && wrongOnlyMode){
+      return Array.isArray(spellingOrder) ? spellingOrder.slice() : [];
+    }
+    return DATA["맞춤법"].map((_,idx)=>idx);
+  }
+
+  function showResult(pos){
+    const status=document.getElementById("spellingSearchStatus");
+    if(!spellingSearchResults.length) return;
+    spellingSearchPos=(pos+spellingSearchResults.length)%spellingSearchResults.length;
+    const idx=spellingSearchResults[spellingSearchPos];
+
+    if(typeof spellingTimer!=="undefined"){
+      clearTimeout(spellingTimer);
+      spellingTimer=null;
+    }
+
+    let orderPos=Array.isArray(spellingOrder) ? spellingOrder.indexOf(idx) : -1;
+    if(orderPos<0 && Array.isArray(spellingOrder)){
+      spellingOrder.push(idx);
+      orderPos=spellingOrder.length-1;
+    }
+    if(orderPos>=0){
+      spellingPos=orderPos;
+      nextSpellingV17();
+      if(status) status.textContent=(spellingSearchPos+1)+" / "+spellingSearchResults.length+"번째 검색 결과";
+    }
+  }
+
+  function performSearch(){
+    if(typeof cat==="undefined" || cat!=="맞춤법") return;
+    const input=document.getElementById("spellingSearchInput");
+    const status=document.getElementById("spellingSearchStatus");
+    if(!input || !status) return;
+    const term=norm(input.value);
+
+    if(!term){
+      spellingSearchResults=[];
+      spellingSearchPos=-1;
+      status.textContent="검색어를 입력하세요.";
+      return;
+    }
+
+    spellingSearchResults=availableIndices().filter(idx=>{
+      const item=DATA["맞춤법"][idx]||{};
+      const hay=norm((item.prompt||"")+" "+(item.answer||""));
+      return hay.includes(term);
+    });
+
+    if(!spellingSearchResults.length){
+      spellingSearchPos=-1;
+      status.textContent="일치하는 맞춤법 문항이 없습니다.";
+      return;
+    }
+    showResult(0);
+  }
+
+  function clearSearch(){
+    const input=document.getElementById("spellingSearchInput");
+    const status=document.getElementById("spellingSearchStatus");
+    if(input) input.value="";
+    if(status) status.textContent="";
+    spellingSearchResults=[];
+    spellingSearchPos=-1;
+  }
+
+  function bind(){
+    const input=document.getElementById("spellingSearchInput");
+    const search=document.getElementById("spellingSearchButton");
+    const prev=document.getElementById("spellingSearchPrev");
+    const next=document.getElementById("spellingSearchNext");
+    const clear=document.getElementById("spellingSearchClear");
+    if(!input || input.dataset.gmgjSearchBound) return;
+
+    search.addEventListener("click",performSearch);
+    prev.addEventListener("click",()=>{
+      if(!spellingSearchResults.length) performSearch();
+      else showResult(spellingSearchPos-1);
+    });
+    next.addEventListener("click",()=>{
+      if(!spellingSearchResults.length) performSearch();
+      else showResult(spellingSearchPos+1);
+    });
+    clear.addEventListener("click",()=>{ clearSearch(); input.focus(); });
+
+    /* 검색 입력 중에는 기존 점자 물리키보드 전역 핸들러로 이벤트가 전달되지 않게 한다. */
+    input.addEventListener("keydown",e=>{
+      e.stopPropagation();
+      if(e.key==="Enter"){
+        e.preventDefault();
+        performSearch();
+      }
+    });
+    input.addEventListener("keyup",e=>e.stopPropagation());
+
+    input.dataset.gmgjSearchBound="1";
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind);
+  else bind();
+  window.addEventListener("pageshow",bind);
+})();
+</script>
+
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
