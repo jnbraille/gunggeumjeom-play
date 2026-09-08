@@ -15767,11 +15767,12 @@ html.gmgj-ready footer img{
       if(selected.has(n)) selected.delete(n); else selected.add(n);
       refreshDots();
 
-      /* 점 조합 입력 후 짧게 기다렸다가 자동으로 한 칸 입력 */
+      /* 점 조합 입력 후 충분히 기다렸다가 자동으로 한 칸 입력
+         모바일/태블릿의 느린 점형 입력 학습자를 위해 1.5초로 확장 */
       clearTimeout(mobileCommitTimer);
       mobileCommitTimer=setTimeout(()=>{
         if(selected.size) commitSelectedCell(false);
-      }, 420);
+      }, 1500);
     });
   });
 
