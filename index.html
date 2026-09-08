@@ -7846,7 +7846,13 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
           </div>
 
           <div id="mobileSixDotWrap">
-          <div class="mobile-braille-help">점 조합을 누르면 점형이 바로 입력됩니다. 잘못 입력했을 때는 삭제를 누르세요.</div>
+          <div class="mobile-braille-help">점을 선택한 뒤 설정한 입력 속도만큼 기다리면 한 칸의 점형으로 자동 입력됩니다. 잘못 입력했을 때는 삭제를 누르세요.</div>
+          <div class="mobile-braille-speed" role="group" aria-label="점형 입력 속도">
+            <span class="mobile-braille-speed-label">입력 속도</span>
+            <button type="button" class="mobile-speed-btn" data-delay="600" aria-pressed="false">빠름</button>
+            <button type="button" class="mobile-speed-btn" data-delay="1200" aria-pressed="true">보통</button>
+            <button type="button" class="mobile-speed-btn" data-delay="2000" aria-pressed="false">천천히</button>
+          </div>
           <div class="mobile-braille-cell" role="group" aria-label="점자 1점부터 6점까지">
             <button type="button" class="mobile-dot" data-dot="1" aria-pressed="false" aria-label="1점">1</button>
             <button type="button" class="mobile-dot" data-dot="4" aria-pressed="false" aria-label="4점">4</button>
@@ -15723,6 +15729,14 @@ html.gmgj-ready footer img{
 </style>
 
 
+<style id="gmgj-v153-touch-speed-selector">
+.mobile-braille-speed{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0 12px}
+.mobile-braille-speed-label{font-weight:800;margin-right:2px}
+.mobile-braille-speed .mobile-speed-btn{min-height:42px;padding:8px 14px;border:2px solid #8da6af;border-radius:10px;background:#fff;font-weight:800;cursor:pointer}
+.mobile-braille-speed .mobile-speed-btn.selected,.mobile-braille-speed .mobile-speed-btn[aria-pressed="true"]{border-width:3px;text-decoration:underline}
+@media (forced-colors:active){.mobile-braille-speed .mobile-speed-btn{border:2px solid ButtonText!important}.mobile-braille-speed .mobile-speed-btn.selected{outline:3px solid Highlight!important}}
+</style>
+
 <script id="gmgj-v96-mobile-six-dot-input">
 (function(){
   const box = document.getElementById("mobileBrailleInput");
@@ -15759,6 +15773,35 @@ html.gmgj-ready footer img{
   }
 
   let mobileCommitTimer=null;
+  const speedButtons=[...box.querySelectorAll(".mobile-speed-btn")];
+  const SPEED_KEY="gmgjBrailleTouchDelayV1";
+  let mobileCommitDelay=1200;
+  try{
+    const saved=Number(localStorage.getItem(SPEED_KEY));
+    if([600,1200,2000].includes(saved)) mobileCommitDelay=saved;
+  }catch(e){}
+
+  function refreshSpeedButtons(){
+    speedButtons.forEach(btn=>{
+      const on=Number(btn.dataset.delay)===mobileCommitDelay;
+      btn.classList.toggle("selected",on);
+      btn.setAttribute("aria-pressed",on?"true":"false");
+    });
+  }
+  speedButtons.forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      mobileCommitDelay=Number(btn.dataset.delay)||1200;
+      try{localStorage.setItem(SPEED_KEY,String(mobileCommitDelay));}catch(e){}
+      refreshSpeedButtons();
+      if(selected.size){
+        clearTimeout(mobileCommitTimer);
+        mobileCommitTimer=setTimeout(()=>{
+          if(selected.size) commitSelectedCell(false);
+        },mobileCommitDelay);
+      }
+    });
+  });
+  refreshSpeedButtons();
 
   dots.forEach(btn=>{
     btn.addEventListener("click", ()=>{
@@ -15767,12 +15810,11 @@ html.gmgj-ready footer img{
       if(selected.has(n)) selected.delete(n); else selected.add(n);
       refreshDots();
 
-      /* 점 조합 입력 후 충분히 기다렸다가 자동으로 한 칸 입력
-         모바일/태블릿의 느린 점형 입력 학습자를 위해 1.5초로 확장 */
+      /* 모바일/태블릿 화면 점자키보드: 사용자가 선택한 속도에 따라 자동 확정 */
       clearTimeout(mobileCommitTimer);
       mobileCommitTimer=setTimeout(()=>{
         if(selected.size) commitSelectedCell(false);
-      }, 1200);
+      }, mobileCommitDelay);
     });
   });
 
