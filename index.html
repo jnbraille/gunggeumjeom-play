@@ -9017,9 +9017,7 @@ function nextRuleQuiz(){
   ruleQuizPos++;
   document.getElementById("pIndex").textContent=ruleQuizPos;
   const qEl=document.getElementById("ruleQuizQ"), box=document.getElementById("ruleQuizOpts"), fb=document.getElementById("ruleQuizFb");
-  qEl.textContent=(qz.kind==="제항"?"다음 설명에 해당하는 규정을 고르세요.
-":"다음 "+qz.kind+" 내용에 해당하는 규정을 고르세요.
-")+qz.text;
+  qEl.textContent=(qz.kind==="제항"?"다음 설명에 해당하는 규정을 고르세요.\n":"다음 "+qz.kind+" 내용에 해당하는 규정을 고르세요.\n")+qz.text;
   box.replaceChildren(); fb.textContent=""; fb.className="rule-quiz-fb";
   gmgjShuffleArray(qz.options).forEach(opt=>{
     const b=document.createElement("button"); b.type="button"; b.textContent=opt;
