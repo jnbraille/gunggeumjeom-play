@@ -8772,7 +8772,7 @@ function nextQuestion(){
     if(note)note.hidden=true;
   }
 
-  document.getElementById("rule").textContent=(cat==="문장") ? "" : (q.rule
+  document.getElementById("rule").textContent=(cat==="문장" || cat==="단어") ? "" : (q.rule
     ? (/^제\d+회\s+점역·교정사/.test(q.rule)
       ? q.rule
       : "2024년 한글 점자 규정 " + (q.rule||"").replace(/\s*·?\s*PDF\s*\d+쪽/g,""))
