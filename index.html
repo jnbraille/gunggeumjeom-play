@@ -7290,6 +7290,23 @@ html.gmgj-tablet-touch #practiceView .mobile-braille-actions button{
      PC 11개 메뉴는 6+5 배열에서 두 줄의 전체 폭을 동일하게 정렬.
      문장 메뉴 설명 및 문장 문제 하단 규정 출처 문구 정리. -->
 <!-- v162: 11번 한글 점자 규정 연습 메뉴 제거. 맞춤법 560문항 문맥형 제시어는 유지. -->
+
+<style id="v164-initial-final-vowel-prompt-larger">
+/* v164: 1 초성·2 종성·3 모음 연습의 문제 글자만 확대 */
+#practiceView[data-category="초성"] .prompt,
+#practiceView[data-category="종성"] .prompt,
+#practiceView[data-category="모음"] .prompt{
+  font-size:2.5rem!important;
+  line-height:1.45!important;
+}
+@media(max-width:768px){
+  #practiceView[data-category="초성"] .prompt,
+  #practiceView[data-category="종성"] .prompt,
+  #practiceView[data-category="모음"] .prompt{
+    font-size:2.2rem!important;
+  }
+}
+</style>
 </head><body>
 
 <style id="gmgj-logo-hc-whale-dark-final-v5">
