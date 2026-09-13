@@ -7291,19 +7291,24 @@ html.gmgj-tablet-touch #practiceView .mobile-braille-actions button{
      문장 메뉴 설명 및 문장 문제 하단 규정 출처 문구 정리. -->
 <!-- v162: 11번 한글 점자 규정 연습 메뉴 제거. 맞춤법 560문항 문맥형 제시어는 유지. -->
 
-<style id="v165-initial-final-vowel-prompt-extra-large">
-/* v165: 1 초성·2 종성·3 모음 연습의 문제 글자를 한 단계 더 확대 */
+<style id="v166-five-category-prompt-same-size">
+/* v166: 초성·종성·모음·약자·약어·숫자 문제 글자를 동일 크기로 확대 */
 #practiceView[data-category="초성"] .prompt,
 #practiceView[data-category="종성"] .prompt,
-#practiceView[data-category="모음"] .prompt{
+#practiceView[data-category="모음"] .prompt,
+#practiceView[data-category="약자·약어"] .prompt,
+#practiceView[data-category="숫자"] .prompt{
   font-size:3.2rem!important;
   line-height:1.45!important;
 }
 @media(max-width:768px){
   #practiceView[data-category="초성"] .prompt,
   #practiceView[data-category="종성"] .prompt,
-  #practiceView[data-category="모음"] .prompt{
+  #practiceView[data-category="모음"] .prompt,
+  #practiceView[data-category="약자·약어"] .prompt,
+  #practiceView[data-category="숫자"] .prompt{
     font-size:2.8rem!important;
+    line-height:1.45!important;
   }
 }
 </style>
