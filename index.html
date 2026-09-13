@@ -10829,6 +10829,42 @@ window.addEventListener("hashchange",()=>{
   }
 }
 </style>
+
+<!-- v168: 모바일 초성·종성·모음·약자·약어·숫자 문제 크기 강제 적용 -->
+<style id="v168-mobile-five-prompt-force-large">
+@media(max-width:768px){
+  #practiceView.gmgj-v168-five-large #prompt{
+    font-size:3.5rem!important;
+    line-height:1.3!important;
+    font-weight:800!important;
+  }
+}
+</style>
+<script id="v168-mobile-five-prompt-force-script">
+(function(){
+  const pv=document.getElementById("practiceView");
+  const prompt=document.getElementById("prompt");
+  if(!pv || !prompt) return;
+  const targets=new Set(["초성","종성","모음","약자·약어","숫자"]);
+  function sync(){
+    const on=targets.has(pv.dataset.category||"");
+    pv.classList.toggle("gmgj-v168-five-large",on);
+    if(window.matchMedia("(max-width:768px)").matches && on){
+      prompt.style.setProperty("font-size","3.5rem","important");
+      prompt.style.setProperty("line-height","1.3","important");
+      prompt.style.setProperty("font-weight","800","important");
+    }else{
+      prompt.style.removeProperty("font-size");
+      prompt.style.removeProperty("line-height");
+      prompt.style.removeProperty("font-weight");
+    }
+  }
+  new MutationObserver(sync).observe(pv,{attributes:true,attributeFilter:["data-category"]});
+  window.addEventListener("resize",sync);
+  document.addEventListener("click",()=>setTimeout(sync,0),true);
+  sync();
+})();
+</script>
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
