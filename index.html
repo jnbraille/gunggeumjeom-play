@@ -8464,6 +8464,12 @@ function getWrongItemsByCategory(category){
 }
 function getWrongQueue(category){
   const prompts=new Set(getWrongItemsByCategory(category).map(item=>item.prompt));
+  /* 점자 읽기 오답 기록의 prompt에는 점자가 아니라 한글 정답이 저장됨 */
+  if(category==="점자 읽기"){
+    return DATA[category]
+      .map((item,index)=>prompts.has(item.answer)?index:-1)
+      .filter(index=>index>=0);
+  }
   return DATA[category].map((item,index)=>prompts.has(item.prompt)?index:-1).filter(index=>index>=0);
 }
 function buildWrongListForCategory(category){
@@ -8519,7 +8525,8 @@ function openWrongPractice(category){
     startSpellingMode();
   }else if(category==="점자 읽기"){
     stopSpellingMode();
-    if(typeof startReadingMode==="function") startReadingMode();
+    stopRuleQuizMode();
+    startReadingMode();
   }else{
     stopSpellingMode();
     nextQuestion();
