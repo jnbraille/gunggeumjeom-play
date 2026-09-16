@@ -17840,3 +17840,115 @@ textarea:focus-visible,
  - 기존 57문제와 다른 메뉴 데이터/기능은 변경하지 않음.
 */
 </script>
+
+
+<style id="gmgj-v192-reading-layout-all-devices">
+/* 11번 점자 읽기에서는 기존 '점자 입력' 패널을 모든 화면폭에서 완전히 숨김 */
+#practiceView[data-category="점자 읽기"] .exercise{
+  display:block!important;
+  grid-template-columns:1fr!important;
+}
+#practiceView[data-category="점자 읽기"] .exercise > .panel:first-child{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  border-left:0!important;
+  border-right:0!important;
+}
+#practiceView[data-category="점자 읽기"] .exercise > .panel:nth-child(2){
+  display:none!important;
+}
+
+/* 태블릿용 기존 점자입력 UI/토글이 11번에 끼어들지 않도록 차단 */
+#practiceView[data-category="점자 읽기"] #mobileBrailleInput,
+#practiceView[data-category="점자 읽기"] #gmgjTabletInputToggle,
+#practiceView[data-category="점자 읽기"] .gmgj-tablet-input-toggle,
+#practiceView[data-category="점자 읽기"] .tablet-input-toggle,
+#practiceView[data-category="점자 읽기"] .feedback-column{
+  display:none!important;
+}
+
+/* 점자 읽기 전용 요소만 표시 */
+#practiceView[data-category="점자 읽기"] .problem-head,
+#practiceView[data-category="점자 읽기"] #prompt,
+#practiceView[data-category="점자 읽기"] #rule,
+#practiceView[data-category="점자 읽기"] #spellingPanel,
+#practiceView[data-category="점자 읽기"] #ruleQuizPanel{
+  display:none!important;
+}
+#practiceView[data-category="점자 읽기"] #readingPanel:not([hidden]){
+  display:block!important;
+  width:100%!important;
+  max-width:920px!important;
+  margin:0 auto!important;
+}
+
+/* iPad/태블릿 가로·세로 모두 읽기 화면이 잘리지 않도록 */
+@media (min-width:769px) and (max-width:1366px){
+  #practiceView[data-category="점자 읽기"] .exercise > .panel:first-child{
+    padding:28px 24px!important;
+  }
+  #practiceView[data-category="점자 읽기"] .reading-braille{
+    max-width:880px!important;
+    font-size:2.35rem!important;
+    line-height:1.55!important;
+  }
+  #practiceView[data-category="점자 읽기"] #readingAnswer{
+    max-width:780px!important;
+  }
+  #practiceView[data-category="점자 읽기"] .reading-label-row{
+    max-width:780px!important;
+  }
+}
+</style>
+
+<script id="gmgj-v192-reading-layout-guard">
+(function(){
+  function enforceReadingLayout(){
+    const pv=document.getElementById("practiceView");
+    if(!pv || pv.dataset.category!=="점자 읽기") return;
+
+    const reading=document.getElementById("readingPanel");
+    const spelling=document.getElementById("spellingPanel");
+    const ruleQuiz=document.getElementById("ruleQuizPanel");
+
+    if(spelling) spelling.hidden=true;
+    if(ruleQuiz) ruleQuiz.hidden=true;
+
+    if(reading){
+      reading.hidden=false;
+      reading.style.display="block";
+    }
+
+    const panels=pv.querySelectorAll(".exercise > .panel");
+    if(panels[0]) panels[0].style.display="block";
+    if(panels[1]) panels[1].style.display="none";
+
+    /* 읽기 데이터가 아직 화면에 안 올라온 경우에만 다시 그림 */
+    const rb=document.getElementById("readingBraille");
+    if(rb && !rb.textContent.trim() && typeof nextReadingQuestion==="function"){
+      nextReadingQuestion();
+    }
+  }
+
+  const previousOpen=window.openPractice;
+  if(typeof previousOpen==="function"){
+    window.openPractice=function(c){
+      previousOpen(c);
+      if(c==="점자 읽기"){
+        enforceReadingLayout();
+        requestAnimationFrame(enforceReadingLayout);
+        setTimeout(enforceReadingLayout,80);
+      }
+    };
+  }
+
+  window.addEventListener("resize",function(){
+    if(document.getElementById("practiceView")?.dataset.category==="점자 읽기"){
+      enforceReadingLayout();
+    }
+  });
+})();
+</script>
