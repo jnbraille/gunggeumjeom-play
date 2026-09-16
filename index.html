@@ -17487,3 +17487,22 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
   margin:0 .04em!important;
 }
 </style>
+
+
+<style id="gmgj-v183-reading-menu-font-match">
+/* 11번 '점자 읽기 연습' 제목을 다른 메뉴 제목과 동일한 크기로 */
+.lesson[data-category="점자 읽기"] h3{
+  font-size:inherit!important;
+  transform:none!important;
+  letter-spacing:inherit!important;
+}
+
+/* PC 6열 카드에서는 긴 제목도 다른 카드와 같은 제목 크기를 유지 */
+@media (min-width:901px){
+  #homeGrid .lesson[data-category="점자 읽기"] h3,
+  #selectGrid .lesson[data-category="점자 읽기"] h3{
+    font-size:1.18rem!important;
+    white-space:nowrap!important;
+  }
+}
+</style>
