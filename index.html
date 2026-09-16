@@ -17572,3 +17572,120 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
   }
 }
 </style>
+
+
+<style id="gmgj-v185-reading-answer-display">
+/* 아래 정답 표시도 실제 한글 입력 글자와 같은 크기로 */
+#practiceView[data-category="점자 읽기"] #readingFeedback{
+  font-size:1.34rem!important;
+  line-height:1.65!important;
+  font-weight:800!important;
+}
+@media(max-width:768px){
+  #practiceView[data-category="점자 읽기"] #readingFeedback{
+    font-size:1.24rem!important;
+  }
+}
+</style>
+
+<script id="gmgj-v185-reading-submit-behavior">
+(function(){
+  let locked=false;
+  function norm(v){ return String(v||"").trim().replace(/\s+/g," "); }
+
+  function recordResult(ok, typed){
+    if(typeof playFeedbackSound==="function") playFeedbackSound(ok);
+    rec.total++; if(ok) rec.correct++;
+    rec.cat[cat]??={total:0,correct:0};
+    rec.cat[cat].total++; if(ok) rec.cat[cat].correct++;
+    recordDailyAnswer(cat,ok);
+    if(!ok) recordWrongQuestion(cat,{prompt:q.answer,braille:q.braille},typed);
+    stats();
+  }
+
+  function goNextAfter4Sec(){
+    setTimeout(function(){
+      round++;
+      if(round>=queue.length){ round=0; queue=makeQueue(cat); }
+      nextReadingQuestion();
+      const a=document.getElementById("readingAnswer");
+      if(a){
+        a.classList.remove("reading-correct","reading-wrong");
+        a.readOnly=false;
+      }
+      locked=false;
+    },4000);
+  }
+
+  /* Enter 제출: 기존처럼 정답/오답 판정 */
+  function submitByEnter(){
+    if(cat!=="점자 읽기" || locked) return;
+    const a=document.getElementById("readingAnswer");
+    const fb=document.getElementById("readingFeedback");
+    const st=document.getElementById("readingInlineStatus");
+    if(!a||!fb) return;
+
+    locked=true;
+    const typed=norm(a.value);
+    const expected=norm(q.answer);
+    const ok=typed===expected;
+
+    a.classList.remove("reading-correct","reading-wrong");
+    a.classList.add(ok?"reading-correct":"reading-wrong");
+    a.readOnly=true;
+
+    recordResult(ok,typed);
+
+    if(st){
+      st.className="reading-inline-status "+(ok?"ok":"no");
+      st.textContent=ok?"정답!":"오답!";
+    }
+    fb.className="reading-feedback "+(ok?"ok":"no");
+    fb.textContent=ok ? "정답: "+q.answer : "정답: "+q.answer;
+
+    goNextAfter4Sec();
+  }
+
+  /* 정답 확인 버튼: 입력 내용을 오답 처리하지 않고 정답만 보여줌 */
+  function revealAnswer(){
+    if(cat!=="점자 읽기" || locked) return;
+    const a=document.getElementById("readingAnswer");
+    const fb=document.getElementById("readingFeedback");
+    const st=document.getElementById("readingInlineStatus");
+    if(!a||!fb) return;
+
+    locked=true;
+    a.readOnly=true;
+    a.classList.remove("reading-correct","reading-wrong");
+
+    if(st){
+      st.textContent="";
+      st.className="reading-inline-status";
+    }
+    fb.className="reading-feedback";
+    fb.textContent="정답: "+q.answer;
+
+    goNextAfter4Sec();
+  }
+
+  /* 이전 버전 이벤트 제거 후 새 동작 연결 */
+  const a=document.getElementById("readingAnswer");
+  if(a){
+    const na=a.cloneNode(true);
+    a.parentNode.replaceChild(na,a);
+    na.addEventListener("keydown",function(e){
+      if(e.key==="Enter" && !e.shiftKey){
+        e.preventDefault();
+        submitByEnter();
+      }
+    });
+  }
+
+  const s=document.getElementById("readingSubmit");
+  if(s){
+    const ns=s.cloneNode(true);
+    s.parentNode.replaceChild(ns,s);
+    ns.addEventListener("click",revealAnswer);
+  }
+})();
+</script>
