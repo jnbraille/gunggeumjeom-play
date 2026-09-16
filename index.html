@@ -17609,14 +17609,39 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
     rec.cat[cat]??={total:0,correct:0};
     rec.cat[cat].total++; if(ok) rec.cat[cat].correct++;
     recordDailyAnswer(cat,ok);
-    if(!ok) recordWrongQuestion(cat,{prompt:q.answer,braille:q.braille},typed);
+    if(!ok){
+      recordWrongQuestion(cat,{prompt:q.answer,braille:q.braille},typed);
+    }else if(wrongOnlyMode){
+      /* 점자 읽기 오답 재풀기에서 맞힌 문제는 오답 기록에서 즉시 제거 */
+      removeWrongQuestion(cat,{prompt:q.answer});
+    }
     stats();
   }
 
-  function goNextAfter4Sec(){
+  function goNextAfter3_5Sec(wasCorrect){
     setTimeout(function(){
-      round++;
-      if(round>=queue.length){ round=0; queue=makeQueue(cat); }
+      if(wrongOnlyMode && wasCorrect){
+        /* 맞힌 오답을 제외한 최신 목록으로 다시 구성 */
+        if(finishWrongPracticeIfDone(cat)){
+          locked=false;
+          return;
+        }
+        queue=getWrongQueue(cat);
+        round=0;
+      }else{
+        round++;
+        if(round>=queue.length){
+          round=0;
+          queue=wrongOnlyMode ? getWrongQueue(cat) : makeQueue(cat);
+        }
+      }
+
+      if(wrongOnlyMode && queue.length===0){
+        finishWrongPracticeIfDone(cat);
+        locked=false;
+        return;
+      }
+
       nextReadingQuestion();
       const a=document.getElementById("readingAnswer");
       if(a){
@@ -17624,7 +17649,7 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
         a.readOnly=false;
       }
       locked=false;
-    },4000);
+    },3500);
   }
 
   /* Enter 제출: 기존처럼 정답/오답 판정 */
@@ -17653,7 +17678,7 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
     fb.className="reading-feedback "+(ok?"ok":"no");
     fb.textContent=ok ? "정답: "+q.answer : "정답: "+q.answer;
 
-    goNextAfter4Sec();
+    goNextAfter3_5Sec(ok);
   }
 
   /* 정답 확인 버튼: 입력 내용을 오답 처리하지 않고 정답만 보여줌 */
@@ -17675,7 +17700,7 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
     fb.className="reading-feedback";
     fb.textContent="정답: "+q.answer;
 
-    goNextAfter4Sec();
+    goNextAfter3_5Sec(false);
   }
 
   /* 이전 버전 이벤트 제거 후 새 동작 연결 */
