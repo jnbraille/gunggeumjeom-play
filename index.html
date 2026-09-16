@@ -11073,6 +11073,46 @@ window.addEventListener("hashchange",()=>{
 }
 </style>
 
+
+
+<!-- v211: Whale 일반/다크 점자 읽기 색상만 보정. v208 통과 상태의 일반/고대비/태블릿 로직은 변경하지 않음 -->
+<style id="gmgj-v211-whale-reading-colors-only">
+/* Whale의 웹 콘텐츠 색 변환에서 고정 남색을 상속하지 않고 시스템 전경색을 사용한다.
+   CanvasText는 일반 화면에서는 어두운 점, 다크 화면에서는 밝은 점으로 브라우저가 맞춘다. */
+html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille{
+  color:CanvasText!important;
+}
+html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on,
+html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on.whale-text-dot{
+  display:block!important;
+  width:14px!important;height:14px!important;
+  min-width:14px!important;min-height:14px!important;
+  max-width:14px!important;max-height:14px!important;
+  padding:0!important;margin:0!important;
+  box-sizing:border-box!important;
+  border-radius:50%!important;
+  background:CanvasText!important;
+  background-color:CanvasText!important;
+  border:2px solid CanvasText!important;
+  color:CanvasText!important;
+  -webkit-text-fill-color:CanvasText!important;
+  font-size:0!important;line-height:0!important;
+  text-indent:-9999px!important;overflow:hidden!important;
+  opacity:1!important;
+}
+html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+  width:14px!important;height:14px!important;
+  min-width:14px!important;min-height:14px!important;
+  max-width:14px!important;max-height:14px!important;
+  box-sizing:border-box!important;
+  border-radius:50%!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  border:2px solid CanvasText!important;
+  color:CanvasText!important;
+  opacity:.48!important;
+}
+</style>
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
@@ -18335,58 +18375,5 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
     new MutationObserver(isolateReading).observe(rb,{childList:true,subtree:true});
   }
   document.addEventListener('click',function(){setTimeout(isolateReading,0);});
-})();
-</script>
-
-<!-- v210: Whale 읽기 점형을 기존 '답안보기 정답 점형'의 Whale 처리와 동일하게 적용 -->
-<style id="gmgj-v210-whale-reading-exact-answer-dot">
-html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on.whale-reading-answer-dot{
-  background:none!important;
-  background-color:transparent!important;
-  border:0!important;
-  outline:0!important;
-  box-shadow:none!important;
-  color:#ffffff!important;
-  -webkit-text-fill-color:#ffffff!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  font-family:Arial,"Segoe UI Symbol",sans-serif!important;
-  font-size:30px!important;
-  font-weight:400!important;
-  line-height:8px!important;
-  letter-spacing:0!important;
-  text-indent:0!important;
-  overflow:visible!important;
-  transform:none!important;
-  filter:none!important;
-  opacity:1!important;
-}
-</style>
-<script id="gmgj-v210-whale-reading-exact-answer-dot-script">
-(function(){
-  if(!/Whale/i.test(navigator.userAgent||"")) return;
-  document.documentElement.classList.add("whale-browser");
-  var busy=false;
-  function fixReadingDots(){
-    if(busy) return;
-    busy=true;
-    var rb=document.getElementById("readingBraille");
-    if(rb){
-      rb.querySelectorAll(".input-dot.on").forEach(function(dot){
-        dot.classList.add("whale-reading-answer-dot");
-        dot.textContent="●";
-      });
-      rb.querySelectorAll(".input-dot:not(.on)").forEach(function(dot){
-        dot.classList.remove("whale-reading-answer-dot");
-        dot.textContent="";
-      });
-    }
-    busy=false;
-  }
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",fixReadingDots); else fixReadingDots();
-  var rb=document.getElementById("readingBraille");
-  if(rb) new MutationObserver(function(){setTimeout(fixReadingDots,0);}).observe(rb,{childList:true,subtree:true});
-  document.addEventListener("click",function(){setTimeout(fixReadingDots,0);});
 })();
 </script>
