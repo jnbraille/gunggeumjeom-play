@@ -18430,3 +18430,13 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   setTimeout(fixDots,50);
 })();
 </script>
+
+<!-- v216: ONLY #4 - Whale dark mode reading filled dots -->
+<style id="gmgj-v216-whale-dark-reading-only">
+@media (prefers-color-scheme: dark){
+  html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on.whale-reading-text-dot{
+    color:#ffffff!important;
+    -webkit-text-fill-color:#ffffff!important;
+  }
+}
+</style>
