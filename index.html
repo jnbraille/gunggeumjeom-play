@@ -17842,113 +17842,119 @@ textarea:focus-visible,
 </script>
 
 
-<style id="gmgj-v192-reading-layout-all-devices">
-/* 11번 점자 읽기에서는 기존 '점자 입력' 패널을 모든 화면폭에서 완전히 숨김 */
-#practiceView[data-category="점자 읽기"] .exercise{
-  display:block!important;
-  grid-template-columns:1fr!important;
-}
-#practiceView[data-category="점자 읽기"] .exercise > .panel:first-child{
-  display:block!important;
-  width:100%!important;
-  max-width:100%!important;
-  box-sizing:border-box!important;
-  margin:0!important;
-  border-left:0!important;
-  border-right:0!important;
-}
-#practiceView[data-category="점자 읽기"] .exercise > .panel:nth-child(2){
-  display:none!important;
-}
-
-/* 태블릿용 기존 점자입력 UI/토글이 11번에 끼어들지 않도록 차단 */
-#practiceView[data-category="점자 읽기"] #mobileBrailleInput,
-#practiceView[data-category="점자 읽기"] #gmgjTabletInputToggle,
-#practiceView[data-category="점자 읽기"] .gmgj-tablet-input-toggle,
-#practiceView[data-category="점자 읽기"] .tablet-input-toggle,
-#practiceView[data-category="점자 읽기"] .feedback-column{
-  display:none!important;
-}
-
-/* 점자 읽기 전용 요소만 표시 */
-#practiceView[data-category="점자 읽기"] .problem-head,
-#practiceView[data-category="점자 읽기"] #prompt,
-#practiceView[data-category="점자 읽기"] #rule,
-#practiceView[data-category="점자 읽기"] #spellingPanel,
-#practiceView[data-category="점자 읽기"] #ruleQuizPanel{
-  display:none!important;
-}
-#practiceView[data-category="점자 읽기"] #readingPanel:not([hidden]){
+<style id="gmgj-v193-tablet-reading-panel-fix">
+/* 점자 읽기 전용 패널은 DOM 순서가 바뀌어도 클래스 기준으로 제어 */
+#practiceView[data-category="점자 읽기"] .gmgj-reading-problem-panel{
   display:block!important;
   width:100%!important;
   max-width:920px!important;
   margin:0 auto!important;
+  box-sizing:border-box!important;
+  border-left:0!important;
+  border-right:0!important;
+}
+#practiceView[data-category="점자 읽기"] .gmgj-reading-input-panel,
+#practiceView[data-category="점자 읽기"] .feedback-column,
+#practiceView[data-category="점자 읽기"] #gmgjTabletInputToggle{
+  display:none!important;
+}
+#practiceView[data-category="점자 읽기"] .exercise{
+  display:block!important;
+  grid-template-columns:1fr!important;
+}
+#practiceView[data-category="점자 읽기"] #readingPanel{
+  width:100%!important;
+  max-width:900px!important;
+  margin:0 auto!important;
+}
+#practiceView[data-category="점자 읽기"] #readingPanel[hidden]{
+  display:none!important;
+}
+#practiceView[data-category="점자 읽기"] #readingPanel:not([hidden]){
+  display:block!important;
 }
 
-/* iPad/태블릿 가로·세로 모두 읽기 화면이 잘리지 않도록 */
+/* iPad / Android 태블릿 */
 @media (min-width:769px) and (max-width:1366px){
-  #practiceView[data-category="점자 읽기"] .exercise > .panel:first-child{
+  #practiceView[data-category="점자 읽기"] .gmgj-reading-problem-panel{
     padding:28px 24px!important;
   }
   #practiceView[data-category="점자 읽기"] .reading-braille{
-    max-width:880px!important;
+    max-width:860px!important;
     font-size:2.35rem!important;
     line-height:1.55!important;
   }
-  #practiceView[data-category="점자 읽기"] #readingAnswer{
-    max-width:780px!important;
-  }
+  #practiceView[data-category="점자 읽기"] #readingAnswer,
   #practiceView[data-category="점자 읽기"] .reading-label-row{
     max-width:780px!important;
   }
 }
 </style>
 
-<script id="gmgj-v192-reading-layout-guard">
+<script id="gmgj-v193-tablet-reading-panel-fix-script">
 (function(){
-  function enforceReadingLayout(){
-    const pv=document.getElementById("practiceView");
+  function markReadingPanels(){
+    var reading=document.getElementById("readingPanel");
+    var typed=document.getElementById("typed");
+    if(reading && reading.closest(".panel")){
+      reading.closest(".panel").classList.add("gmgj-reading-problem-panel");
+    }
+    if(typed && typed.closest(".panel")){
+      typed.closest(".panel").classList.add("gmgj-reading-input-panel");
+    }
+  }
+
+  function restoreReading(){
+    var pv=document.getElementById("practiceView");
     if(!pv || pv.dataset.category!=="점자 읽기") return;
 
-    const reading=document.getElementById("readingPanel");
-    const spelling=document.getElementById("spellingPanel");
-    const ruleQuiz=document.getElementById("ruleQuizPanel");
+    markReadingPanels();
+
+    var reading=document.getElementById("readingPanel");
+    var spelling=document.getElementById("spellingPanel");
+    var ruleQuiz=document.getElementById("ruleQuizPanel");
 
     if(spelling) spelling.hidden=true;
     if(ruleQuiz) ruleQuiz.hidden=true;
 
-    if(reading){
+    /* 원래 읽기 모드가 아직 실행되지 않은 경우에만 실행 */
+    if(reading && reading.hidden && typeof window.startReadingMode==="function"){
+      window.startReadingMode();
+    }else if(reading){
       reading.hidden=false;
-      reading.style.display="block";
     }
 
-    const panels=pv.querySelectorAll(".exercise > .panel");
-    if(panels[0]) panels[0].style.display="block";
-    if(panels[1]) panels[1].style.display="none";
-
-    /* 읽기 데이터가 아직 화면에 안 올라온 경우에만 다시 그림 */
-    const rb=document.getElementById("readingBraille");
-    if(rb && !rb.textContent.trim() && typeof nextReadingQuestion==="function"){
-      nextReadingQuestion();
-    }
+    /* 태블릿 UI가 DOM 순서를 바꾼 뒤에도 문제/답 입력 패널 유지 */
+    var problem=reading && reading.closest(".panel");
+    var input=document.getElementById("typed")?.closest(".panel");
+    if(problem) problem.style.setProperty("display","block","important");
+    if(input) input.style.setProperty("display","none","important");
   }
 
-  const previousOpen=window.openPractice;
-  if(typeof previousOpen==="function"){
-    window.openPractice=function(c){
-      previousOpen(c);
-      if(c==="점자 읽기"){
-        enforceReadingLayout();
-        requestAnimationFrame(enforceReadingLayout);
-        setTimeout(enforceReadingLayout,80);
+  function init(){
+    markReadingPanels();
+    var pv=document.getElementById("practiceView");
+    if(!pv) return;
+
+    new MutationObserver(function(){
+      if(pv.dataset.category==="점자 읽기"){
+        setTimeout(restoreReading,0);
       }
-    };
+    }).observe(pv,{attributes:true,attributeFilter:["data-category"]});
+
+    document.addEventListener("click",function(){
+      if(pv.dataset.category==="점자 읽기"){
+        setTimeout(restoreReading,20);
+      }
+    },true);
+
+    if(pv.dataset.category==="점자 읽기") restoreReading();
   }
 
-  window.addEventListener("resize",function(){
-    if(document.getElementById("practiceView")?.dataset.category==="점자 읽기"){
-      enforceReadingLayout();
-    }
-  });
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",init);
+  }else{
+    init();
+  }
 })();
 </script>
