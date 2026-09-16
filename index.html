@@ -17689,3 +17689,57 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
   }
 })();
 </script>
+
+
+<style id="gmgj-v186-remove-reading-vertical-divider">
+#practiceView[data-category="점자 읽기"] .exercise,
+#practiceView[data-category="점자 읽기"] .exercise > .panel,
+#practiceView[data-category="점자 읽기"] .exercise > .panel:first-child{
+  border-left:0!important;
+  border-right:0!important;
+  box-shadow:none!important;
+}
+#practiceView[data-category="점자 읽기"] .exercise::before,
+#practiceView[data-category="점자 읽기"] .exercise::after,
+#practiceView[data-category="점자 읽기"] .exercise > .panel:first-child::before,
+#practiceView[data-category="점자 읽기"] .exercise > .panel:first-child::after{
+  content:none!important;
+  display:none!important;
+}
+</style>
+
+
+<script id="gmgj-v187-mobile-space-fix">
+(function(){
+  function bindMobileSpaceFix(){
+    const a=document.getElementById("readingAnswer");
+    if(!a || a.dataset.mobileSpaceFix==="1") return;
+    a.dataset.mobileSpaceFix="1";
+
+    /* 모바일 한글 IME 조합 중 스페이스 입력이 사라지는 경우를 보정 */
+    a.addEventListener("beforeinput", function(e){
+      if(cat!=="점자 읽기") return;
+      if(e.inputType==="insertText" && e.data===" "){
+        e.preventDefault();
+        const start=a.selectionStart, end=a.selectionEnd;
+        a.setRangeText(" ", start, end, "end");
+        a.dispatchEvent(new Event("input",{bubbles:true}));
+      }
+    }, true);
+
+    /* 일부 Android/iOS 키보드는 beforeinput에 공백 데이터를 주지 않아 keydown도 보조 */
+    a.addEventListener("keydown", function(e){
+      if(cat!=="점자 읽기") return;
+      if((e.key===" " || e.code==="Space") && !e.isComposing){
+        e.preventDefault();
+        const start=a.selectionStart, end=a.selectionEnd;
+        a.setRangeText(" ", start, end, "end");
+        a.dispatchEvent(new Event("input",{bubbles:true}));
+      }
+    }, true);
+  }
+
+  bindMobileSpaceFix();
+  setTimeout(bindMobileSpaceFix,100);
+})();
+</script>
