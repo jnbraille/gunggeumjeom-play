@@ -17310,3 +17310,88 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
   }
 })();
 </script>
+
+
+<style id="gmgj-v179-reading-inline-result">
+/* 입력칸 자체에서 채점 결과를 바로 확인 */
+#practiceView[data-category="점자 읽기"] #readingAnswer.reading-correct{
+  color:#087f5b!important;
+  border-color:#087f5b!important;
+  background:#f0fff4!important;
+  font-weight:800!important;
+}
+#practiceView[data-category="점자 읽기"] #readingAnswer.reading-wrong{
+  color:#d00000!important;
+  border-color:#d00000!important;
+  background:#fff5f5!important;
+  font-weight:800!important;
+}
+</style>
+
+<script id="gmgj-v179-reading-inline-result-script">
+(function(){
+  let locked=false;
+  function norm(v){ return String(v||"").trim().replace(/\s+/g," "); }
+
+  function submitInline(){
+    if(cat!=="점자 읽기" || locked) return;
+    const a=document.getElementById("readingAnswer");
+    const fb=document.getElementById("readingFeedback");
+    if(!a || !fb) return;
+
+    locked=true;
+    const typed=norm(a.value);
+    const expected=norm(q.answer);
+    const ok=typed===expected;
+
+    a.classList.remove("reading-correct","reading-wrong");
+    a.classList.add(ok ? "reading-correct" : "reading-wrong");
+    a.readOnly=true;
+
+    if(typeof playFeedbackSound==="function") playFeedbackSound(ok);
+    rec.total++; if(ok) rec.correct++;
+    rec.cat[cat]??={total:0,correct:0};
+    rec.cat[cat].total++; if(ok) rec.cat[cat].correct++;
+    recordDailyAnswer(cat,ok);
+    if(!ok) recordWrongQuestion(cat,{prompt:q.answer,braille:q.braille},typed);
+    stats();
+
+    /* 기존 아래쪽 결과도 유지하지만 입력칸 자체 색상으로 즉시 판별 가능 */
+    fb.className="reading-feedback "+(ok?"ok":"no");
+    fb.textContent=ok ? "정답!" : "오답!  정답: "+q.answer;
+
+    /* 결과 색을 충분히 볼 수 있게 1.35초 후 자동 이동 */
+    setTimeout(function(){
+      round++;
+      if(round>=queue.length){ round=0; queue=makeQueue(cat); }
+      nextReadingQuestion();
+      const nextA=document.getElementById("readingAnswer");
+      if(nextA){
+        nextA.classList.remove("reading-correct","reading-wrong");
+        nextA.readOnly=false;
+      }
+      locked=false;
+    },1350);
+  }
+
+  /* v177/v178의 기존 이벤트를 복제 제거 후 새 동작으로 교체 */
+  const a=document.getElementById("readingAnswer");
+  if(a){
+    const na=a.cloneNode(true);
+    a.parentNode.replaceChild(na,a);
+    na.addEventListener("keydown",function(e){
+      if(e.key==="Enter" && !e.shiftKey){
+        e.preventDefault();
+        submitInline();
+      }
+    });
+  }
+
+  const s=document.getElementById("readingSubmit");
+  if(s){
+    const ns=s.cloneNode(true);
+    s.parentNode.replaceChild(ns,s);
+    ns.addEventListener("click",submitInline);
+  }
+})();
+</script>
