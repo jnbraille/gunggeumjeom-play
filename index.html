@@ -11073,60 +11073,6 @@ window.addEventListener("hashchange",()=>{
 }
 </style>
 
-
-
-<!-- PATCH: v208 원본 유지 / Whale 다크모드의 점자 읽기 채움점만 흰색 -->
-<style id="gmgj-v208-whale-dark-reading-white-only">
-@media (prefers-color-scheme: dark){
-  html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on{
-    background:none!important;
-    background-color:transparent!important;
-    border:0!important;
-    outline:0!important;
-    box-shadow:none!important;
-    color:#ffffff!important;
-    -webkit-text-fill-color:#ffffff!important;
-    display:flex!important;
-    align-items:center!important;
-    justify-content:center!important;
-    font-family:Arial,"Segoe UI Symbol",sans-serif!important;
-    font-size:30px!important;
-    font-weight:400!important;
-    line-height:8px!important;
-    text-indent:0!important;
-    overflow:visible!important;
-    opacity:1!important;
-  }
-}
-</style>
-<script id="gmgj-v208-whale-dark-reading-white-only-script">
-(function(){
-  if(!/Whale/i.test(navigator.userAgent||"")) return;
-  document.documentElement.classList.add("whale-browser");
-  var mq=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
-  function apply(){
-    var rb=document.getElementById('readingBraille');
-    if(!rb) return;
-    var dark=!!(mq && mq.matches);
-    rb.querySelectorAll('.input-dot.on').forEach(function(dot){
-      if(dark){ dot.textContent='●'; }
-      else { dot.textContent=''; }
-    });
-  }
-  function watch(){
-    var rb=document.getElementById('readingBraille');
-    if(!rb) return;
-    apply();
-    new MutationObserver(apply).observe(rb,{childList:true,subtree:true});
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',watch); else watch();
-  if(mq){
-    if(mq.addEventListener) mq.addEventListener('change',apply);
-    else if(mq.addListener) mq.addListener(apply);
-  }
-  document.addEventListener('click',function(){setTimeout(apply,0);});
-})();
-</script>
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
@@ -18386,8 +18332,17 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',isolateReading); else isolateReading();
   var rb=document.getElementById('readingBraille');
   if(rb){
-    new MutationObserver(isolateReading).observe(rb,{childList:true,subtree:true});
+    /* v214: Whale에서 읽기 메뉴 진입 시 MutationObserver가 자기 변경을 다시 감지해
+       반복 실행될 수 있어, 관찰 중에는 연결을 잠시 끊고 실제 변경이 있을 때만 정리한다. */
+    var readingObserver=new MutationObserver(function(){
+      readingObserver.disconnect();
+      var needsFix=rb.classList.contains('answer-dots') || !rb.classList.contains('reading-answer-dots') ||
+        rb.querySelector('.input-dot.whale-text-dot,[data-whale-white-answer]');
+      if(needsFix) isolateReading();
+      readingObserver.observe(rb,{childList:true,subtree:true,attributes:true,attributeFilter:['class','data-whale-white-answer']});
+    });
+    readingObserver.observe(rb,{childList:true,subtree:true,attributes:true,attributeFilter:['class','data-whale-white-answer']});
   }
-  document.addEventListener('click',function(){setTimeout(isolateReading,0);});
+  /* 전체 문서 click 감시는 제거: 읽기 메뉴 외 버튼 동작에 개입하지 않음 */
 })();
 </script>
