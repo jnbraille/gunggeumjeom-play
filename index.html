@@ -17506,3 +17506,69 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
   }
 }
 </style>
+
+
+<style id="gmgj-v184-reading-fonts-larger">
+/* 11번 메뉴 제목: 다른 메뉴보다 작아 보이지 않도록 한 단계 더 확대 */
+.lesson[data-category="점자 읽기"] h3{
+  font-size:1.34rem!important;
+  line-height:1.25!important;
+  font-weight:900!important;
+  letter-spacing:-.035em!important;
+}
+@media (min-width:901px){
+  #homeGrid .lesson[data-category="점자 읽기"] h3,
+  #selectGrid .lesson[data-category="점자 읽기"] h3{
+    font-size:1.34rem!important;
+    white-space:nowrap!important;
+  }
+}
+
+/* 점자 읽기 안내문 확대 */
+#practiceView[data-category="점자 읽기"] .reading-instruction{
+  font-size:1.42rem!important;
+  line-height:1.5!important;
+  font-weight:900!important;
+}
+#practiceView[data-category="점자 읽기"] .reading-space-guide{
+  margin-top:10px!important;
+  font-size:1.08rem!important;
+  line-height:1.5!important;
+  font-weight:800!important;
+}
+
+/* '한글 입력' 라벨과 옆 정답/오답 확대 */
+#practiceView[data-category="점자 읽기"] .reading-answer-label{
+  font-size:1.25rem!important;
+  font-weight:900!important;
+}
+#practiceView[data-category="점자 읽기"] .reading-inline-status{
+  font-size:1.22rem!important;
+  font-weight:900!important;
+}
+
+/* 실제 입력되는 한글 확대 */
+#practiceView[data-category="점자 읽기"] #readingAnswer{
+  font-size:1.34rem!important;
+  line-height:1.65!important;
+  font-weight:700!important;
+}
+
+@media(max-width:768px){
+  .lesson[data-category="점자 읽기"] h3{
+    font-size:1.25rem!important;
+  }
+  #practiceView[data-category="점자 읽기"] .reading-instruction{
+    font-size:1.28rem!important;
+  }
+  #practiceView[data-category="점자 읽기"] .reading-space-guide{
+    font-size:1rem!important;
+  }
+  #practiceView[data-category="점자 읽기"] .reading-answer-label{
+    font-size:1.18rem!important;
+  }
+  #practiceView[data-category="점자 읽기"] #readingAnswer{
+    font-size:1.24rem!important;
+  }
+}
+</style>
