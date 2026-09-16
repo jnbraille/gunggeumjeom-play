@@ -17743,3 +17743,103 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
   setTimeout(bindMobileSpaceFix,100);
 })();
 </script>
+
+
+<style id="gmgj-v188-accessibility">
+/* 키보드/스크린리더 사용자를 위한 명확한 포커스 */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+.lesson:focus-visible{
+  outline:4px solid #005fcc!important;
+  outline-offset:3px!important;
+}
+
+/* Windows 고대비/강제 색상 모드 */
+@media (forced-colors: active){
+  button,input,textarea,.lesson,.panel{
+    forced-color-adjust:auto!important;
+  }
+  .reading-word-gap{
+    background:transparent!important;
+    border:0!important;
+    border-bottom:4px solid LinkText!important;
+  }
+  .reading-correct{
+    outline:3px solid Highlight!important;
+  }
+  .reading-wrong{
+    outline:3px solid LinkText!important;
+  }
+}
+
+/* 모바일/패드 터치 영역 */
+@media (max-width:900px){
+  button,.lesson{
+    min-height:44px;
+  }
+  #readingAnswer{
+    width:100%!important;
+    box-sizing:border-box!important;
+  }
+}
+</style>
+
+<script id="gmgj-v188-accessibility-script">
+(function(){
+  function enhanceAccessibility(){
+    const pv=document.getElementById("practiceView");
+    if(pv){
+      pv.setAttribute("role","region");
+      pv.setAttribute("aria-label","연습 문제");
+    }
+
+    const rb=document.getElementById("readingBraille");
+    if(rb){
+      rb.setAttribute("role","img");
+      rb.setAttribute("aria-label","읽을 점자 문제");
+      rb.setAttribute("tabindex","0");
+    }
+
+    const a=document.getElementById("readingAnswer");
+    if(a){
+      a.setAttribute("aria-label","점자를 읽고 한글로 입력");
+      a.setAttribute("enterkeyhint","done");
+      a.setAttribute("inputmode","text");
+      a.setAttribute("autocapitalize","none");
+    }
+
+    const s=document.getElementById("readingSubmit");
+    if(s){
+      s.setAttribute("aria-label","정답 확인");
+    }
+
+    const st=document.getElementById("readingInlineStatus");
+    if(st){
+      st.setAttribute("role","status");
+      st.setAttribute("aria-live","assertive");
+      st.setAttribute("aria-atomic","true");
+    }
+
+    const fb=document.getElementById("readingFeedback");
+    if(fb){
+      fb.setAttribute("role","status");
+      fb.setAttribute("aria-live","polite");
+      fb.setAttribute("aria-atomic","true");
+    }
+
+    document.querySelectorAll(".lesson[data-category]").forEach(function(b){
+      const c=b.dataset.category||"";
+      if(c==="긴 글"){
+        b.setAttribute("aria-disabled","true");
+        b.setAttribute("aria-label","긴 글 연습, 준비중");
+      }else{
+        b.setAttribute("aria-label",c+" 연습");
+      }
+    });
+  }
+
+  enhanceAccessibility();
+  setTimeout(enhanceAccessibility,100);
+})();
+</script>
