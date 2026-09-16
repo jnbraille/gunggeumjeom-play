@@ -18322,12 +18322,15 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
     if(!rb) return;
     rb.classList.remove('answer-dots');
     rb.classList.add('reading-answer-dots');
-    /* v207의 Whale 문자점 흔적이 있으면 제거. 점형 데이터/점 번호는 변경하지 않는다. */
-    rb.querySelectorAll('.input-dot').forEach(function(dot){
-      dot.classList.remove('whale-text-dot');
-      dot.removeAttribute('data-whale-white-answer');
-      dot.textContent='';
-    });
+    /* v219: Whale에서는 sixDotCell()이 생성한 기존 9개 정답과 동일한
+       whale-text-dot/●를 그대로 보존한다. 다른 브라우저에서만 예전 흔적을 정리한다. */
+    if(!/Whale/i.test(navigator.userAgent||'')){
+      rb.querySelectorAll('.input-dot').forEach(function(dot){
+        dot.classList.remove('whale-text-dot');
+        dot.removeAttribute('data-whale-white-answer');
+        dot.textContent='';
+      });
+    }
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',isolateReading); else isolateReading();
   var rb=document.getElementById('readingBraille');
@@ -18336,8 +18339,9 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
        반복 실행될 수 있어, 관찰 중에는 연결을 잠시 끊고 실제 변경이 있을 때만 정리한다. */
     var readingObserver=new MutationObserver(function(){
       readingObserver.disconnect();
+      var isWhale=/Whale/i.test(navigator.userAgent||'');
       var needsFix=rb.classList.contains('answer-dots') || !rb.classList.contains('reading-answer-dots') ||
-        rb.querySelector('.input-dot.whale-text-dot,[data-whale-white-answer]');
+        (!isWhale && rb.querySelector('.input-dot.whale-text-dot,[data-whale-white-answer]'));
       if(needsFix) isolateReading();
       readingObserver.observe(rb,{childList:true,subtree:true,attributes:true,attributeFilter:['class','data-whale-white-answer']});
     });
@@ -18357,7 +18361,7 @@ html.whale-browser #practiceView #answerBox .input-dot.on,
 html.whale-browser #practiceView .answer-panel .input-dot.on,
 html.whale-browser #practiceView .answer-box .input-dot.on,
 html.whale-browser #practiceView .answer-wrap .input-dot.on,
-html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on.whale-reading-text-dot{
+html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on.whale-text-dot{
   background:none!important;
   background-color:transparent!important;
   border:0!important;
@@ -18402,11 +18406,8 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
     ];
     document.querySelectorAll(selectors.join(',')).forEach(function(dot){setTextDot(dot,false);});
 
-    /* 읽기 연습: 문제 생성 직후 현재 채움점에만 같은 텍스트 점 표시 */
-    var rb=document.getElementById('readingBraille');
-    if(rb){
-      rb.querySelectorAll('.input-dot.on').forEach(function(dot){setTextDot(dot,true);});
-    }
+    /* v219: 읽기 연습은 sixDotCell()의 기존 Whale 처리 자체를 사용한다.
+       생성 뒤 class/text를 덧씌우지 않는다. */
   }
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fixDots,{once:true});
@@ -18431,53 +18432,4 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
 })();
 </script>
 
-
-<!-- v218: Whale 점자 읽기 채움점 - 기존 9개 연습 답안 점형 규칙을 그대로 사용 -->
-<style id="gmgj-v218-whale-reading-exact-existing-answer">
-html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on.whale-reading-text-dot{
-  background:none!important;
-  background-color:transparent!important;
-  border:0!important;
-  outline:0!important;
-  box-shadow:none!important;
-  color:#ffffff!important;
-  -webkit-text-fill-color:#ffffff!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  font-family:Arial,"Segoe UI Symbol",sans-serif!important;
-  font-size:30px!important;
-  font-weight:400!important;
-  line-height:8px!important;
-  letter-spacing:0!important;
-  text-indent:0!important;
-  overflow:visible!important;
-  transform:none!important;
-  filter:none!important;
-  opacity:1!important;
-}
-</style>
-<script id="gmgj-v218-whale-reading-exact-existing-answer-script">
-(function(){
-  if(!/Whale/i.test(navigator.userAgent||'')) return;
-  document.documentElement.classList.add('whale-browser');
-  function apply(){
-    var rb=document.getElementById('readingBraille');
-    if(!rb) return;
-    rb.querySelectorAll('.input-dot.on').forEach(function(dot){
-      dot.classList.add('whale-reading-text-dot');
-      dot.textContent='●';
-    });
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply,{once:true}); else apply();
-  /* 지속 감시는 사용하지 않음. 문제를 바꾸는 기존 조작 뒤에만 재적용 */
-  document.addEventListener('click',function(e){
-    var t=e.target;if(!t)return;
-    var txt=(t.textContent||'').trim();
-    if(txt==='검색'||txt==='이전'||txt==='다음'||txt==='초기화'||txt.indexOf('정답 확인')!==-1){setTimeout(apply,20);}
-  });
-  var ra=document.getElementById('readingAnswer');
-  if(ra) ra.addEventListener('keydown',function(e){if(e.key==='Enter')setTimeout(apply,3550);});
-  setTimeout(apply,50);
-})();
-</script>
+<!-- v219: Whale 읽기 점형은 sixDotCell()의 기존 whale-text-dot 생성 경로를 그대로 사용. 후처리 없음. -->
