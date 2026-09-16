@@ -11073,6 +11073,49 @@ window.addEventListener("hashchange",()=>{
 }
 </style>
 
+
+<!-- v205: 점자 읽기 점형을 기존 연습 답안 점형과 완전히 동일하게 통일 -->
+<style id="gmgj-v205-reading-exact-answer-dots">
+/* readingBraille은 answer-dots 클래스를 사용하므로 별도 셀 크기/축소 규칙을 제거한다. */
+#practiceView[data-category="점자 읽기"] #readingBraille{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:wrap!important;
+  justify-content:center!important;
+  align-items:center!important;
+  align-content:center!important;
+  gap:10px!important;
+  max-width:none!important;
+  margin:12px auto 28px!important;
+  line-height:normal!important;
+}
+#practiceView[data-category="점자 읽기"] #readingBraille .input-cell{
+  display:grid!important;
+  grid-template-columns:repeat(2,14px)!important;
+  grid-template-rows:repeat(3,14px)!important;
+  gap:5px!important;
+  padding:5px!important;
+  border-radius:8px!important;
+  transform:none!important;
+  transform-origin:center!important;
+  margin:0!important;
+  flex:0 0 auto!important;
+}
+#practiceView[data-category="점자 읽기"] #readingBraille .input-dot{
+  width:14px!important;
+  height:14px!important;
+  min-width:14px!important;
+  min-height:14px!important;
+  max-width:14px!important;
+  max-height:14px!important;
+}
+/* 띄어쓰기도 기존 정답 셀과 같은 빈 6점 셀 한 칸 */
+#practiceView[data-category="점자 읽기"] #readingBraille .reading-empty-cell{
+  flex:0 0 auto!important;
+  width:auto!important;
+  margin:0!important;
+}
+</style>
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
