@@ -7863,7 +7863,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
   <div id="ruleQuizFb" class="rule-quiz-fb" aria-live="polite"></div>
 </div>
 <div id="readingPanel" class="reading-panel" hidden>
-  <div class="reading-instruction">다음 점자를 읽고 한글로 입력하세요.</div>
+  <div class="reading-instruction">다음 점자를 읽고 한글로 입력하세요.<div class="reading-space-guide">띄어쓰기는 <span>빨간 밑줄</span>로 표시됩니다.</div></div>
   <div id="readingBraille" class="reading-braille" aria-label="읽기 문제 점자"></div>
   <div class="reading-label-row"><label for="readingAnswer" class="reading-answer-label">한글 입력</label><span id="readingInlineStatus" class="reading-inline-status" aria-live="polite"></span></div>
   <textarea id="readingAnswer" class="reading-answer" rows="3" autocomplete="off" spellcheck="false" placeholder="점자를 읽고 한글로 입력하세요."></textarea>
@@ -17432,5 +17432,49 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
 }
 #practiceView[data-category="점자 읽기"] .reading-inline-status.no{
   color:#d00000!important;
+}
+</style>
+
+
+<style id="gmgj-v181-reading-space-underline-only">
+#practiceView[data-category="점자 읽기"] .reading-space-guide{
+  margin-top:8px!important;
+  font-size:.92rem!important;
+  font-weight:700!important;
+  color:#667085!important;
+}
+#practiceView[data-category="점자 읽기"] .reading-space-guide span{
+  color:#d00000!important;
+  font-weight:900!important;
+  text-decoration:underline!important;
+  text-decoration-thickness:3px!important;
+  text-underline-offset:3px!important;
+}
+
+/* 띄어쓰기: 네모/음영 없이 빨간 밑줄만 */
+#practiceView[data-category="점자 읽기"] .reading-braille .reading-word-gap{
+  display:inline-block!important;
+  box-sizing:border-box!important;
+  width:.72em!important;
+  min-width:.72em!important;
+  height:.18em!important;
+  margin:0 .05em!important;
+  padding:0!important;
+  vertical-align:.04em!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  border-bottom:4px solid #d00000!important;
+  position:relative!important;
+}
+#practiceView[data-category="점자 읽기"] .reading-braille .reading-word-gap::before,
+#practiceView[data-category="점자 읽기"] .reading-braille .reading-word-gap::after{
+  content:none!important;
+  display:none!important;
+}
+@media(max-width:768px){
+  #practiceView[data-category="점자 읽기"] .reading-braille .reading-word-gap{
+    border-bottom-width:3px!important;
+  }
 }
 </style>
