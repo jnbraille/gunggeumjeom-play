@@ -11073,6 +11073,19 @@ window.addEventListener("hashchange",()=>{
 }
 </style>
 
+
+
+<!-- v208 HOTFIX: Whale dark mode - reading active dots only -->
+<style id="gmgj-v208-whale-dark-active-white-only">
+@media (prefers-color-scheme: dark){
+  html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on{
+    background:#ffffff!important;
+    background-color:#ffffff!important;
+    border-color:#ffffff!important;
+    opacity:1!important;
+  }
+}
+</style>
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
@@ -18312,15 +18325,6 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
 html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){
   background:transparent!important;
   border:2px solid currentColor!important;
-}
-/* v208 단일 수정: 웨일 다크모드에서 읽기 연습의 채워진 점만 흰색 */
-@media (prefers-color-scheme:dark){
-  html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on,
-  html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on.whale-text-dot{
-    background:#fff!important;
-    background-color:#fff!important;
-    border-color:#fff!important;
-  }
 }
 #practiceView[data-category="점자 읽기"] .reading-space-guide{display:none!important;}
 </style>
