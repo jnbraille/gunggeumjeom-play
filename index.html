@@ -11073,58 +11073,6 @@ window.addEventListener("hashchange",()=>{
 }
 </style>
 
-
-<!-- v209: Whale 일반/다크 - 점자 읽기 점형을 기존 답안보기 점형과 동일하게 표시 -->
-<style id="gmgj-v209-whale-reading-dot-match">
-/* 읽기 연습의 점 크기/간격은 유지하고, 점의 표현만 기존 연습 답안보기와 동일하게 맞춤 */
-html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){
-  background:#e6ebec!important;
-  background-color:#e6ebec!important;
-  border:1px solid #d0d7d9!important;
-  opacity:1!important;
-  color:inherit!important;
-  box-shadow:none!important;
-}
-html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on{
-  background:none!important;
-  background-color:transparent!important;
-  border:0!important;
-  outline:0!important;
-  box-shadow:none!important;
-  color:#ffffff!important;
-  -webkit-text-fill-color:#ffffff!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  font-family:Arial,"Segoe UI Symbol",sans-serif!important;
-  font-size:30px!important;
-  font-weight:400!important;
-  line-height:8px!important;
-  letter-spacing:0!important;
-  text-indent:0!important;
-  overflow:visible!important;
-  transform:none!important;
-  filter:none!important;
-  opacity:1!important;
-}
-</style>
-<script id="gmgj-v209-whale-reading-dot-match-script">
-(function(){
-  if(!/Whale/i.test(navigator.userAgent||"")) return;
-  document.documentElement.classList.add("whale-browser");
-  function matchReadingDots(){
-    document.querySelectorAll('#practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on').forEach(function(dot){
-      dot.textContent="●";
-      dot.classList.add("whale-text-dot");
-    });
-  }
-  var rb=document.getElementById("readingBraille");
-  if(rb){ new MutationObserver(matchReadingDots).observe(rb,{childList:true,subtree:true}); }
-  document.addEventListener("click",function(){ setTimeout(matchReadingDots,0); });
-  window.addEventListener("pageshow",matchReadingDots);
-  setTimeout(matchReadingDots,0);
-})();
-</script>
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
@@ -18364,6 +18312,15 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
 html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){
   background:transparent!important;
   border:2px solid currentColor!important;
+}
+/* v208 단일 수정: 웨일 다크모드에서 읽기 연습의 채워진 점만 흰색 */
+@media (prefers-color-scheme:dark){
+  html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on,
+  html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on.whale-text-dot{
+    background:#fff!important;
+    background-color:#fff!important;
+    border-color:#fff!important;
+  }
 }
 #practiceView[data-category="점자 읽기"] .reading-space-guide{display:none!important;}
 </style>
