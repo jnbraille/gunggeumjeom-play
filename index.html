@@ -7863,7 +7863,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
   <div id="ruleQuizFb" class="rule-quiz-fb" aria-live="polite"></div>
 </div>
 <div id="readingPanel" class="reading-panel" hidden>
-  <div class="reading-instruction">다음 점자를 읽고 한글로 입력하세요.<div class="reading-space-guide">띄어쓰기는 <span>빨간 밑줄</span>로 표시됩니다.</div></div>
+  <div class="reading-instruction">다음 점자를 읽고 한글로 입력하세요.</div>
   <div id="readingBraille" class="reading-braille" aria-label="읽기 문제 점자"></div>
   <div class="reading-label-row"><label for="readingAnswer" class="reading-answer-label">한글 입력</label><span id="readingInlineStatus" class="reading-inline-status" aria-live="polite"></span></div>
   <textarea id="readingAnswer" class="reading-answer" rows="3" autocomplete="off" spellcheck="false" placeholder="점자를 읽고 한글로 입력하세요."></textarea>
@@ -10957,17 +10957,16 @@ window.addEventListener("hashchange",()=>{
     document.getElementById("practiceName").textContent="점자 읽기 연습";
     const rb=document.getElementById("readingBraille");
     rb.innerHTML="";
-    String(q.braille).split(" ").forEach((part,i,arr)=>{
-      const span=document.createElement("span");
-      span.textContent=part;
-      rb.appendChild(span);
-      if(i<arr.length-1){
-        const gap=document.createElement("span");
-        gap.className="reading-word-gap";
-        gap.setAttribute("aria-label"," 띄어쓰기 ");
-        gap.textContent=" ";
-        rb.appendChild(gap);
+    /* v201: 다른 연습의 정답 점형과 같은 6점 셀 디자인으로 표시.
+       띄어쓰기는 점이 하나도 찍히지 않은 빈 6점 셀로 표시한다. */
+    Array.from(String(q.braille)).forEach(function(ch){
+      const cell=sixDotCell(ch===" " ? "⠀" : ch);
+      cell.classList.add("reading-braille-cell");
+      if(ch===" "){
+        cell.classList.add("reading-empty-cell");
+        cell.setAttribute("aria-label","띄어쓰기");
       }
+      rb.appendChild(cell);
     });
     const a=document.getElementById("readingAnswer");
     a.value="";
@@ -18056,3 +18055,57 @@ textarea:focus-visible,
   else apply();
 })();
 </script>
+
+<style id="gmgj-v201-reading-sixdot-design">
+/* 점자 읽기: 다른 연습 정답과 동일한 6점 셀 디자인 */
+#practiceView[data-category="점자 읽기"] .reading-space-guide{display:none!important;}
+#practiceView[data-category="점자 읽기"] #readingBraille.reading-braille{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:6px 7px!important;
+  max-width:900px!important;
+  margin:12px auto 28px!important;
+  font-size:inherit!important;
+  letter-spacing:0!important;
+  line-height:1!important;
+  overflow-wrap:normal!important;
+}
+#practiceView[data-category="점자 읽기"] #readingBraille .reading-braille-cell{
+  display:grid!important;
+  grid-template-columns:repeat(2,13px)!important;
+  grid-template-rows:repeat(3,13px)!important;
+  gap:5px!important;
+  padding:5px!important;
+  border-radius:8px!important;
+  flex:0 0 auto!important;
+  background:transparent!important;
+  outline:0!important;
+}
+#practiceView[data-category="점자 읽기"] #readingBraille .reading-braille-cell .input-dot{
+  width:13px!important;height:13px!important;border-radius:50%!important;
+  background:#e6ebec!important;border:1px solid #d0d7d9!important;
+}
+#practiceView[data-category="점자 읽기"] #readingBraille .reading-braille-cell .input-dot.on{
+  background:#26383d!important;border-color:#26383d!important;
+}
+/* 띄어쓰기 = 실제 점자 한 칸 크기의 빈 6점 점형 */
+#practiceView[data-category="점자 읽기"] #readingBraille .reading-empty-cell{
+  margin:0 2px!important;
+}
+@media(max-width:900px){
+  #practiceView[data-category="점자 읽기"] #readingBraille.reading-braille{
+    gap:5px 6px!important;
+    max-width:100%!important;
+  }
+}
+@media(forced-colors:active){
+  #practiceView[data-category="점자 읽기"] #readingBraille .reading-braille-cell .input-dot{
+    forced-color-adjust:none!important;background:#fff!important;border:2px solid #000!important;
+  }
+  #practiceView[data-category="점자 읽기"] #readingBraille .reading-braille-cell .input-dot.on{
+    background:#000!important;border-color:#000!important;
+  }
+}
+</style>
