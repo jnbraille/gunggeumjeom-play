@@ -8939,13 +8939,13 @@ function gmgjIsPhoneOrTablet(){
 window.addEventListener("keydown",function(e){
   if(!gmgjIsPhoneOrTablet())return;
   if(!V.practice.classList.contains("active"))return;
-  if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput"))return;
+  if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput" || e.target.id==="readingAnswer"))return;
   if(gmgjIsPhysicalSpaceKey(e))e.preventDefault();
 },{passive:false});
 window.addEventListener("keyup",function(e){
   if(!gmgjIsPhoneOrTablet())return;
   if(!V.practice.classList.contains("active"))return;
-  if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput"))return;
+  if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput" || e.target.id==="readingAnswer"))return;
   if(gmgjIsPhysicalSpaceKey(e))e.preventDefault();
 },{passive:false});
 
