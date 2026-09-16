@@ -18124,62 +18124,260 @@ textarea:focus-visible,
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
 </script>
-<!-- v208: 점자 읽기 전용 최종 표시 보정 - 다른 연습 점형은 수정하지 않음 -->
 
-<!-- v212: 점자 읽기 = 기존 9개 연습 답안 점형 엔진/스타일 그대로 사용 -->
-<style id="gmgj-v212-reading-native-answer-layout">
-/* 점/셀의 크기, 간격, 색상, 고대비, Whale 처리는 기존 .answer-dots / .answer-wrap 규칙에 맡긴다.
-   읽기 화면에서는 긴 문장을 위한 컨테이너 폭/줄바꿈만 지정한다. */
+
+<script id="gmgj-v204-reading-native-answer-class">
+(function(){
+  function apply(){
+    var rb=document.getElementById('readingBraille');
+    if(rb) rb.classList.add('answer-dots');
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply); else apply();
+})();
+</script>
+
+
+<style id="gmgj-v207-reading-answer-layout-only">
+/* v207: 점자 읽기 셀/점은 기존 .answer-dots 규칙을 그대로 사용한다.
+   여기서는 읽기 영역의 줄바꿈/폭만 지정하며 점 크기·점간격·색상은 지정하지 않는다. */
 #practiceView[data-category="점자 읽기"] #readingBraille{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:flex-start!important;
+  align-content:flex-start!important;
+  justify-content:center!important;
+  column-gap:6px!important;
+  row-gap:30px!important;
+  max-width:900px!important;
+  margin:12px auto 28px!important;
+  line-height:1.85!important;
+  letter-spacing:0!important;
+}
+#practiceView[data-category="점자 읽기"] .reading-space-guide{display:none!important;}
+
+/* Whale: 기존 답안보기의 whale-answer-dot-match-test-23과 동일한 채움점 표시를 읽기 영역에도 적용 */
+html.whale-browser #practiceView #readingBraille .input-dot.on.whale-text-dot{
+  background:none!important;
+  background-color:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-family:Arial,"Segoe UI Symbol",sans-serif!important;
+  font-size:30px!important;
+  font-weight:400!important;
+  line-height:8px!important;
+  letter-spacing:0!important;
+  text-indent:0!important;
+  overflow:visible!important;
+  transform:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+</style>
+
+
+<!-- v208: 점자 읽기 전용 최종 표시 보정 - 다른 연습 점형은 수정하지 않음 -->
+<style id="gmgj-v208-reading-modes-final">
+/* 기존 answer-dots/Whale 답안용 규칙과 읽기 영역을 완전히 분리한다. */
+#practiceView[data-category="점자 읽기"] #readingBraille{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:wrap!important;
+  justify-content:center!important;
+  align-items:center!important;
+  align-content:center!important;
+  gap:10px!important;
   max-width:1060px!important;
   margin:12px auto 28px!important;
   padding:8px 0!important;
   background:transparent!important;
   border:0!important;
+  line-height:1!important;
+  color:#173f5f;
+}
+#practiceView[data-category="점자 읽기"] #readingBraille .input-cell{
+  display:grid!important;
+  grid-template-columns:repeat(2,14px)!important;
+  grid-template-rows:repeat(3,14px)!important;
+  gap:6px!important;
+  grid-auto-flow:row!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:34px!important;
+  min-height:54px!important;
+  padding:4px!important;
+  margin:0!important;
+  box-sizing:content-box!important;
+  align-items:center!important;
+  justify-items:center!important;
+  flex:0 0 auto!important;
+  background:transparent!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+#practiceView[data-category="점자 읽기"] #readingBraille .input-dot{
+  position:static!important;
+  display:block!important;
+  width:14px!important;
+  height:14px!important;
+  min-width:14px!important;
+  min-height:14px!important;
+  max-width:14px!important;
+  max-height:14px!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:50%!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  opacity:1!important;
+  font-size:0!important;
+  line-height:0!important;
+  text-indent:-9999px!important;
+  overflow:hidden!important;
+}
+/* 일반/웨일 일반: 기존 답안과 같은 남색 채움점 + 빈점 테두리 */
+#practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on{
+  background:currentColor!important;
+  background-color:currentColor!important;
+  border:2px solid currentColor!important;
+}
+#practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+  background:transparent!important;
+  background-color:transparent!important;
+  border:2px solid currentColor!important;
+  opacity:.48!important;
+}
+/* 사이트 고대비: 셀 박스 없이 기존 고대비 답안처럼 흰 채움점/흰 빈점 테두리 */
+html.high-contrast #practiceView[data-category="점자 읽기"] #readingBraille,
+body.high-contrast #practiceView[data-category="점자 읽기"] #readingBraille,
+html.contrast #practiceView[data-category="점자 읽기"] #readingBraille,
+body.contrast #practiceView[data-category="점자 읽기"] #readingBraille{
+  color:#fff!important;
+}
+html.high-contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+body.high-contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+html.contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+body.contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+  background:transparent!important;
+  border-color:#fff!important;
+  opacity:1!important;
+}
+html.high-contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on,
+body.high-contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on,
+html.contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on,
+body.contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on{
+  background:#fff!important;
+  border-color:#fff!important;
+  opacity:1!important;
+}
+/* OS/브라우저 강제 고대비에서는 시스템 색을 사용해 반전 후에도 사라지지 않게 한다. */
+@media (forced-colors:active){
+  #practiceView[data-category="점자 읽기"] #readingBraille{color:CanvasText!important;}
+  #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on{
+    forced-color-adjust:auto!important;
+    background:CanvasText!important;
+    border-color:CanvasText!important;
+  }
+  #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+    forced-color-adjust:auto!important;
+    background:transparent!important;
+    border-color:CanvasText!important;
+    opacity:1!important;
+  }
+}
+/* 웨일은 웹페이지 색을 자체 변환하므로 고정 흰 점 문자로 바꾸지 않는다.
+   currentColor를 쓰면 일반/다크 변환에 맞춰 점도 함께 변한다. */
+html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on,
+html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on.whale-text-dot{
+  display:block!important;
+  color:inherit!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:currentColor!important;
+  background-color:currentColor!important;
+  border:2px solid currentColor!important;
+  width:14px!important;height:14px!important;min-width:14px!important;min-height:14px!important;
+  max-width:14px!important;max-height:14px!important;
+  font-size:0!important;line-height:0!important;text-indent:-9999px!important;overflow:hidden!important;
+}
+html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+  background:transparent!important;
+  border:2px solid currentColor!important;
 }
 #practiceView[data-category="점자 읽기"] .reading-space-guide{display:none!important;}
 </style>
-<script id="gmgj-v212-reading-native-answer-engine">
+<script id="gmgj-v208-reading-isolate-script">
 (function(){
-  function isWhale(){ return /Whale/i.test(navigator.userAgent||""); }
-  function useNativeAnswerRenderer(){
+  function isolateReading(){
     var rb=document.getElementById('readingBraille');
     if(!rb) return;
-    /* 기존 답안 점형 CSS와 Whale 답안 CSS가 그대로 선택하도록 같은 클래스 사용 */
-    rb.classList.add('answer-dots','answer-wrap');
-    rb.classList.remove('reading-answer-dots');
+    rb.classList.remove('answer-dots');
+    rb.classList.add('reading-answer-dots');
+    /* v213: Whale에서는 sixDotCell()이 기존 정답 점형과 동일하게 만든 ● 표시를 그대로 유지한다. */
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',isolateReading); else isolateReading();
+  var rb=document.getElementById('readingBraille');
+  if(rb){
+    new MutationObserver(isolateReading).observe(rb,{childList:true,subtree:true});
+  }
+  document.addEventListener('click',function(){setTimeout(isolateReading,0);});
+})();
+</script>
 
-    if(isWhale()){
-      document.documentElement.classList.add('whale-browser');
-      /* 기존 whale-answer-dot-match-test-23-script와 동일한 처리 */
-      rb.querySelectorAll('.input-dot.on').forEach(function(dot){
-        dot.classList.remove('whale-text-dot');
-        dot.dataset.whaleWhiteAnswer='1';
-        dot.textContent='●';
-      });
-      rb.querySelectorAll('.input-dot:not(.on)').forEach(function(dot){
-        dot.classList.remove('whale-text-dot');
-        dot.removeAttribute('data-whale-white-answer');
-        dot.textContent='';
-      });
-    }else{
-      rb.querySelectorAll('.input-dot').forEach(function(dot){
-        dot.classList.remove('whale-text-dot');
-        dot.removeAttribute('data-whale-white-answer');
-        dot.textContent='';
-      });
-    }
+
+<!-- v213: v208 기준. Whale 점자 읽기만 기존 9개 연습의 정답 점형 표시방식과 동일하게 연결 -->
+<style id="gmgj-v213-reading-whale-native-answer-match">
+/* 기존 whale-answer-dot-match-test-23의 정답 채움점 규칙을 #readingBraille에만 동일 적용 */
+html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on.whale-text-dot{
+  background:none!important;
+  background-color:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-family:Arial,"Segoe UI Symbol",sans-serif!important;
+  font-size:30px!important;
+  font-weight:400!important;
+  line-height:8px!important;
+  letter-spacing:0!important;
+  text-indent:0!important;
+  overflow:visible!important;
+  transform:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+</style>
+<script id="gmgj-v213-reading-whale-native-answer-match-script">
+(function(){
+  if(!/Whale/i.test(navigator.userAgent||"")) return;
+  document.documentElement.classList.add("whale-browser");
+  function matchReadingToAnswerDots(){
+    var rb=document.getElementById("readingBraille");
+    if(!rb) return;
+    rb.querySelectorAll(".input-dot.on").forEach(function(dot){
+      dot.classList.add("whale-text-dot");
+      dot.textContent="●";
+    });
   }
-  function start(){
-    useNativeAnswerRenderer();
-    var rb=document.getElementById('readingBraille');
-    if(rb){
-      new MutationObserver(function(){useNativeAnswerRenderer();})
-        .observe(rb,{childList:true,subtree:true});
-    }
-    document.addEventListener('click',function(){setTimeout(useNativeAnswerRenderer,0);});
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",matchReadingToAnswerDots,{once:true});
+  }else matchReadingToAnswerDots();
+  var rb=document.getElementById("readingBraille");
+  if(rb){
+    new MutationObserver(function(){matchReadingToAnswerDots();}).observe(rb,{childList:true,subtree:true});
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start,{once:true});
-  else start();
 })();
 </script>
