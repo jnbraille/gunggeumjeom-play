@@ -18179,3 +18179,60 @@ textarea:focus-visible,
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
 </script>
+
+<style id="gmgj-v203-reading-exact-answer-dot-style">
+/* v203: 점자 읽기 점형을 다른 연습의 정답 점형과 완전히 동일하게 맞춤 */
+#practiceView[data-category="점자 읽기"] #readingBraille.reading-braille{
+  display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;
+  justify-content:center!important;align-items:center!important;align-content:center!important;
+  gap:10px!important;max-width:900px!important;margin:12px auto 28px!important;
+}
+#practiceView[data-category="점자 읽기"] #readingBraille .input-cell{
+  display:grid!important;grid-template-columns:repeat(2,14px)!important;grid-template-rows:repeat(3,14px)!important;
+  gap:6px!important;grid-auto-flow:row!important;width:auto!important;height:auto!important;
+  min-width:34px!important;min-height:54px!important;padding:4px!important;margin:0!important;
+  box-sizing:content-box!important;align-items:center!important;justify-items:center!important;flex:0 0 auto!important;
+}
+#practiceView[data-category="점자 읽기"] #readingBraille .input-dot{
+  position:static!important;display:block!important;width:14px!important;height:14px!important;
+  min-width:14px!important;min-height:14px!important;max-width:14px!important;max-height:14px!important;
+  padding:0!important;margin:0!important;border-radius:50%!important;box-sizing:border-box!important;
+  transform:none!important;box-shadow:none!important;filter:none!important;mix-blend-mode:normal!important;opacity:1!important;
+}
+#practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){background:#fff!important;border:2px solid #91a5ad!important;}
+#practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on{background:#173f5f!important;border:2px solid #173f5f!important;}
+#practiceView[data-category="점자 읽기"] #readingBraille .reading-empty-cell{margin:0!important;}
+/* 사이트 고대비: 다른 연습 정답 점형의 최종 규칙과 동일 */
+html.high-contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on,
+body.high-contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on,
+.high-contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on,
+html.contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on,
+body.contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on,
+.contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on{
+  background:#fff!important;background-color:#fff!important;border:2px solid #fff!important;
+  box-shadow:none!important;filter:none!important;forced-color-adjust:none!important;
+}
+html.high-contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+body.high-contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+.high-contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+html.contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+body.contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+.contrast #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+  background:#202020!important;background-color:#202020!important;border:2px solid #fff!important;
+  box-shadow:none!important;filter:none!important;forced-color-adjust:none!important;
+}
+@media (forced-colors:active), (prefers-contrast:more){
+  #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on{
+    background:#fff!important;background-color:#fff!important;border-color:#fff!important;forced-color-adjust:none!important;
+  }
+  #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+    background:#202020!important;background-color:#202020!important;border-color:#fff!important;forced-color-adjust:none!important;
+  }
+}
+</style>
+<script id="gmgj-v203-reading-answer-dot-class">
+(function(){
+  function apply(){var rb=document.getElementById('readingBraille');if(rb)rb.classList.add('answer-dots');}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
+})();
+</script>
