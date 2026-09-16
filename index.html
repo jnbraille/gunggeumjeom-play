@@ -17958,3 +17958,66 @@ textarea:focus-visible,
   }
 })();
 </script>
+
+
+<style id="gmgj-v197-reading-mobile-disabled">
+@media (max-width: 767px){
+  .lesson[data-category="점자 읽기"].reading-mobile-disabled{
+    cursor:default!important;
+  }
+  .lesson[data-category="점자 읽기"].reading-mobile-disabled .go{
+    font-weight:900!important;
+    pointer-events:none!important;
+  }
+}
+</style>
+
+<script id="gmgj-v197-reading-mobile-disabled-script">
+(function(){
+  function isSmartphone(){
+    var ua=navigator.userAgent || "";
+    if(navigator.userAgentData && typeof navigator.userAgentData.mobile==="boolean"){
+      return navigator.userAgentData.mobile;
+    }
+    return /iPhone|iPod|Windows Phone|IEMobile|Opera Mini/i.test(ua) ||
+           (/Android/i.test(ua) && /Mobile/i.test(ua));
+  }
+
+  function apply(){
+    document.querySelectorAll('.lesson[data-category="점자 읽기"]').forEach(function(btn){
+      var go=btn.querySelector(".go");
+
+      if(isSmartphone()){
+        btn.classList.add("reading-mobile-disabled");
+        btn.setAttribute("aria-disabled","true");
+        btn.setAttribute("aria-label","점자 읽기 연습, PC 태블릿 전용");
+        if(go) go.textContent="PC·태블릿 전용";
+
+        /* 안내창 없이 스마트폰에서는 아무 동작도 하지 않음 */
+        btn.onclick=function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        };
+      }else{
+        btn.classList.remove("reading-mobile-disabled");
+        btn.removeAttribute("aria-disabled");
+        btn.setAttribute("aria-label","점자 읽기 연습");
+        if(go) go.textContent="연습하기 ›";
+        btn.onclick=function(){ return openPractice("점자 읽기"); };
+      }
+    });
+  }
+
+  var previousOpen=window.openPractice;
+  if(typeof previousOpen==="function"){
+    window.openPractice=function(c){
+      if(c==="점자 읽기" && isSmartphone()) return;
+      return previousOpen.apply(this,arguments);
+    };
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",apply);
+  else apply();
+})();
+</script>
