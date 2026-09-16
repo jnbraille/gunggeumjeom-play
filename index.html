@@ -10971,7 +10971,6 @@ window.addEventListener("hashchange",()=>{
        띄어쓰기는 점이 하나도 찍히지 않은 빈 6점 셀로 표시한다. */
     Array.from(String(q.braille)).forEach(function(ch){
       const cell=sixDotCell(ch===" " ? "⠀" : ch);
-      cell.classList.add("reading-braille-cell");
       if(ch===" "){
         cell.classList.add("reading-empty-cell");
         cell.setAttribute("aria-label","띄어쓰기");
@@ -11074,10 +11073,314 @@ window.addEventListener("hashchange",()=>{
 </style>
 
 
-<!-- v205: 점자 읽기 점형을 기존 연습 답안 점형과 완전히 동일하게 통일 -->
-<style id="gmgj-v205-reading-exact-answer-dots">
-/* readingBraille은 answer-dots 클래스를 사용하므로 별도 셀 크기/축소 규칙을 제거한다. */
-#practiceView[data-category="점자 읽기"] #readingBraille{
+<style id="gmgj-v205-reading-exact-answer-cascade">
+#practiceView[data-category="점자 읽기"] .reading-space-guide{display:none!important;}
+#practiceView[data-category="점자 읽기"] #readingBraille{max-width:900px!important;margin:12px auto 28px!important;}
+#typed .input-dot.on,
+  #readingBraille .input-dot.on{
+    background:#000000!important;
+    border-color:#000000!important;
+  }
+#typed .input-dot:not(.on),
+  #readingBraille .input-dot:not(.on){
+    background:#ffffff!important;
+    border-color:#000000!important;
+  }
+/* 답안보기와 입력 점형 모두 동일 적용 */
+  #typed .input-dot,
+  #readingBraille .input-dot{
+    border-color:#71868e!important;
+  }
+#typed .input-dot.on,
+  #readingBraille .input-dot.on{
+    border-color:#26383d!important;
+  }
+/* 정답 점형의 초록 점도 동일 크기 유지 */
+#readingBraille .input-dot.on,
+.answer-panel .input-dot.on{
+  transform:scale(1)!important;
+}
+/* 문장 연습: 입력 점형과 정답 점형을 같은 크기로 축소 */
+#practiceView #typed .input-cell,
+#practiceView #readingBraille .input-cell{
+  grid-template-columns: repeat(2, 10px) !important;
+  grid-template-rows: repeat(3, 10px) !important;
+  gap: 3px !important;
+  padding: 3px !important;
+  border-radius: 6px !important;
+}
+#practiceView #typed .input-dot,
+#practiceView #readingBraille .input-dot{
+  width: 10px !important;
+  height: 10px !important;
+}
+#practiceView #typed,
+#practiceView #readingBraille{ gap: 6px !important; }
+#practiceView #typed .space-gap,
+#practiceView #readingBraille .space-gap{
+  width: 18px !important;
+  flex: 0 0 18px !important;
+  height: 34px !important;
+}
+/* 문장연습 점형 셀: 입력/오답/정답 모두 별도 네모 테두리·박스 없이 동일하게 표시 */
+#practiceView #typed .input-cell,
+#practiceView #typed .input-cell.wrong,
+#practiceView #typed .input-cell.error,
+#practiceView #readingBraille .input-cell,
+#practiceView .answer-panel .input-cell,
+#practiceView .compact-answer .input-cell,
+#practiceView .inline-answer .input-cell{
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+}
+
+/* 문장연습: 사용자 입력 점형과 정답 점형 색상 통일 */
+#readingBraille .input-dot.on,
+.answer-panel .input-dot.on{
+  background:#26383d!important;
+  border-color:#26383d!important;
+}
+/* 문장연습: 점형이 여러 줄로 표시될 때 줄간격만 확대 */
+#brailleInput,
+#readingBraille,
+.braille-input,
+.answer-dots,
+.answer-panel .braille-dots{
+  row-gap:20px!important;
+  line-height:1.6!important;
+}
+/* 문장연습: 입력/정답 점형을 동일하게 더 작게, 여러 줄 간격 확대 */
+#brailleInput .input-cell,
+#readingBraille .input-cell,
+.braille-input .input-cell,
+.answer-panel .input-cell{
+  transform:scale(.82)!important;
+  transform-origin:center center!important;
+  margin:-2px!important;
+}
+#brailleInput,
+#readingBraille,
+.braille-input,
+.answer-dots,
+.answer-panel .braille-dots{
+  row-gap:30px!important;
+  line-height:1.85!important;
+}
+/* 문장연습: 사용자 입력 점형과 정답 점형 크기/줄간격 완전 통일 */
+#brailleInput,
+#readingBraille,
+.braille-input,
+.answer-dots,
+.answer-panel .braille-dots{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:flex-start!important;
+  column-gap:6px!important;
+  row-gap:30px!important;
+  line-height:1.85!important;
+}
+#brailleInput .input-cell,
+#readingBraille .input-cell,
+.braille-input .input-cell,
+.answer-panel .input-cell{
+  transform:scale(.78)!important;
+  transform-origin:center center!important;
+  margin:-3px!important;
+}
+/* 문장연습 최종: 실제 입력영역 #typed와 정답 #readingBraille를 완전히 동일하게 */
+#practiceView #typed,
+#practiceView #readingBraille{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:flex-start!important;
+  align-content:flex-start!important;
+  column-gap:6px!important;
+  row-gap:30px!important;
+}
+#practiceView #typed .input-cell,
+#practiceView #readingBraille .input-cell{
+  display:grid!important;
+  grid-template-columns:repeat(2,8px)!important;
+  grid-template-rows:repeat(3,8px)!important;
+  gap:3px!important;
+  width:auto!important;
+  height:auto!important;
+  padding:0!important;
+  margin:0!important;
+  transform:none!important;
+  background:transparent!important;
+  border:none!important;
+  outline:none!important;
+  box-shadow:none!important;
+}
+#practiceView #typed .input-dot,
+#practiceView #readingBraille .input-dot{
+  width:8px!important;
+  height:8px!important;
+  min-width:8px!important;
+  min-height:8px!important;
+}
+#practiceView #typed .space-gap,
+#practiceView #readingBraille .space-gap{
+  width:16px!important;
+  flex:0 0 16px!important;
+  height:30px!important;
+}
+/* 고대비 모드: 점형의 의미가 반전되지 않도록 고정
+   찍힌 점 = 흰색 채움 / 빈점 = 어두운 배경 + 흰색 테두리 */
+body.high-contrast #practiceView #typed .input-dot,
+body.high-contrast #practiceView #readingBraille .input-dot,
+.high-contrast #practiceView #typed .input-dot,
+.high-contrast #practiceView #readingBraille .input-dot{
+  background:transparent!important;
+  border:1px solid #fff!important;
+  box-sizing:border-box!important;
+}
+body.high-contrast #practiceView #typed .input-dot.on,
+body.high-contrast #practiceView #readingBraille .input-dot.on,
+.high-contrast #practiceView #typed .input-dot.on,
+.high-contrast #practiceView #readingBraille .input-dot.on{
+  background:#fff!important;
+  border-color:#fff!important;
+}
+/* FINAL: 고대비 모드 입력/정답 점형 동일 표시 */
+html.high-contrast #practiceView #typed .input-dot,
+html.high-contrast #practiceView #readingBraille .input-dot,
+body.high-contrast #practiceView #typed .input-dot,
+body.high-contrast #practiceView #readingBraille .input-dot,
+.high-contrast #practiceView #typed .input-dot,
+.high-contrast #practiceView #readingBraille .input-dot,
+html.contrast #practiceView #typed .input-dot,
+html.contrast #practiceView #readingBraille .input-dot,
+body.contrast #practiceView #typed .input-dot,
+body.contrast #practiceView #readingBraille .input-dot,
+.contrast #practiceView #typed .input-dot,
+.contrast #practiceView #readingBraille .input-dot{
+  background:transparent!important;
+  background-color:transparent!important;
+  border:1px solid #fff!important;
+  box-shadow:none!important;
+}
+html.high-contrast #practiceView #typed .input-dot.on,
+html.high-contrast #practiceView #readingBraille .input-dot.on,
+body.high-contrast #practiceView #typed .input-dot.on,
+body.high-contrast #practiceView #readingBraille .input-dot.on,
+.high-contrast #practiceView #typed .input-dot.on,
+.high-contrast #practiceView #readingBraille .input-dot.on,
+html.contrast #practiceView #typed .input-dot.on,
+html.contrast #practiceView #readingBraille .input-dot.on,
+body.contrast #practiceView #typed .input-dot.on,
+body.contrast #practiceView #readingBraille .input-dot.on,
+.contrast #practiceView #typed .input-dot.on,
+.contrast #practiceView #readingBraille .input-dot.on{
+  background:#fff!important;
+  background-color:#fff!important;
+  border-color:#fff!important;
+}
+/* 정답 영역에 기존 good/answer 계열 색상 규칙이 있어도 반전되지 않게 */
+html.high-contrast #readingBraille .input-dot.on,
+body.high-contrast #readingBraille .input-dot.on,
+.high-contrast #readingBraille .input-dot.on,
+html.contrast #readingBraille .input-dot.on,
+body.contrast #readingBraille .input-dot.on,
+.contrast #readingBraille .input-dot.on{
+  background:#fff!important;
+  background-color:#fff!important;
+  border-color:#fff!important;
+}
+#practiceView #typed .input-dot.on,
+  #practiceView #readingBraille .input-dot.on{
+    forced-color-adjust:none!important;
+    background:CanvasText!important;
+    background-color:CanvasText!important;
+    border-color:CanvasText!important;
+    opacity:1!important;
+  }
+/* 점자 입력 및 답안 영역은 가독성을 위해 한 단계 더 밝게 */
+  #practiceView #typed,
+  #practiceView #readingBraille,
+  #practiceView .answer-dots,
+  #practiceView .braille-input,
+  #practiceView [class*="braille-input"]{
+    background:#FCFCFA!important;
+  }
+#practiceView #typed,
+#practiceView #readingBraille,
+#practiceView .answer-dots{
+  justify-content:center!important;
+  align-content:center!important;
+}
+/*
+  sixDotCell()은 DOM을 1,4 / 2,5 / 3,6 순서로 생성한다.
+  따라서 grid-auto-flow를 사용하지 않고 기본 행 배치 그대로 써야
+  실제 누른 점 번호와 화면 점형이 정확히 일치한다.
+*/
+#practiceView #typed .input-cell,
+#practiceView #readingBraille .input-cell,
+#practiceView .answer-dots .input-cell{
+  display:grid!important;
+  grid-template-columns:repeat(2,14px)!important;
+  grid-template-rows:repeat(3,14px)!important;
+  gap:6px!important;
+  grid-auto-flow:row!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:34px!important;
+  min-height:54px!important;
+  padding:4px!important;
+  margin:0!important;
+  box-sizing:content-box!important;
+  align-items:center!important;
+  justify-items:center!important;
+  flex:0 0 auto!important;
+}
+/* 점 자체 */
+#practiceView #typed .input-dot,
+#practiceView #readingBraille .input-dot,
+#practiceView .answer-dots .input-dot{
+  position:static!important;
+  display:block!important;
+  width:14px!important;
+  height:14px!important;
+  min-width:14px!important;
+  min-height:14px!important;
+  max-width:14px!important;
+  max-height:14px!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:50%!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  opacity:1!important;
+}
+/* 빈 점 */
+#practiceView #typed .input-dot:not(.on),
+#practiceView #readingBraille .input-dot:not(.on),
+#practiceView .answer-dots .input-dot:not(.on){
+  background:#ffffff!important;
+  border:2px solid #91a5ad!important;
+  box-shadow:none!important;
+}
+/* 입력한 점 / 정답 점 */
+#practiceView #typed .input-dot.on,
+#practiceView #readingBraille .input-dot.on,
+#practiceView .answer-dots .input-dot.on{
+  background:#173f5f!important;
+  border:2px solid #173f5f!important;
+  box-shadow:none!important;
+}
+/* 입력/정답 셀은 겹치지 않고 가운데 정렬 */
+#practiceView #typed,
+#practiceView #readingBraille,
+#practiceView .answer-dots{
   display:flex!important;
   flex-direction:row!important;
   flex-wrap:wrap!important;
@@ -11085,36 +11388,146 @@ window.addEventListener("hashchange",()=>{
   align-items:center!important;
   align-content:center!important;
   gap:10px!important;
-  max-width:none!important;
-  margin:12px auto 28px!important;
-  line-height:normal!important;
 }
-#practiceView[data-category="점자 읽기"] #readingBraille .input-cell{
-  display:grid!important;
-  grid-template-columns:repeat(2,14px)!important;
-  grid-template-rows:repeat(3,14px)!important;
-  gap:5px!important;
-  padding:5px!important;
-  border-radius:8px!important;
-  transform:none!important;
-  transform-origin:center!important;
-  margin:0!important;
-  flex:0 0 auto!important;
+/*
+  사이트 고대비 / 브라우저 고대비에서도 점 색을 반전하지 않고 동일하게 고정.
+  채운 점=진한 남색, 빈 점=흰색+회색선, 오답=빨강.
+*/
+.high-contrast #practiceView #typed .input-dot,
+.high-contrast #practiceView #readingBraille .input-dot,
+.high-contrast #practiceView .answer-dots .input-dot,
+.contrast #practiceView #typed .input-dot,
+.contrast #practiceView #readingBraille .input-dot,
+.contrast #practiceView .answer-dots .input-dot{
+  forced-color-adjust:none!important;
+  filter:none!important;
+  box-shadow:none!important;
 }
-#practiceView[data-category="점자 읽기"] #readingBraille .input-dot{
-  width:14px!important;
-  height:14px!important;
-  min-width:14px!important;
-  min-height:14px!important;
-  max-width:14px!important;
-  max-height:14px!important;
+.high-contrast #practiceView #typed .input-dot:not(.on),
+.high-contrast #practiceView #readingBraille .input-dot:not(.on),
+.high-contrast #practiceView .answer-dots .input-dot:not(.on),
+.contrast #practiceView #typed .input-dot:not(.on),
+.contrast #practiceView #readingBraille .input-dot:not(.on),
+.contrast #practiceView .answer-dots .input-dot:not(.on){
+  background:#ffffff!important;
+  border-color:#91a5ad!important;
 }
-/* 띄어쓰기도 기존 정답 셀과 같은 빈 6점 셀 한 칸 */
-#practiceView[data-category="점자 읽기"] #readingBraille .reading-empty-cell{
-  flex:0 0 auto!important;
-  width:auto!important;
-  margin:0!important;
+.high-contrast #practiceView #typed .input-dot.on,
+.high-contrast #practiceView #readingBraille .input-dot.on,
+.high-contrast #practiceView .answer-dots .input-dot.on,
+.contrast #practiceView #typed .input-dot.on,
+.contrast #practiceView #readingBraille .input-dot.on,
+.contrast #practiceView .answer-dots .input-dot.on{
+  background:#173f5f!important;
+  border-color:#173f5f!important;
 }
+#practiceView #typed .input-dot:not(.on),
+  #practiceView #readingBraille .input-dot:not(.on),
+  #practiceView .answer-dots .input-dot:not(.on){
+    background:#ffffff!important;
+    border-color:#91a5ad!important;
+  }
+#practiceView #typed .input-dot.on,
+  #practiceView #readingBraille .input-dot.on,
+  #practiceView .answer-dots .input-dot.on{
+    background:#173f5f!important;
+    border-color:#173f5f!important;
+  }
+#practiceView #typed .input-dot,
+  #practiceView #readingBraille .input-dot,
+  #practiceView .answer-dots .input-dot{
+    width:13px!important;
+    height:13px!important;
+    min-width:13px!important;
+    min-height:13px!important;
+    max-width:13px!important;
+    max-height:13px!important;
+  }
+/* 답안 보기 점형: 입력 점과 구분되게 흰색/파랑 구조 유지 */
+.high-contrast #practiceView #readingBraille .input-dot:not(.on),
+.high-contrast #practiceView .answer-dots .input-dot:not(.on),
+.contrast #practiceView #readingBraille .input-dot:not(.on),
+.contrast #practiceView .answer-dots .input-dot:not(.on){
+  background:#202020!important;
+  border:2px solid #D7E3E8!important;
+  forced-color-adjust:none!important;
+}
+.high-contrast #practiceView #readingBraille .input-dot.on,
+.high-contrast #practiceView .answer-dots .input-dot.on,
+.contrast #practiceView #readingBraille .input-dot.on,
+.contrast #practiceView .answer-dots .input-dot.on{
+  background:#37B9F1!important;
+  border:2px solid #37B9F1!important;
+  forced-color-adjust:none!important;
+}
+#practiceView #typed .input-dot:not(.on),
+  #practiceView #readingBraille .input-dot:not(.on),
+  #practiceView .answer-dots .input-dot:not(.on){
+    background:#202020!important;
+    border-color:#D7E3E8!important;
+    forced-color-adjust:none!important;
+  }
+#practiceView #typed .input-dot.on,
+  #practiceView #readingBraille .input-dot.on,
+  #practiceView .answer-dots .input-dot.on{
+    background:#37B9F1!important;
+    border-color:#37B9F1!important;
+    forced-color-adjust:none!important;
+  }
+/* 맞춤법 O/X는 그대로 두고, 고대비의 점자 점형만 흰색으로 수정 */
+
+/* 입력한 점 / 정답 점 = 흰색 */
+.high-contrast #practiceView #typed .input-dot.on,
+.high-contrast #practiceView #readingBraille .input-dot.on,
+.high-contrast #practiceView .answer-dots .input-dot.on,
+.contrast #practiceView #typed .input-dot.on,
+.contrast #practiceView #readingBraille .input-dot.on,
+.contrast #practiceView .answer-dots .input-dot.on,
+body.high-contrast #practiceView #typed .input-dot.on,
+body.high-contrast #practiceView #readingBraille .input-dot.on,
+body.high-contrast #practiceView .answer-dots .input-dot.on,
+body.contrast #practiceView #typed .input-dot.on,
+body.contrast #practiceView #readingBraille .input-dot.on,
+body.contrast #practiceView .answer-dots .input-dot.on{
+  background:#ffffff!important;
+  background-color:#ffffff!important;
+  border:2px solid #ffffff!important;
+  box-shadow:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  filter:none!important;
+  forced-color-adjust:none!important;
+}
+/* 빈 점 = 어두운 내부 + 흰색 테두리 */
+.high-contrast #practiceView #typed .input-dot:not(.on),
+.high-contrast #practiceView #readingBraille .input-dot:not(.on),
+.high-contrast #practiceView .answer-dots .input-dot:not(.on),
+.contrast #practiceView #typed .input-dot:not(.on),
+.contrast #practiceView #readingBraille .input-dot:not(.on),
+.contrast #practiceView .answer-dots .input-dot:not(.on),
+body.high-contrast #practiceView #typed .input-dot:not(.on),
+body.high-contrast #practiceView #readingBraille .input-dot:not(.on),
+body.high-contrast #practiceView .answer-dots .input-dot:not(.on),
+body.contrast #practiceView #typed .input-dot:not(.on),
+body.contrast #practiceView #readingBraille .input-dot:not(.on),
+body.contrast #practiceView .answer-dots .input-dot:not(.on){
+  background:#202020!important;
+  background-color:#202020!important;
+  border:2px solid #ffffff!important;
+  box-shadow:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  filter:none!important;
+  forced-color-adjust:none!important;
+}
+#practiceView #typed .input-dot:not(.on),
+  #practiceView #readingBraille .input-dot:not(.on),
+  #practiceView .answer-dots .input-dot:not(.on){
+    background:#202020!important;
+    background-color:#202020!important;
+    border-color:#ffffff!important;
+    forced-color-adjust:none!important;
+  }
 </style>
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
@@ -18169,51 +18582,5 @@ textarea:focus-visible,
 </script>
 
 
-<style id="gmgj-v204-reading-use-native-answer-dots">
-/* v204: 점자 읽기는 기존 연습 '정답 점형'의 sixDotCell() DOM을 그대로 사용한다.
-   이 블록은 배치/크기만 answerDots와 맞추며 점 색상/고대비/웨일 처리는 기존 공통 규칙을 그대로 따른다. */
-#practiceView[data-category="점자 읽기"] .reading-space-guide{display:none!important;}
-#practiceView[data-category="점자 읽기"] #readingBraille{
-  display:flex!important;
-  flex-wrap:wrap!important;
-  justify-content:center!important;
-  align-items:flex-start!important;
-  align-content:flex-start!important;
-  column-gap:6px!important;
-  row-gap:30px!important;
-  line-height:1.85!important;
-  max-width:900px!important;
-  margin:12px auto 28px!important;
-  font-size:inherit!important;
-  letter-spacing:0!important;
-  overflow-wrap:normal!important;
-}
-/* 기존 #answerDots 최종 크기 규칙과 동일 */
-#practiceView[data-category="점자 읽기"] #readingBraille .input-cell{
-  grid-template-columns:repeat(2,10px)!important;
-  grid-template-rows:repeat(3,10px)!important;
-  gap:3px!important;
-  padding:3px!important;
-  border-radius:6px!important;
-  transform:scale(.78)!important;
-  transform-origin:center center!important;
-  margin:-3px!important;
-}
-#practiceView[data-category="점자 읽기"] #readingBraille .input-dot{
-  width:10px!important;
-  height:10px!important;
-}
-/* 띄어쓰기 역시 sixDotCell(점 없음) 한 칸이며 별도 빨간 표시를 사용하지 않는다. */
-#practiceView[data-category="점자 읽기"] #readingBraille .reading-empty-cell{
-  flex:0 0 auto!important;
-}
-</style>
-<script id="gmgj-v204-reading-native-answer-class">
-(function(){
-  function apply(){
-    var rb=document.getElementById('readingBraille');
-    if(rb) rb.classList.add('answer-dots');
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply); else apply();
-})();
-</script>
+
+
