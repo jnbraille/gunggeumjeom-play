@@ -17126,3 +17126,58 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
   #homeGrid .lesson:nth-child(n+7),#selectGrid .lesson:nth-child(n+7){grid-column:auto!important}
 }
 </style>
+
+
+<style id="gmgj-v175-final-menu-and-reading-space">
+/* ===== PC 메뉴: 12개를 반드시 6개 × 2줄 ===== */
+@media (min-width:901px){
+  #homeGrid.grid,
+  #selectGrid.grid{
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+    gap:13px!important;
+  }
+
+  #homeGrid.grid > .lesson,
+  #selectGrid.grid > .lesson,
+  #homeGrid.grid > .lesson:nth-child(n),
+  #selectGrid.grid > .lesson:nth-child(n){
+    grid-column:auto!important;
+    grid-row:auto!important;
+    width:auto!important;
+    min-width:0!important;
+    margin:0!important;
+  }
+}
+
+/* ===== 점자 읽기: 실제 '한 칸 띄어쓰기' 위치를 명확한 빈칸 칸으로 표시 =====
+   두 칸처럼 벌리지 않고, 빈 점자 한 칸을 연상시키는 음영 + 빨간 밑줄 */
+#practiceView[data-category="점자 읽기"] .reading-braille .reading-word-gap{
+  display:inline-block!important;
+  box-sizing:border-box!important;
+  width:.72em!important;
+  min-width:.72em!important;
+  height:.88em!important;
+  margin:0 .06em!important;
+  vertical-align:-.08em!important;
+  background:rgba(220,53,69,.08)!important;
+  border:1px solid rgba(220,53,69,.28)!important;
+  border-bottom:4px solid #dc3545!important;
+  border-radius:3px 3px 1px 1px!important;
+  position:relative!important;
+}
+
+#practiceView[data-category="점자 읽기"] .reading-braille .reading-word-gap::after{
+  content:none!important;
+}
+
+@media(max-width:768px){
+  #practiceView[data-category="점자 읽기"] .reading-braille .reading-word-gap{
+    width:.72em!important;
+    min-width:.72em!important;
+    margin:0 .05em!important;
+    border-bottom-width:3px!important;
+  }
+}
+</style>
