@@ -18346,3 +18346,87 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   /* 전체 문서 click 감시는 제거: 읽기 메뉴 외 버튼 동작에 개입하지 않음 */
 })();
 </script>
+
+<!-- v215: Whale 점형 통일 - 기존 9개 답안/읽기 채움점을 동일한 텍스트 점 방식으로 표시 -->
+<style id="gmgj-v215-whale-dot-unify">
+/* Whale의 자체 다크 변환이 '텍스트 색'에는 정상 적용되므로,
+   채움점은 고정 흰색/배경 원이 아니라 기존 사이트 남색 텍스트 ●로 통일한다.
+   Whale 일반에서는 남색, Whale 다크에서는 Whale이 밝은 색으로 변환한다. */
+html.whale-browser #practiceView #answerPanel .input-dot.on,
+html.whale-browser #practiceView #answerBox .input-dot.on,
+html.whale-browser #practiceView .answer-panel .input-dot.on,
+html.whale-browser #practiceView .answer-box .input-dot.on,
+html.whale-browser #practiceView .answer-wrap .input-dot.on,
+html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on.whale-reading-text-dot{
+  background:none!important;
+  background-color:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  color:#173f5f!important;
+  -webkit-text-fill-color:currentColor!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-family:Arial,"Segoe UI Symbol",sans-serif!important;
+  font-size:30px!important;
+  font-weight:400!important;
+  line-height:8px!important;
+  letter-spacing:0!important;
+  text-indent:0!important;
+  overflow:visible!important;
+  transform:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+</style>
+<script id="gmgj-v215-whale-dot-unify-script">
+(function(){
+  if(!/Whale/i.test(navigator.userAgent||"")) return;
+  document.documentElement.classList.add("whale-browser");
+
+  function setTextDot(dot, reading){
+    if(!dot || !dot.classList.contains('on')) return;
+    if(reading) dot.classList.add('whale-reading-text-dot');
+    dot.textContent='●';
+  }
+
+  function fixDots(){
+    /* 기존 9개 연습 답안: 기존 구조/이벤트는 건드리지 않고 채움점 표시만 통일 */
+    var selectors=[
+      '#practiceView #answerPanel .input-dot.on',
+      '#practiceView #answerBox .input-dot.on',
+      '#practiceView .answer-panel .input-dot.on',
+      '#practiceView .answer-box .input-dot.on',
+      '#practiceView .answer-wrap .input-dot.on'
+    ];
+    document.querySelectorAll(selectors.join(',')).forEach(function(dot){setTextDot(dot,false);});
+
+    /* 읽기 연습: 문제 생성 직후 현재 채움점에만 같은 텍스트 점 표시 */
+    var rb=document.getElementById('readingBraille');
+    if(rb){
+      rb.querySelectorAll('.input-dot.on').forEach(function(dot){setTextDot(dot,true);});
+    }
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fixDots,{once:true});
+  else fixDots();
+
+  /* 전역 MutationObserver는 사용하지 않는다. 메뉴/버튼 먹통 방지. */
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    if(!t) return;
+    var txt=(t.textContent||'').trim();
+    if(txt.indexOf('답안')!==-1 || txt==='검색' || txt==='이전' || txt==='다음' || txt==='초기화'){
+      setTimeout(fixDots,0);
+    }
+  });
+
+  /* 읽기 문제는 입력 제출/정답 확인 뒤 다음 문제가 바뀌므로 제한된 이벤트에서만 재적용 */
+  var ra=document.getElementById('readingAnswer');
+  if(ra){
+    ra.addEventListener('keydown',function(e){if(e.key==='Enter') setTimeout(fixDots,3600);});
+  }
+  setTimeout(fixDots,50);
+})();
+</script>
