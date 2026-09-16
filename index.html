@@ -8517,6 +8517,9 @@ function openWrongPractice(category){
 
   if(category==="맞춤법"){
     startSpellingMode();
+  }else if(category==="점자 읽기"){
+    stopSpellingMode();
+    if(typeof startReadingMode==="function") startReadingMode();
   }else{
     stopSpellingMode();
     nextQuestion();
