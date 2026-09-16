@@ -10946,7 +10946,20 @@ window.addEventListener("hashchange",()=>{
     if(cat!=="점자 읽기")return;
     q=DATA[cat][queue[round]];
     document.getElementById("practiceName").textContent="점자 읽기 연습";
-    document.getElementById("readingBraille").textContent=q.braille;
+    const rb=document.getElementById("readingBraille");
+    rb.innerHTML="";
+    String(q.braille).split(" ").forEach((part,i,arr)=>{
+      const span=document.createElement("span");
+      span.textContent=part;
+      rb.appendChild(span);
+      if(i<arr.length-1){
+        const gap=document.createElement("span");
+        gap.className="reading-word-gap";
+        gap.setAttribute("aria-label"," 띄어쓰기 ");
+        gap.textContent=" ";
+        rb.appendChild(gap);
+      }
+    });
     const a=document.getElementById("readingAnswer");
     a.value="";
     const fb=document.getElementById("readingFeedback");
@@ -10980,10 +10993,63 @@ window.addEventListener("hashchange",()=>{
   document.getElementById("readingSubmit")?.addEventListener("click",gradeReading);
   document.getElementById("readingNext")?.addEventListener("click",nextReading);
   document.getElementById("readingAnswer")?.addEventListener("keydown",function(e){
-    if(e.key==="Enter" && (e.ctrlKey||e.metaKey)){e.preventDefault();gradeReading();}
+    if(e.key==="Enter" && !e.shiftKey){e.preventDefault();gradeReading();}
   });
 })();
 </script>
+
+
+<style id="gmgj-v173-menu-6x2-force">
+@media (min-width:769px){
+  .gmgj-v173-six-grid{
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    gap:16px!important;
+  }
+  .gmgj-v173-six-grid > .lesson{
+    grid-column:auto!important;
+    width:auto!important;
+    min-width:0!important;
+  }
+}
+</style>
+<script id="gmgj-v173-menu-6x2-force-script">
+(function(){
+  function forceSixByTwo(){
+    const lessons=Array.from(document.querySelectorAll(".lesson[data-category]"));
+    const parents=[...new Set(lessons.map(el=>el.parentElement).filter(Boolean))];
+    parents.forEach(parent=>{
+      const direct=Array.from(parent.children).filter(el=>el.matches&&el.matches(".lesson[data-category]"));
+      if(direct.length===12) parent.classList.add("gmgj-v173-six-grid");
+    });
+  }
+  forceSixByTwo();
+  setTimeout(forceSixByTwo,0);
+  setTimeout(forceSixByTwo,200);
+})();
+</script>
+
+
+<style id="gmgj-v174-reading-spacing">
+#practiceView[data-category="점자 읽기"] .reading-braille .reading-word-gap{
+  display:inline-block!important;
+  width:1.15em!important;
+  min-width:1.15em!important;
+  position:relative;
+}
+#practiceView[data-category="점자 읽기"] .reading-braille .reading-word-gap::after{
+  content:"";
+  position:absolute;
+  left:18%;
+  right:18%;
+  bottom:.08em;
+  border-bottom:3px solid currentColor;
+  opacity:.45;
+}
+#practiceView[data-category="점자 읽기"] .reading-answer{
+  min-height:82px!important;
+}
+</style>
 
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
