@@ -7869,7 +7869,6 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
   <textarea id="readingAnswer" class="reading-answer" rows="3" autocomplete="off" spellcheck="false" placeholder="점자를 읽고 한글로 입력하세요."></textarea>
   <div class="reading-actions">
     <button type="button" id="readingSubmit">정답 확인</button>
-    <button type="button" id="readingNext">다음 문제</button>
   </div>
   <div id="readingFeedback" class="reading-feedback" aria-live="polite"></div>
 </div>
@@ -10991,7 +10990,6 @@ window.addEventListener("hashchange",()=>{
     nextReadingQuestion();
   }
   document.getElementById("readingSubmit")?.addEventListener("click",gradeReading);
-  document.getElementById("readingNext")?.addEventListener("click",nextReading);
   document.getElementById("readingAnswer")?.addEventListener("keydown",function(e){
     if(e.key==="Enter" && !e.shiftKey){e.preventDefault();gradeReading();}
   });
@@ -17181,3 +17179,134 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
   }
 }
 </style>
+
+
+<style id="gmgj-v176-critical-fix">
+/* 점자 읽기 패널은 11번 메뉴에서만 보임 */
+#readingPanel[hidden]{
+  display:none!important;
+}
+#practiceView:not([data-category="점자 읽기"]) #readingPanel{
+  display:none!important;
+}
+#practiceView[data-category="점자 읽기"] #readingPanel:not([hidden]){
+  display:block!important;
+}
+
+/* 맞춤법/규정 패널도 각 모드의 hidden 상태를 반드시 존중 */
+#spellingPanel[hidden],
+#ruleQuizPanel[hidden]{
+  display:none!important;
+}
+
+/* PC: 12개 메뉴 정확히 6 × 2 */
+@media (min-width:901px){
+  body #homeGrid.grid,
+  body #selectGrid.grid{
+    display:grid!important;
+    grid-template-columns:repeat(6,1fr)!important;
+    grid-template-rows:repeat(2,auto)!important;
+    grid-auto-columns:unset!important;
+    grid-auto-flow:row!important;
+    gap:14px!important;
+  }
+  body #homeGrid.grid > button.lesson,
+  body #selectGrid.grid > button.lesson{
+    grid-column:auto!important;
+    grid-row:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    margin:0!important;
+  }
+}
+</style>
+<script id="gmgj-v176-mode-guard">
+(function(){
+  function guardPracticePanels(){
+    const pv=document.getElementById("practiceView");
+    const rp=document.getElementById("readingPanel");
+    if(!pv||!rp)return;
+    if(pv.dataset.category!=="점자 읽기"){
+      rp.hidden=true;
+      rp.style.display="none";
+    }else{
+      rp.style.removeProperty("display");
+    }
+  }
+
+  /* 기존 openPractice 실행 뒤에 한 번 더 모드 격리 */
+  const oldOpen=window.openPractice;
+  if(typeof oldOpen==="function"){
+    window.openPractice=function(c){
+      oldOpen(c);
+      guardPracticePanels();
+    };
+  }
+
+  guardPracticePanels();
+})();
+</script>
+
+
+<script id="gmgj-v177-reading-auto-next">
+(function(){
+  let readingSubmitting=false;
+
+  function norm(v){
+    return String(v||"").trim().replace(/\s+/g," ");
+  }
+
+  function autoGradeReading(){
+    if(cat!=="점자 읽기" || readingSubmitting) return;
+    const a=document.getElementById("readingAnswer");
+    const fb=document.getElementById("readingFeedback");
+    if(!a || !fb) return;
+
+    readingSubmitting=true;
+    const typed=norm(a.value);
+    const expected=norm(q.answer);
+    const ok=typed===expected;
+
+    if(typeof playFeedbackSound==="function") playFeedbackSound(ok);
+    rec.total++; if(ok) rec.correct++;
+    rec.cat[cat]??={total:0,correct:0};
+    rec.cat[cat].total++; if(ok) rec.cat[cat].correct++;
+    recordDailyAnswer(cat,ok);
+    if(!ok) recordWrongQuestion(cat,{prompt:q.answer,braille:q.braille},typed);
+    stats();
+
+    fb.className="reading-feedback "+(ok?"ok":"no");
+    fb.textContent=ok ? "정답!" : "오답!  정답: "+q.answer;
+
+    setTimeout(function(){
+      round++;
+      if(round>=queue.length){
+        round=0;
+        queue=makeQueue(cat);
+      }
+      nextReadingQuestion();
+      readingSubmitting=false;
+    }, 900);
+  }
+
+  const answer=document.getElementById("readingAnswer");
+  const oldAnswer=answer ? answer.cloneNode(true) : null;
+  if(answer && oldAnswer){
+    answer.parentNode.replaceChild(oldAnswer,answer);
+    oldAnswer.addEventListener("keydown",function(e){
+      if(e.key==="Enter" && !e.shiftKey){
+        e.preventDefault();
+        autoGradeReading();
+      }
+    });
+  }
+
+  const submit=document.getElementById("readingSubmit");
+  const newSubmit=submit ? submit.cloneNode(true) : null;
+  if(submit && newSubmit){
+    submit.parentNode.replaceChild(newSubmit,submit);
+    newSubmit.addEventListener("click",autoGradeReading);
+  }
+})();
+</script>
