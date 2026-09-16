@@ -7865,7 +7865,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
 <div id="readingPanel" class="reading-panel" hidden>
   <div class="reading-instruction">다음 점자를 읽고 한글로 입력하세요.</div>
   <div id="readingBraille" class="reading-braille" aria-label="읽기 문제 점자"></div>
-  <label for="readingAnswer" class="reading-answer-label">한글 입력</label>
+  <div class="reading-label-row"><label for="readingAnswer" class="reading-answer-label">한글 입력</label><span id="readingInlineStatus" class="reading-inline-status" aria-live="polite"></span></div>
   <textarea id="readingAnswer" class="reading-answer" rows="3" autocomplete="off" spellcheck="false" placeholder="점자를 읽고 한글로 입력하세요."></textarea>
   <div class="reading-actions">
     <button type="button" id="readingSubmit">정답 확인</button>
@@ -10964,6 +10964,11 @@ window.addEventListener("hashchange",()=>{
     const fb=document.getElementById("readingFeedback");
     fb.textContent="";
     fb.className="reading-feedback";
+    const inlineStatus=document.getElementById("readingInlineStatus");
+    if(inlineStatus){
+      inlineStatus.textContent="";
+      inlineStatus.className="reading-inline-status";
+    }
     setTimeout(()=>a.focus(),0);
   };
   function gradeReading(){
@@ -17359,6 +17364,11 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
     /* 기존 아래쪽 결과도 유지하지만 입력칸 자체 색상으로 즉시 판별 가능 */
     fb.className="reading-feedback "+(ok?"ok":"no");
     fb.textContent=ok ? "정답!" : "오답!  정답: "+q.answer;
+    const inlineStatus=document.getElementById("readingInlineStatus");
+    if(inlineStatus){
+      inlineStatus.className="reading-inline-status "+(ok?"ok":"no");
+      inlineStatus.textContent=ok ? "정답!" : "오답!";
+    }
 
     /* 결과 색을 충분히 볼 수 있게 1.35초 후 자동 이동 */
     setTimeout(function(){
@@ -17395,3 +17405,32 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
   }
 })();
 </script>
+
+
+<style id="gmgj-v180-reading-label-status">
+#practiceView[data-category="점자 읽기"] .reading-label-row{
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  max-width:720px!important;
+  margin:0 auto 8px!important;
+  text-align:left!important;
+}
+#practiceView[data-category="점자 읽기"] .reading-label-row .reading-answer-label{
+  display:inline-block!important;
+  margin:0!important;
+  max-width:none!important;
+}
+#practiceView[data-category="점자 읽기"] .reading-inline-status{
+  display:inline-block!important;
+  min-width:58px!important;
+  font-size:1.08rem!important;
+  font-weight:900!important;
+}
+#practiceView[data-category="점자 읽기"] .reading-inline-status.ok{
+  color:#087f5b!important;
+}
+#practiceView[data-category="점자 읽기"] .reading-inline-status.no{
+  color:#d00000!important;
+}
+</style>
