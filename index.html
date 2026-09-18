@@ -8971,10 +8971,10 @@ function gmgjBraillePhysicalKey(e){
   return KD[k]?k:"";
 }
 document.onkeydown=e=>{
-if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput" || e.target.id==="readingAnswer")) return;
+if(e.target && (e.target.matches?.("input, textarea, select") || e.target.isContentEditable)) return;
 if(!V.practice.classList.contains("active"))return;if(e.key==="Enter"){e.preventDefault();submit();return}if(grading)return;if(e.key==="Backspace"||e.key==="Delete"){e.preventDefault();input=[...input].slice(0,-1).join("");draw();return}const isSpaceKey=(e.key===" "||e.code==="Space"||e.key==="Spacebar"||e.keyCode===32||e.which===32);if(isSpaceKey){e.preventDefault();beginTypingClock();input+=" ";typedCells++;draw();liveMetrics();return}let k=gmgjBraillePhysicalKey(e);if(k){e.preventDefault();pressed.add(k);chord.add(KD[k])}};
 document.onkeyup=e=>{
-if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput")) return;
+if(e.target && (e.target.matches?.("input, textarea, select") || e.target.isContentEditable)) return;
 if(!V.practice.classList.contains("active")||grading)return;let k=gmgjBraillePhysicalKey(e);if(!k)return;pressed.delete(k);if(!pressed.size&&chord.size){beginTypingClock();input+=braille([...chord]);typedCells++;chord.clear();draw();liveMetrics()}};
 
 /* v133: 태블릿 + 휴대폰의 물리 Bluetooth 키보드 Space 페이지 스크롤만 bubble 단계에서 차단.
@@ -8989,13 +8989,13 @@ function gmgjIsPhoneOrTablet(){
 window.addEventListener("keydown",function(e){
   if(!gmgjIsPhoneOrTablet())return;
   if(!V.practice.classList.contains("active"))return;
-  if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput" || e.target.id==="readingAnswer"))return;
+  if(e.target && (e.target.matches?.("input, textarea, select") || e.target.isContentEditable))return;
   if(gmgjIsPhysicalSpaceKey(e))e.preventDefault();
 },{passive:false});
 window.addEventListener("keyup",function(e){
   if(!gmgjIsPhoneOrTablet())return;
   if(!V.practice.classList.contains("active"))return;
-  if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput" || e.target.id==="readingAnswer"))return;
+  if(e.target && (e.target.matches?.("input, textarea, select") || e.target.isContentEditable))return;
   if(gmgjIsPhysicalSpaceKey(e))e.preventDefault();
 },{passive:false});
 
@@ -11151,6 +11151,7 @@ window.addEventListener("hashchange",()=>{
  setTimeout(apply,100);
 })();
 </script>
+<!-- v270: 검색/입력 필드 포커스 시 전역 점자 키보드 핸들러 차단 -->
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
@@ -14193,6 +14194,7 @@ img.logo{
   document.addEventListener("DOMContentLoaded", function(){
     setup("punctuationSearchInput","punctuationSearchButton");
     setup("sentenceSearchInput","sentenceSearchButton");
+    setup("readingSearchInput","readingSearchButton");
   });
 })();
 </script>
@@ -16761,7 +16763,7 @@ document.getElementById("mobileSpace")?.addEventListener("click", ()=>{
     if(e.key!=="Enter" && e.code!=="Enter" && e.keyCode!==13) return;
     const practice=document.getElementById("practiceView");
     if(!practice || !practice.classList.contains("active")) return;
-    if(e.target && (e.target.id==="punctuationSearchInput" || e.target.id==="sentenceSearchInput")) return;
+    if(e.target && (e.target.matches?.("input, textarea, select") || e.target.isContentEditable)) return;
     setTimeout(syncResult,0);
     setTimeout(syncResult,40);
     setTimeout(syncResult,120);
@@ -20015,5 +20017,68 @@ body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #
   border:1px solid #ef4444!important;
   border-radius:50%!important;
   transform:none!important;
+}
+</style>
+
+<!-- v271: 일반 고대비 긴 글 점형 색상 복구 -->
+<style id="gmgj-v271-longtext-highcontrast-dot-final">
+/* v268의 일반모드 색상이 html.high-contrast/html.contrast 상태를 덮지 않도록
+   긴 글 고대비 점형 색상을 문서 최종 규칙으로 다시 고정한다. */
+html.high-contrast #practiceView[data-category="긴 글"] #typed .input-dot.on,
+body.high-contrast #practiceView[data-category="긴 글"] #typed .input-dot.on,
+html.contrast #practiceView[data-category="긴 글"] #typed .input-dot.on,
+body.contrast #practiceView[data-category="긴 글"] #typed .input-dot.on{
+  background:#ffffff!important;
+  background-color:#ffffff!important;
+  border-color:#ffffff!important;
+  box-shadow:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  forced-color-adjust:none!important;
+}
+html.high-contrast #practiceView[data-category="긴 글"] #typed .input-dot:not(.on),
+body.high-contrast #practiceView[data-category="긴 글"] #typed .input-dot:not(.on),
+html.contrast #practiceView[data-category="긴 글"] #typed .input-dot:not(.on),
+body.contrast #practiceView[data-category="긴 글"] #typed .input-dot:not(.on){
+  background:transparent!important;
+  background-color:transparent!important;
+  border-color:#6f6f6f!important;
+  box-shadow:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  forced-color-adjust:none!important;
+}
+/* 오답은 기존 빨강 유지 */
+html.high-contrast #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
+html.high-contrast #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
+body.high-contrast #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
+body.high-contrast #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
+html.contrast #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
+html.contrast #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
+body.contrast #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
+body.contrast #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on{
+  background:#ff3b30!important;
+  background-color:#ff3b30!important;
+  border-color:#ff3b30!important;
+}
+@media (forced-colors:active){
+  #practiceView[data-category="긴 글"] #typed .input-dot.on{
+    background:#ffffff!important;
+    background-color:#ffffff!important;
+    border-color:#ffffff!important;
+    forced-color-adjust:none!important;
+  }
+  #practiceView[data-category="긴 글"] #typed .input-dot:not(.on){
+    background:transparent!important;
+    background-color:transparent!important;
+    border-color:#6f6f6f!important;
+    forced-color-adjust:none!important;
+  }
+  #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
+  #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on{
+    background:#ff3b30!important;
+    background-color:#ff3b30!important;
+    border-color:#ff3b30!important;
+  }
 }
 </style>
