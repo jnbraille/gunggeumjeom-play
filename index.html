@@ -19383,3 +19383,61 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   setTimeout(function(){ensureSearch();placeSpacingNotice();},0);
 })();
 </script>
+
+<style id="gmgj-v252-longtext-cleanup">
+/* 긴 글 문제: 처음처럼 왼쪽 정렬, 문단 사이 추가 빈 줄 없음 */
+#practiceView[data-category="긴 글"] #prompt .long-title,
+#practiceView[data-category="긴 글"] #prompt .long-paragraph{
+  text-align:left!important;
+  font-weight:inherit!important;
+  margin:0!important;
+}
+#practiceView[data-category="긴 글"] #prompt .long-title{
+  text-indent:0!important;
+}
+#practiceView[data-category="긴 글"] #prompt .long-paragraph{
+  text-indent:0!important;
+}
+
+/* v250에서 추가한 긴 글 전용 Enter/Ctrl+Enter 안내 문구 제거 */
+#practiceView[data-category="긴 글"] .desktop-input-hint::after{
+  content:""!important;
+}
+</style>
+
+<script id="gmgj-v252-longtext-cleanup-script">
+(function(){
+  /* 긴 글에서 Enter는 줄바꿈만 유지.
+     Ctrl/Command+Enter도 제출하지 않고 줄바꿈으로 처리.
+     제출은 화면의 제출 버튼만 사용. */
+  window.addEventListener("keydown",function(e){
+    if(!V.practice.classList.contains("active") || cat!=="긴 글") return;
+    if(e.key!=="Enter" && e.code!=="Enter" && e.keyCode!==13) return;
+    if(e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName||"")) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    if(grading) return;
+    beginTypingClock();
+    input+="\n";
+    typedCells++;
+    draw();
+    liveMetrics();
+  },true);
+
+  /* 답안 버튼 문구: 답안 보기 ↔ 답안 닫기 */
+  function syncAnswerButton(){
+    if(cat!=="긴 글") return;
+    const btn=document.getElementById("showAnswerBtn");
+    const panel=document.getElementById("answerPanel");
+    if(!btn || !panel) return;
+    btn.textContent=panel.hidden ? "답안 보기" : "답안 닫기";
+  }
+  document.addEventListener("click",function(){
+    setTimeout(syncAnswerButton,0);
+  },true);
+  document.addEventListener("DOMContentLoaded",syncAnswerButton);
+  setTimeout(syncAnswerButton,0);
+})();
+</script>
