@@ -7894,6 +7894,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
       <div class="panel sep">
         <span class="label">점자 입력</span><span class="spacing-guide-notice gmgj-tablet-spacing-inline" aria-label="띄어쓰기 표시 안내">띄어쓰기는 빨간 밑줄로 표시됩니다.</span>
         <div id="typed" class="typed" tabindex="0" aria-label="점자 입력"></div>
+        <button id="longTextSubmit256" type="button" onclick="submit()" aria-label="긴 글 답안 제출">제출</button>
 
         <div id="mobileBrailleInput" class="mobile-braille-input" aria-label="모바일 6점 점자 입력">
           <div class="mobile-braille-title">터치 입력</div>
@@ -19593,5 +19594,62 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   document.addEventListener("click",function(){setTimeout(renderSquareFive,0);},true);
   document.addEventListener("keydown",function(){setTimeout(renderSquareFive,0);},true);
   setTimeout(renderSquareFive,0);
+})();
+</script>
+
+<style id="gmgj-v256-longtext-fix">
+/* v253 동적 제출 버튼은 사용하지 않음 */
+#longTextSubmit253{display:none!important}
+
+/* 실제 HTML에 고정한 긴 글 제출 버튼 */
+#longTextSubmit256{display:none}
+#practiceView[data-category="긴 글"] #longTextSubmit256{
+  display:block!important;
+  width:min(260px,70%)!important;
+  min-height:48px!important;
+  margin:14px auto 4px!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:#087d76!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font:inherit!important;
+  font-weight:800!important;
+  font-size:17px!important;
+  cursor:pointer!important;
+  pointer-events:auto!important;
+  position:relative!important;
+  z-index:5!important;
+}
+@media (forced-colors:active){
+  #practiceView[data-category="긴 글"] #longTextSubmit256{
+    border:2px solid ButtonText!important;
+  }
+}
+</style>
+
+<script id="gmgj-v256-longtext-answer-align">
+(function(){
+  /* 문제를 모두 왼쪽 정렬로 바꾼 것과 동일하게,
+     긴 글 정답에서도 제목/문단 앞 들여쓰기와 빈 줄을 채점 대상에서 제거한다.
+     각 30칸 줄의 실제 점자 내용과 줄바꿈은 그대로 유지한다. */
+  if(typeof DATA!=="undefined" && DATA["긴 글"]){
+    DATA["긴 글"].forEach(function(item){
+      if(!item || typeof item.braille!=="string") return;
+      item.braille=item.braille
+        .split("\n")
+        .map(function(line){return line.replace(/^ +/,"");})
+        .filter(function(line){return line.length>0;})
+        .join("\n");
+    });
+  }
+
+  /* v253에서 만든 동적 버튼이 남아 있으면 제거 */
+  function removeOldButton(){
+    const old=document.getElementById("longTextSubmit253");
+    if(old) old.remove();
+  }
+  document.addEventListener("DOMContentLoaded",removeOldButton);
+  setTimeout(removeOldButton,0);
 })();
 </script>
