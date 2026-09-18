@@ -19684,3 +19684,55 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   setTimeout(removeDuplicate,0);
 })();
 </script>
+
+<script id="gmgj-v259-longtext-autoscroll">
+(function(){
+  let lastHeight=0;
+
+  function autoScrollLongInput(force){
+    if(typeof cat==="undefined" || cat!=="긴 글") return;
+    const typed=document.getElementById("typed");
+    if(!typed) return;
+
+    /* 점자가 입력되어 내용 높이가 늘어날 때마다 입력창 맨 아래를 자동으로 따라감 */
+    const h=typed.scrollHeight;
+    if(force || h!==lastHeight){
+      lastHeight=h;
+      requestAnimationFrame(function(){
+        typed.scrollTop=typed.scrollHeight;
+      });
+    }
+  }
+
+  /* 기존 draw()가 끝난 직후 자동 스크롤 */
+  if(typeof draw==="function"){
+    const originalDraw=draw;
+    draw=function(){
+      const r=originalDraw.apply(this,arguments);
+      autoScrollLongInput(false);
+      return r;
+    };
+  }
+
+  /* Enter 줄바꿈 직후에도 새 줄을 바로 따라감 */
+  window.addEventListener("keydown",function(e){
+    if(typeof cat==="undefined" || cat!=="긴 글") return;
+    if(e.key==="Enter" || e.code==="Enter" || e.keyCode===13){
+      setTimeout(function(){autoScrollLongInput(true);},0);
+    }
+  },true);
+
+  /* 긴 글 문제를 처음 열었을 때 스크롤 위치 초기화 */
+  document.addEventListener("click",function(){
+    setTimeout(function(){
+      if(typeof cat!=="undefined" && cat==="긴 글"){
+        const typed=document.getElementById("typed");
+        if(typed && !typed.textContent.trim()){
+          typed.scrollTop=0;
+          lastHeight=typed.scrollHeight;
+        }
+      }
+    },0);
+  },true);
+})();
+</script>
