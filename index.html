@@ -11238,59 +11238,6 @@ window.addEventListener("hashchange",()=>{
 #gmgjAnswerRegister279 button{font:inherit;font-weight:800;padding:8px 12px;border:1px solid currentColor;border-radius:8px;background:transparent;color:inherit;cursor:pointer}
 #gmgjAnswerRegister279 .status{margin-top:8px;font-weight:800}
 </style>
-<script id="gmgj-v279-answer-register-script">
-(function(){
-  const KEY='gmgj_long_answers_v280';
-  let mode=false;
-  function longList(){return (typeof DATA!=='undefined'&&DATA['긴 글'])?DATA['긴 글']:[]}
-  function currentIndex(){const a=longList(); return (typeof q!=='undefined'&&q)?a.indexOf(q):-1}
-  function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return {}}}
-  function saveAll(o){localStorage.setItem(KEY,JSON.stringify(o))}
-  function applySaved(){
-    const a=longList(), o=load();
-    a.forEach((item,i)=>{if(item && typeof o[i+1]==='string') item.braille=o[i+1]});
-  }
-  function ensurePanel(){
-    let p=document.getElementById('gmgjAnswerRegister279');
-    if(p)return p;
-    p=document.createElement('div'); p.id='gmgjAnswerRegister279';
-    p.innerHTML='<div class="row"><strong>긴 글 답안 등록 모드</strong><button type="button" id="gmgjSaveAnswer279">현재 입력을 이 문제 정답으로 저장</button><button type="button" id="gmgjExportAnswers279">등록 답안 내보내기</button><button type="button" id="gmgjCloseAnswer279">등록 모드 닫기</button></div><div class="status" id="gmgjAnswerStatus279"></div>';
-    const typed=document.getElementById('typed');
-    if(typed&&typed.parentNode) typed.parentNode.insertBefore(p,typed);
-    document.getElementById('gmgjSaveAnswer279').onclick=function(){
-      if(typeof cat==='undefined'||cat!=='긴 글')return;
-      const i=currentIndex(); if(i<0)return;
-      const value=String(typeof input!=='undefined'?input:'');
-      if(!value){document.getElementById('gmgjAnswerStatus279').textContent='입력된 점자가 없습니다.';return}
-      const o=load(); o[i+1]=value; saveAll(o); q.braille=value;
-      document.getElementById('gmgjAnswerStatus279').textContent=(i+1)+'번 답안을 현재 입력 그대로 저장했습니다.';
-    };
-    document.getElementById('gmgjExportAnswers279').onclick=function(){
-      const o=load(), a=longList();
-      const rows=a.map((item,i)=>({number:i+1,answer:Object.prototype.hasOwnProperty.call(o,i+1)?o[i+1]:null}));
-      const blob=new Blob([JSON.stringify({type:'궁금점PLAY 긴 글 답안',version:280,answers:rows},null,2)],{type:'application/json;charset=utf-8'});
-      const u=URL.createObjectURL(blob), x=document.createElement('a'); x.href=u; x.download='궁금점PLAY_긴글_직접등록답안.json'; x.click(); setTimeout(()=>URL.revokeObjectURL(u),1000);
-      document.getElementById('gmgjAnswerStatus279').textContent='직접 등록한 답안을 JSON 파일로 내보냈습니다.';
-    };
-    document.getElementById('gmgjCloseAnswer279').onclick=function(){mode=false;sync()};
-    return p;
-  }
-  function sync(){
-    applySaved(); const p=ensurePanel();
-    const show=mode && typeof cat!=='undefined' && cat==='긴 글';
-    p.classList.toggle('on',!!show);
-    if(show){const i=currentIndex(),o=load();document.getElementById('gmgjAnswerStatus279').textContent=i>=0?((i+1)+'번 문제 · '+(Object.prototype.hasOwnProperty.call(o,i+1)?'직접 등록 답안 저장됨':'직접 등록 답안 없음')):''}
-  }
-  /* 공개 화면에는 버튼을 두지 않는다. Ctrl+Alt+A로만 등록 모드 토글 */
-  window.addEventListener('keydown',function(e){
-    if(e.ctrlKey&&e.altKey&&(e.key==='a'||e.key==='A')){e.preventDefault();mode=!mode;sync()}
-  },true);
-  document.addEventListener('DOMContentLoaded',function(){applySaved();ensurePanel();sync()});
-  document.addEventListener('click',function(){setTimeout(sync,0)},true);
-  setTimeout(function(){applySaved();ensurePanel();sync()},0);
-})();
-</script>
-
 <style id="gmgj-v281-longtext-space-underline-inline">
 /* 긴 글: 띄어쓰기 오답 밑줄을 점형 행 안쪽으로 올려 같은 줄에 표시 */
 #practiceView[data-category="긴 글"] #typed .space-gap.wrong::after,
@@ -11303,6 +11250,78 @@ window.addEventListener("hashchange",()=>{
   bottom:11px!important;
 }
 </style>
+
+<!-- v283: 기존 15개 답안을 그대로 불러와 틀린 부분만 수정하는 답안 편집 모드 -->
+<script id="gmgj-v283-long-answer-editor">
+(function(){
+  'use strict';
+  const KEY='gmgj_long_answers_v283';
+  let mode=false;
+  function list(){ return (typeof DATA!=='undefined' && Array.isArray(DATA['긴 글'])) ? DATA['긴 글'] : []; }
+  function idx(){
+    if(typeof cat==='undefined' || cat!=='긴 글') return -1;
+    if(typeof q!=='undefined' && q) return list().indexOf(q);
+    return -1;
+  }
+  function loadEdits(){ try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){return {};} }
+  function saveEdits(o){ localStorage.setItem(KEY,JSON.stringify(o)); }
+  function applyEdits(){ const o=loadEdits(); list().forEach((it,i)=>{ if(typeof o[i+1]==='string') it.braille=o[i+1]; }); }
+  function panel(){
+    let p=document.getElementById('gmgjAnswerRegister279');
+    if(!p){
+      p=document.createElement('div'); p.id='gmgjAnswerRegister279';
+      p.innerHTML='<div class="row"><strong>긴 글 답안 수정 모드</strong><button type="button" id="gmgjLoadAnswer283">현재 문제 기존 답안 불러오기</button><button type="button" id="gmgjSaveAnswer283">수정한 답안 저장</button><button type="button" id="gmgjExportAnswers283">전체 답안 내보내기</button><button type="button" id="gmgjCloseAnswer283">등록 모드 닫기</button></div><div class="status" id="gmgjAnswerStatus279"></div>';
+      const typed=document.getElementById('typed'); if(typed&&typed.parentNode) typed.parentNode.insertBefore(p,typed);
+    }
+    return p;
+  }
+  function status(t){ const e=document.getElementById('gmgjAnswerStatus279'); if(e)e.textContent=t; }
+  function sync(){ const p=panel(); const show=mode && typeof cat!=='undefined' && cat==='긴 글'; p.classList.toggle('on',show); }
+  function loadCurrent(){
+    const i=idx(); if(i<0){status('현재 긴 글 문제를 찾지 못했습니다.');return;}
+    input=String(list()[i].braille||'');
+    grading=false;
+    if(typeof draw==='function') draw();
+    status((i+1)+'번 기존 답안을 입력창에 불러왔습니다. 틀린 부분만 고쳐서 저장하세요.');
+  }
+  function saveCurrent(){
+    const i=idx(); if(i<0){status('현재 긴 글 문제를 찾지 못했습니다.');return;}
+    const value=String(typeof input!=='undefined'?input:'');
+    if(!value){status('답안이 비어 있습니다. 저장하지 않았습니다.');return;}
+    try{
+      const o=loadEdits(); o[i+1]=value; saveEdits(o); list()[i].braille=value; if(typeof q!=='undefined'&&q)q.braille=value;
+      const chk=loadEdits();
+      status(chk[i+1]===value ? ((i+1)+'번 수정 답안 저장 완료 · '+value.length+'자') : '저장 확인에 실패했습니다.');
+    }catch(e){status('저장 실패: '+(e&&e.message?e.message:'알 수 없는 오류'));}
+  }
+  function exportAll(){
+    try{
+      const rows=list().map((it,i)=>({number:i+1,answer:String(it.braille||'')}));
+      const blob=new Blob([JSON.stringify({type:'궁금점PLAY 긴 글 수정 답안',version:283,answers:rows},null,2)],{type:'application/json;charset=utf-8'});
+      const u=URL.createObjectURL(blob),a=document.createElement('a'); a.href=u;a.download='궁금점PLAY_긴글_수정답안_v283.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);
+      status('현재 15문제 답안을 내보냈습니다.');
+    }catch(e){status('내보내기 실패: '+(e&&e.message?e.message:'알 수 없는 오류'));}
+  }
+  function actionFrom(e){ return e.target&&e.target.closest?e.target.closest('#gmgjLoadAnswer283,#gmgjSaveAnswer283,#gmgjExportAnswers283,#gmgjCloseAnswer283'):null; }
+  /* 다른 전역 클릭 처리보다 먼저 실행되도록 window 캡처 단계에서 네 버튼을 직접 처리 */
+  window.addEventListener('click',function(e){
+    const b=actionFrom(e); if(!b)return;
+    e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+    if(b.id==='gmgjLoadAnswer283')loadCurrent();
+    else if(b.id==='gmgjSaveAnswer283')saveCurrent();
+    else if(b.id==='gmgjExportAnswers283')exportAll();
+    else if(b.id==='gmgjCloseAnswer283'){mode=false;sync();}
+  },true);
+  window.addEventListener('keydown',function(e){
+    if(e.ctrlKey&&e.altKey&&(e.key==='a'||e.key==='A')){
+      e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+      mode=!mode; applyEdits(); sync(); if(mode) setTimeout(loadCurrent,0);
+    }
+  },true);
+  document.addEventListener('DOMContentLoaded',function(){applyEdits();panel();sync();});
+  setTimeout(function(){applyEdits();panel();sync();},0);
+})();
+</script>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
@@ -20108,62 +20127,3 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
 
 <!-- v268: 긴 글 오답 점형 크기 최종 통일 -->
 
-<script id="gmgj-v280-clear-all-long-default-answers">
-(function(){
-  if(typeof DATA!=="undefined" && Array.isArray(DATA["긴 글"])){
-    DATA["긴 글"].forEach(function(item){ if(item) item.braille=""; });
-    try{
-      const saved=JSON.parse(localStorage.getItem("gmgj_long_answers_v280")||"{}");
-      DATA["긴 글"].forEach(function(item,i){
-        if(item && typeof saved[i+1]==="string") item.braille=saved[i+1];
-      });
-    }catch(e){}
-  }
-})();
-</script>
-
-
-<!-- v282: 긴 글 답안등록 버튼 실동작 보강 — 캡처 단계 위임 + 실제 DATA 인덱스 저장 -->
-<script id="gmgj-v282-answer-register-button-fix">
-(function(){
-  const KEY='gmgj_long_answers_v280';
-  function status(msg){const el=document.getElementById('gmgjAnswerStatus279'); if(el) el.textContent=msg;}
-  function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return {}}}
-  function save(o){localStorage.setItem(KEY,JSON.stringify(o));}
-  function actualIndex(){
-    if(typeof cat==='undefined'||cat!=='긴 글'||typeof DATA==='undefined'||!Array.isArray(DATA['긴 글'])) return -1;
-    if(typeof queue!=='undefined'&&typeof round!=='undefined'&&queue && Number.isInteger(queue[round])) return queue[round];
-    if(typeof q!=='undefined'&&q) return DATA['긴 글'].indexOf(q);
-    return -1;
-  }
-  document.addEventListener('click',function(e){
-    const b=e.target && e.target.closest ? e.target.closest('#gmgjSaveAnswer279,#gmgjExportAnswers279') : null;
-    if(!b) return;
-    e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation();
-    if(b.id==='gmgjSaveAnswer279'){
-      const idx=actualIndex();
-      if(idx<0){status('현재 긴 글 문제 번호를 찾지 못했습니다.');return;}
-      const value=(typeof input!=='undefined')?String(input):'';
-      if(!value){status('입력된 점자가 없습니다.');return;}
-      try{
-        const o=load(); o[idx+1]=value; save(o);
-        DATA['긴 글'][idx].braille=value;
-        if(typeof q!=='undefined'&&q) q.braille=value;
-        const check=load();
-        if(check[idx+1]===value) status((idx+1)+'번 답안 저장 완료 · '+value.length+'자');
-        else status('저장 확인에 실패했습니다. 다시 저장해 주세요.');
-      }catch(err){status('저장 실패: '+(err&&err.message?err.message:'알 수 없는 오류'));}
-      return;
-    }
-    if(b.id==='gmgjExportAnswers279'){
-      try{
-        const o=load(), a=DATA['긴 글'];
-        const rows=a.map((item,i)=>({number:i+1,answer:Object.prototype.hasOwnProperty.call(o,i+1)?o[i+1]:null}));
-        const blob=new Blob([JSON.stringify({type:'궁금점PLAY 긴 글 답안',version:282,answers:rows},null,2)],{type:'application/json;charset=utf-8'});
-        const u=URL.createObjectURL(blob), x=document.createElement('a'); x.href=u; x.download='궁금점PLAY_긴글_직접등록답안_v282.json'; document.body.appendChild(x); x.click(); x.remove(); setTimeout(()=>URL.revokeObjectURL(u),1000);
-        status('등록 답안 내보내기 완료');
-      }catch(err){status('내보내기 실패: '+(err&&err.message?err.message:'알 수 없는 오류'));}
-    }
-  },true);
-})();
-</script>
