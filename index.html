@@ -18433,3 +18433,11 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
 </script>
 
 <!-- v219: Whale 읽기 점형은 sixDotCell()의 기존 whale-text-dot 생성 경로를 그대로 사용. 후처리 없음. -->
+
+<!-- v226: 점자 읽기 한 줄 배치 폭만 확대 (점형/점 크기/간격/색상/Whale 처리 변경 없음) -->
+<style id="gmgj-v226-reading-columns-only">
+#practiceView[data-category="점자 읽기"] #readingBraille{
+  width:min(1060px, calc(100vw - 40px))!important;
+  max-width:1060px!important;
+}
+</style>
