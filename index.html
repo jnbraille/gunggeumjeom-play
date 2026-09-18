@@ -19881,3 +19881,126 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   });
 })();
 </script>
+
+<style id="gmgj-v263-visible-fixes">
+/* 긴 글 문제의 원문 줄바꿈을 그대로 표시 */
+#practiceView[data-category="긴 글"] #prompt{
+  white-space:pre-wrap!important;
+}
+
+/* 결과는 제출 버튼 바로 아래, 작고 단순하게 */
+#practiceView[data-category="긴 글"] #result{
+  position:static!important;
+  display:block!important;
+  width:auto!important;
+  min-height:1.5em!important;
+  margin:8px auto 2px!important;
+  padding:0!important;
+  text-align:center!important;
+  font-size:18px!important;
+  font-weight:800!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#practiceView[data-category="긴 글"] #result.correct,
+#practiceView[data-category="긴 글"] #result.ok,
+#practiceView[data-category="긴 글"] #result.wrong,
+#practiceView[data-category="긴 글"] #result.bad{
+  visibility:visible!important;
+}
+
+/* 홈 입력방법: 위 S/D/F/J/K/L도 아래 kbd와 동일한 브라우저 기본 키박스 스타일 */
+#homeView .gmgj-home-keycap{
+  display:inline-block!important;
+  font-family:inherit!important;
+  font-size:inherit!important;
+  font-weight:inherit!important;
+  line-height:normal!important;
+  padding:1px 5px!important;
+  margin:0!important;
+  color:inherit!important;
+  background:#f7f7f7!important;
+  border:1px solid #78909c!important;
+  border-bottom:2px solid #78909c!important;
+  border-radius:3px!important;
+  box-shadow:none!important;
+  min-width:0!important;
+  height:auto!important;
+}
+</style>
+
+<script id="gmgj-v263-visible-fixes-script">
+(function(){
+  function fixProblemFive(){
+    if(typeof cat==="undefined" || cat!=="긴 글" || !q) return;
+    const all=DATA["긴 글"]||[];
+    const idx=all.indexOf(q);
+    if(idx!==4) return;
+    const p=document.getElementById("prompt");
+    if(!p) return;
+
+    /* 5번 문제는 사용자가 지정한 각 항목 앞에서 실제 줄바꿈 */
+    let text=q.prompt||"";
+    text=text
+      .replace(/\s*(①\s*)/,"\n$1")
+      .replace(/\s*(②\s*)/,"\n$1")
+      .replace(/\s*(ㄷ\.\s*)/,"\n$1")
+      .replace(/\s*(ㄹ\.\s*)/,"\n$1")
+      .replace(/\s*5\s+동암종택의/,"\n5 동암종택의");
+
+    p.textContent=text.replace(/^\n/,"");
+
+    /* 마지막 5는 글꼴 특수문자 대신 실제 사각형+5로 렌더링 */
+    const walker=document.createTreeWalker(p,NodeFilter.SHOW_TEXT);
+    const nodes=[];
+    while(walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function(n){
+      const pos=(n.nodeValue||"").indexOf("5 동암종택의");
+      if(pos<0) return;
+      const t=n.nodeValue;
+      const frag=document.createDocumentFragment();
+      frag.appendChild(document.createTextNode(t.slice(0,pos)));
+      const sq=document.createElement("span");
+      sq.className="square-five-v255";
+      sq.textContent="5";
+      sq.setAttribute("aria-label","네모 숫자 5");
+      frag.appendChild(sq);
+      frag.appendChild(document.createTextNode(" 동암종택의"+t.slice(pos+"5 동암종택의".length)));
+      n.parentNode.replaceChild(frag,n);
+    });
+  }
+
+  function placeResult(){
+    if(typeof cat==="undefined" || cat!=="긴 글") return;
+    const btn=document.getElementById("longTextSubmit256");
+    const r=document.getElementById("result");
+    if(btn && r && btn.nextSibling!==r){
+      btn.parentNode.insertBefore(r,btn.nextSibling);
+    }
+  }
+
+  /* v262의 상세 통계 문구는 표시하지 않고 정답/오답만 표시 */
+  const btn=document.getElementById("longTextSubmit256");
+  if(btn){
+    btn.addEventListener("click",function(){
+      setTimeout(function(){
+        if(typeof cat==="undefined" || cat!=="긴 글" || !q) return;
+        const r=document.getElementById("result");
+        if(!r) return;
+        r.textContent=(String(input||"")===String(q.braille||"")) ? "정답!" : "오답!";
+        r.style.visibility="visible";
+        placeResult();
+      },40);
+    });
+  }
+
+  function apply(){
+    fixProblemFive();
+    placeResult();
+  }
+  document.addEventListener("DOMContentLoaded",apply);
+  document.addEventListener("click",function(){setTimeout(apply,0);},true);
+  setTimeout(apply,0);
+})();
+</script>
