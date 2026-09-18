@@ -11301,6 +11301,90 @@ window.addEventListener("hashchange",()=>{
   }
 })();
 </script>
+
+<style id="gmgj-v282-card-title-and-random-feedback-final">
+/* 10·11·12번 카드 제목을 완전히 같은 크기로 고정 */
+#homeGrid .lesson[data-category="점자 읽기"] h3,
+#selectGrid .lesson[data-category="점자 읽기"] h3,
+#homeGrid .lesson[data-category="맞춤법"] h3,
+#selectGrid .lesson[data-category="맞춤법"] h3,
+#homeGrid .lesson[data-category="점자 랜덤 연습"] h3,
+#selectGrid .lesson[data-category="점자 랜덤 연습"] h3{
+  font-size:1.42rem!important;
+  line-height:1.4!important;
+  font-weight:900!important;
+  letter-spacing:0!important;
+  white-space:normal!important;
+}
+@media(max-width:768px){
+  #homeGrid .lesson[data-category="점자 읽기"] h3,
+  #selectGrid .lesson[data-category="점자 읽기"] h3,
+  #homeGrid .lesson[data-category="맞춤법"] h3,
+  #selectGrid .lesson[data-category="맞춤법"] h3,
+  #homeGrid .lesson[data-category="점자 랜덤 연습"] h3,
+  #selectGrid .lesson[data-category="점자 랜덤 연습"] h3{
+    font-size:1.28rem!important;
+    line-height:1.4!important;
+  }
+}
+/* 랜덤 연습 전용 정답/오답 문구: PC·태블릿·모바일 공통 */
+#randomPracticeFeedback{
+  display:none;
+  width:100%;
+  margin:0 0 12px;
+  padding:12px 16px;
+  border:2px solid #9fb3ba;
+  border-radius:12px;
+  text-align:center;
+  font-size:1.45rem;
+  line-height:1.35;
+  font-weight:900;
+  background:#fff;
+}
+#practiceView[data-category="점자 랜덤 연습"] #randomPracticeFeedback.show{display:block!important}
+#randomPracticeFeedback.ok{color:var(--good);border-color:var(--good);background:#f1faf4}
+#randomPracticeFeedback.no{color:var(--bad);border-color:var(--bad);background:#fff3f3}
+</style>
+<script id="gmgj-v282-random-feedback-visible-final">
+(function(){
+  function install(){
+    const practice=document.getElementById('practiceView');
+    const prompt=document.getElementById('prompt');
+    const resultText=document.getElementById('resultText');
+    if(!practice||!prompt||!resultText) return;
+    let banner=document.getElementById('randomPracticeFeedback');
+    if(!banner){
+      banner=document.createElement('div');
+      banner.id='randomPracticeFeedback';
+      banner.setAttribute('role','status');
+      banner.setAttribute('aria-live','assertive');
+      prompt.parentElement.insertBefore(banner,prompt);
+    }
+    function show(){
+      if(practice.getAttribute('data-category')!=='점자 랜덤 연습'){
+        banner.className=''; banner.textContent=''; return;
+      }
+      const txt=(resultText.textContent||'').trim();
+      if(txt==='정답!' || txt==='오답!'){
+        banner.textContent=txt;
+        banner.className='show '+(txt==='정답!'?'ok':'no');
+      }
+    }
+    new MutationObserver(show).observe(resultText,{childList:true,subtree:true,characterData:true});
+    /* 새 문제가 나오면 이전 결과 문구 제거 */
+    new MutationObserver(function(){
+      if(practice.getAttribute('data-category')==='점자 랜덤 연습'){
+        setTimeout(function(){
+          const txt=(resultText.textContent||'').trim();
+          if(txt!=='정답!' && txt!=='오답!'){ banner.className=''; banner.textContent=''; }
+        },0);
+      }
+    }).observe(prompt,{childList:true,subtree:true,characterData:true});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+})();
+</script>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
