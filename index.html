@@ -18628,3 +18628,18 @@ body.contrast #practiceView #answerDots .input-dot:not(.on){
   border-color:#6f6f6f!important;
 }
 </style>
+
+<style id="gmjg-v238-forced-colors-empty-dot-final">
+/* v238: 일반 고대비(forced-colors)에서 빈점만 채움점보다 약하게 표시 */
+@media (forced-colors:active){
+  #practiceView #typed .input-dot:not(.on),
+  #practiceView #answerDots .input-dot:not(.on),
+  #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+    forced-color-adjust:none!important;
+    background:transparent!important;
+    background-color:transparent!important;
+    border-color:#6f6f6f!important;
+    opacity:1!important;
+  }
+}
+</style>
