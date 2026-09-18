@@ -19757,3 +19757,127 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   vertical-align:baseline!important;
 }
 </style>
+
+<style id="gmgj-v261-long-result">
+/* 긴 글 제출 결과를 입력창 위에 분명하게 표시 */
+#practiceView[data-category="긴 글"] #result.correct,
+#practiceView[data-category="긴 글"] #result.ok{
+  visibility:visible!important;
+  display:block!important;
+  font-weight:800!important;
+  font-size:22px!important;
+  text-align:center!important;
+  margin:8px 0 10px!important;
+}
+#practiceView[data-category="긴 글"] #result.wrong,
+#practiceView[data-category="긴 글"] #result.bad{
+  visibility:visible!important;
+  display:block!important;
+  font-weight:800!important;
+  font-size:22px!important;
+  text-align:center!important;
+  margin:8px 0 10px!important;
+}
+</style>
+
+<script id="gmgj-v261-long-result-script">
+(function(){
+  const btn=document.getElementById("longTextSubmit256");
+  if(!btn) return;
+
+  /* 기존 onclick submit()은 그대로 사용하고,
+     채점 직후 기존 result 상태를 '정답!' / '오답!'으로 확실히 표시 */
+  btn.addEventListener("click",function(){
+    setTimeout(function(){
+      if(typeof cat==="undefined" || cat!=="긴 글") return;
+      const r=document.getElementById("result");
+      if(!r) return;
+
+      if(r.classList.contains("correct") || r.classList.contains("ok")){
+        r.textContent="정답!";
+        r.style.visibility="visible";
+      }else if(r.classList.contains("wrong") || r.classList.contains("bad")){
+        r.textContent="오답!";
+        r.style.visibility="visible";
+      }
+    },0);
+  });
+})();
+</script>
+
+<script id="gmgj-v262-longtext-detailed-result">
+(function(){
+  function kind(ch){
+    if(ch==="\n") return "line";
+    if(ch===" ") return "space";
+    return "char";
+  }
+
+  /* Levenshtein 정렬로 중간 공백 하나 때문에 뒤 전체가 오답으로 밀리지 않게 비교 */
+  function diffCounts(expected,actual){
+    const a=[...expected], b=[...actual], n=a.length, m=b.length;
+    const dp=Array.from({length:n+1},()=>new Uint16Array(m+1));
+    for(let i=0;i<=n;i++) dp[i][0]=i;
+    for(let j=0;j<=m;j++) dp[0][j]=j;
+
+    for(let i=1;i<=n;i++){
+      for(let j=1;j<=m;j++){
+        if(a[i-1]===b[j-1]) dp[i][j]=dp[i-1][j-1];
+        else dp[i][j]=Math.min(dp[i-1][j-1],dp[i-1][j],dp[i][j-1])+1;
+      }
+    }
+
+    let i=n,j=m, chars=0, spaces=0, lines=0;
+    function add(x,y){
+      const k=(x==="\n" || y==="\n") ? "line" :
+              (x===" " || y===" ") ? "space" : "char";
+      if(k==="line") lines++;
+      else if(k==="space") spaces++;
+      else chars++;
+    }
+
+    while(i>0 || j>0){
+      if(i>0 && j>0 && a[i-1]===b[j-1]){
+        i--; j--; continue;
+      }
+      const cur=dp[i][j];
+      /* 동률이면 치환을 우선해 한 오류를 여러 오류로 쪼개지 않음 */
+      if(i>0 && j>0 && dp[i-1][j-1]+1===cur){
+        add(a[i-1],b[j-1]); i--; j--; continue;
+      }
+      if(i>0 && dp[i-1][j]+1===cur){
+        add(a[i-1],""); i--; continue;
+      }
+      if(j>0 && dp[i][j-1]+1===cur){
+        add("",b[j-1]); j--; continue;
+      }
+      break;
+    }
+    return {chars:chars,spaces:spaces,lines:lines};
+  }
+
+  const btn=document.getElementById("longTextSubmit256");
+  if(!btn) return;
+
+  btn.addEventListener("click",function(){
+    setTimeout(function(){
+      if(typeof cat==="undefined" || cat!=="긴 글" || !q) return;
+      const r=document.getElementById("result");
+      if(!r) return;
+
+      const expected=String(q.braille||"");
+      const actual=String(input||"");
+
+      if(expected===actual){
+        r.textContent="정답!";
+        r.className="correct";
+      }else{
+        const d=diffCounts(expected,actual);
+        r.textContent="오답! · 틀린 글자 "+d.chars+"개 · 띄어쓰기 "+d.spaces+"회 · 줄바꿈 "+d.lines+"회";
+        r.className="wrong";
+      }
+      r.style.visibility="visible";
+    },20);
+  });
+})();
+</script>
