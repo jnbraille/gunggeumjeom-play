@@ -19661,3 +19661,26 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   display:none!important;
 }
 </style>
+
+<style id="gmgj-v258-remove-duplicate-submit">
+/* v253의 동적 제출 버튼은 더 높은 선택자 우선순위 때문에 다시 표시되고 있었음.
+   긴 글에서는 완전히 숨기고 v256 실제 제출 버튼 하나만 사용. */
+#practiceView[data-category="긴 글"] #longTextSubmit253{
+  display:none!important;
+}
+#practiceView[data-category="긴 글"] #longTextSubmit256{
+  display:block!important;
+}
+</style>
+<script id="gmgj-v258-remove-duplicate-submit-script">
+(function(){
+  function removeDuplicate(){
+    const old=document.getElementById("longTextSubmit253");
+    if(old) old.remove();
+  }
+  document.addEventListener("DOMContentLoaded",removeDuplicate);
+  document.addEventListener("click",function(){setTimeout(removeDuplicate,0);},true);
+  document.addEventListener("keydown",function(){setTimeout(removeDuplicate,0);},true);
+  setTimeout(removeDuplicate,0);
+})();
+</script>
