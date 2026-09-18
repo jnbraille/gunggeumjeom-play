@@ -11152,6 +11152,7 @@ window.addEventListener("hashchange",()=>{
 })();
 </script>
 <!-- v270: 검색/입력 필드 포커스 시 전역 점자 키보드 핸들러 차단 -->
+<!-- v273: 긴 글 일반모드 색상 규칙이 html 고대비 상태를 침범하지 않도록 선택자만 수정. 기존 고대비 CSS는 원형 유지. -->
 </body></html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
@@ -19995,16 +19996,16 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   box-shadow:none!important;
 }
 /* 일반 입력 점 */
-body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-dot.on{
+html:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-dot.on{
   background:#26383d!important;
   background-color:#26383d!important;
   border-color:#26383d!important;
 }
 /* 오답 점: 크기는 위 규칙 그대로, 색만 변경 */
-body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
-body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
-body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-dot.wrong,
-body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-dot.error{
+html:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
+html:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
+html:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-dot.wrong,
+html:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-dot.error{
   width:13px!important;
   height:13px!important;
   min-width:13px!important;
@@ -20020,116 +20021,3 @@ body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #
 }
 </style>
 
-<!-- v271: 일반 고대비 긴 글 점형 색상 복구 -->
-<style id="gmgj-v271-longtext-highcontrast-dot-final">
-/* v268의 일반모드 색상이 html.high-contrast/html.contrast 상태를 덮지 않도록
-   긴 글 고대비 점형 색상을 문서 최종 규칙으로 다시 고정한다. */
-html.high-contrast #practiceView[data-category="긴 글"] #typed .input-dot.on,
-body.high-contrast #practiceView[data-category="긴 글"] #typed .input-dot.on,
-html.contrast #practiceView[data-category="긴 글"] #typed .input-dot.on,
-body.contrast #practiceView[data-category="긴 글"] #typed .input-dot.on{
-  background:#ffffff!important;
-  background-color:#ffffff!important;
-  border-color:#ffffff!important;
-  box-shadow:none!important;
-  opacity:1!important;
-  visibility:visible!important;
-  forced-color-adjust:none!important;
-}
-html.high-contrast #practiceView[data-category="긴 글"] #typed .input-dot:not(.on),
-body.high-contrast #practiceView[data-category="긴 글"] #typed .input-dot:not(.on),
-html.contrast #practiceView[data-category="긴 글"] #typed .input-dot:not(.on),
-body.contrast #practiceView[data-category="긴 글"] #typed .input-dot:not(.on){
-  background:transparent!important;
-  background-color:transparent!important;
-  border-color:#6f6f6f!important;
-  box-shadow:none!important;
-  opacity:1!important;
-  visibility:visible!important;
-  forced-color-adjust:none!important;
-}
-/* 오답은 기존 빨강 유지 */
-html.high-contrast #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
-html.high-contrast #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
-body.high-contrast #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
-body.high-contrast #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
-html.contrast #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
-html.contrast #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
-body.contrast #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
-body.contrast #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on{
-  background:#ff3b30!important;
-  background-color:#ff3b30!important;
-  border-color:#ff3b30!important;
-}
-@media (forced-colors:active){
-  #practiceView[data-category="긴 글"] #typed .input-dot.on{
-    background:#ffffff!important;
-    background-color:#ffffff!important;
-    border-color:#ffffff!important;
-    forced-color-adjust:none!important;
-  }
-  #practiceView[data-category="긴 글"] #typed .input-dot:not(.on){
-    background:transparent!important;
-    background-color:transparent!important;
-    border-color:#6f6f6f!important;
-    forced-color-adjust:none!important;
-  }
-  #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
-  #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on{
-    background:#ff3b30!important;
-    background-color:#ff3b30!important;
-    border-color:#ff3b30!important;
-  }
-}
-</style>
-
-
-<!-- v272: 일반 고대비(prefers-contrast/forced-colors) 점형 색상 최종 수정 -->
-<style id="gmgj-v272-practice-highcontrast-dot-final">
-/* 브라우저/OS 일반 고대비에서는 클래스 유무와 관계없이 정상 입력점을 흰색으로 고정한다. */
-@media (prefers-contrast: more), (forced-colors: active){
-  #practiceView #typed .input-dot.on,
-  #practiceView #answerDots .input-dot.on,
-  #practiceView .answer-dots .input-dot.on{
-    background:#ffffff!important;
-    background-color:#ffffff!important;
-    border-color:#ffffff!important;
-    opacity:1!important;
-    visibility:visible!important;
-    forced-color-adjust:none!important;
-    box-shadow:none!important;
-  }
-  #practiceView #typed .input-dot:not(.on),
-  #practiceView #answerDots .input-dot:not(.on),
-  #practiceView .answer-dots .input-dot:not(.on){
-    background:transparent!important;
-    background-color:transparent!important;
-    border-color:#8f8f8f!important;
-    opacity:1!important;
-    visibility:visible!important;
-    forced-color-adjust:none!important;
-    box-shadow:none!important;
-  }
-  #practiceView #typed .input-cell.wrong .input-dot.on,
-  #practiceView #typed .input-cell.error .input-dot.on,
-  #practiceView #typed .input-dot.wrong,
-  #practiceView #typed .input-dot.error{
-    background:#ff4d4d!important;
-    background-color:#ff4d4d!important;
-    border-color:#ff4d4d!important;
-  }
-}
-/* 사이트 자체 고대비 클래스도 전체 연습화면에서 동일하게 처리 */
-html.high-contrast #practiceView #typed .input-dot.on,
-body.high-contrast #practiceView #typed .input-dot.on,
-html.contrast #practiceView #typed .input-dot.on,
-body.contrast #practiceView #typed .input-dot.on{
-  background:#ffffff!important; background-color:#ffffff!important; border-color:#ffffff!important; forced-color-adjust:none!important;
-}
-html.high-contrast #practiceView #typed .input-cell.wrong .input-dot.on,
-body.high-contrast #practiceView #typed .input-cell.wrong .input-dot.on,
-html.contrast #practiceView #typed .input-cell.wrong .input-dot.on,
-body.contrast #practiceView #typed .input-cell.wrong .input-dot.on{
-  background:#ff4d4d!important; background-color:#ff4d4d!important; border-color:#ff4d4d!important;
-}
-</style>
