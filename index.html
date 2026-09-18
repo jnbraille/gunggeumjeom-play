@@ -20211,3 +20211,27 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
 #practiceView[data-category="긴 글"] #answerDots{gap:7px!important}
 #practiceView[data-category="긴 글"] #answerPanel{max-height:60vh!important}
 </style>
+
+<style id="gmgj-v266-long-maintenance">
+/* 긴 글 카드에만 점검중 표시 */
+#homeView .lesson[data-category="긴 글"]::after{
+  content:"점검중";
+  display:inline-block;
+  margin-top:2px;
+  font-size:15px;
+  font-weight:800;
+  color:#d43b32;
+}
+</style>
+<script id="gmgj-v266-long-maintenance-script">
+(function(){
+  function addMaintenance(){
+    document.querySelectorAll('#homeView .lesson[data-category="긴 글"]').forEach(function(card){
+      /* 기존 설명은 그대로 두고 CSS ::after로 점검중만 추가 */
+      card.setAttribute("aria-label",(card.getAttribute("aria-label")||"긴 글 연습")+" 점검중");
+    });
+  }
+  document.addEventListener("DOMContentLoaded",addMaintenance);
+  setTimeout(addMaintenance,0);
+})();
+</script>
