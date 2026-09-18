@@ -18712,3 +18712,42 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   setTimeout(placeResult,0);
 })();
 </script>
+
+<style id="gmjg-v242-feedback-no-box">
+@media (min-width:769px){
+  #practiceView:not([data-category="맞춤법"]):not([data-category="점자 읽기"]) #result{
+    background:transparent!important;
+    border:0!important;
+    outline:0!important;
+    box-shadow:none!important;
+    border-radius:0!important;
+    padding:0!important;
+    min-height:0!important;
+    height:auto!important;
+  }
+}
+</style>
+
+<style id="gmjg-v243-hide-waiting-result">
+@media (min-width:769px){
+  #practiceView:not([data-category="맞춤법"]):not([data-category="점자 읽기"]) #result:not(.correct):not(.wrong):not(.ok):not(.bad){
+    visibility:hidden!important;
+  }
+}
+</style>
+<script id="gmjg-v243-hide-waiting-result-script">
+(function(){
+  function syncWaitingResult(){
+    if(typeof cat==="undefined" || cat==="맞춤법" || cat==="점자 읽기") return;
+    var r=document.getElementById("result");
+    var t=document.getElementById("resultText");
+    if(!r || !t) return;
+    var waiting=(t.textContent||"").trim()==="입력 대기";
+    r.style.visibility=waiting?"hidden":"visible";
+  }
+  document.addEventListener("click",function(){setTimeout(syncWaitingResult,0);},true);
+  document.addEventListener("keydown",function(){setTimeout(syncWaitingResult,0);},true);
+  document.addEventListener("DOMContentLoaded",syncWaitingResult);
+  setTimeout(syncWaitingResult,0);
+})();
+</script>
