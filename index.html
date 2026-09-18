@@ -18751,3 +18751,33 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   setTimeout(syncWaitingResult,0);
 })();
 </script>
+
+<style id="gmjg-v244-reading-whale-forced-colors-fix">
+@media (forced-colors:active){
+  html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot{
+    forced-color-adjust:none!important;
+    background-clip:padding-box!important;
+    box-shadow:none!important;
+    outline:none!important;
+  }
+  html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot.on{
+    background:#fff!important;
+    background-color:#fff!important;
+    border:2px solid #fff!important;
+    border-radius:50%!important;
+  }
+  html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+    background:transparent!important;
+    background-color:transparent!important;
+    border:2px solid #6f6f6f!important;
+    border-radius:50%!important;
+  }
+  html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-cell,
+  html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .braille-cell{
+    background:transparent!important;
+    background-color:transparent!important;
+    box-shadow:none!important;
+    outline:none!important;
+  }
+}
+</style>
