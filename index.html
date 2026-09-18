@@ -9188,7 +9188,10 @@ function startSpellingMode(){
   if(ruleEl) ruleEl.style.display="none";
   if(panel) panel.style.display="block";
   if(panels.length>1) panels[1].style.display="none";
-  if(result) result.style.display="none";
+  if(result){
+    result.style.display="none";
+    result.hidden=true;
+  }
   if(answerPanel) answerPanel.hidden=true;
   if(metrics) metrics.style.display="none";
 
@@ -9219,7 +9222,10 @@ function stopSpellingMode(){
   if(promptEl) promptEl.style.display="";
   if(ruleEl) ruleEl.style.display="";
   if(panels.length>1) panels[1].style.display="";
-  if(result) result.style.display="";
+  if(result){
+    result.hidden=false;
+    result.style.display="";
+  }
   if(metrics) metrics.style.display="";
 }
 function nextSpellingV17(){
@@ -9280,8 +9286,8 @@ function nextSpellingV17(){
       playFeedbackSound(isCorrect);
       const fb=document.getElementById("spellingFb");
       if(fb){
-        fb.hidden=false;
-        fb.style.display="block";
+        fb.hidden=true;
+        fb.style.display="none";
       }
       const mark=document.createElement("span");
       mark.className="spelling-choice-mark";
@@ -9293,7 +9299,7 @@ function nextSpellingV17(){
 
       if(isCorrect){
         btn.classList.add("correct","selected-answer");
-        document.getElementById("spellingFb").innerHTML="<strong>정답!</strong> "+spellingCurrent.answer;
+        document.getElementById("spellingFb").replaceChildren();
         if(wrongOnlyMode){
           removeWrongQuestion("맞춤법",spellingCurrent);
           const currentOrderPos=spellingPos-1;
@@ -9309,7 +9315,7 @@ function nextSpellingV17(){
             x.classList.add("correct-answer");
           }
         });
-        document.getElementById("spellingFb").innerHTML="<strong>오답.</strong> 정답은 ‘"+spellingCurrent.answer+"’입니다.";
+        document.getElementById("spellingFb").replaceChildren();
         recordWrongQuestion("맞춤법",spellingCurrent,opt);
       }
 
