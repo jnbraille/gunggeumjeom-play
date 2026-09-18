@@ -19152,3 +19152,234 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   setTimeout(placeLongAnswer,0);
 })();
 </script>
+
+<style id="gmgj-v250-longtext-linebreaks">
+/* 긴 글의 실제 줄바꿈을 화면에서도 한 줄 단위로 유지 */
+#practiceView[data-category="긴 글"] #typed .long-line-break,
+#practiceView[data-category="긴 글"] #answerDots .long-line-break{
+  flex-basis:100%!important;
+  width:0!important;
+  height:0!important;
+  padding:0!important;
+  margin:0!important;
+}
+#practiceView[data-category="긴 글"] .desktop-input-hint::after{
+  content:" · 긴 글: Enter 줄바꿈 / Ctrl+Enter 제출";
+  font-weight:700;
+}
+</style>
+
+<script id="gmgj-v250-longtext-exact-layout-enter">
+(function(){
+  const EXACT_LONG_ANSWERS=["    ⠠⠤⠠⠈⠥⠂⠠⠨⠕ ⠨⠍⠨⠣⠺ ⠍⠗⠊⠗⠠⠻⠤⠄\n  ⠉⠉⠵ ⠈⠪⠐⠮ ⠍⠗⠚⠗ ⠑⠏⠒⠫ ⠚⠨⠕ ⠣⠒⠴⠪⠑\n⠊⠽⠒⠊⠈⠥ ⠠⠗⠶⠫⠁⠚⠗⠌⠊⠲ ⠧⠗⠉⠜⠚⠑⠡ ⠉⠗⠫\n⠨⠥⠢ ⠨⠾⠝ ⠈⠪⠺ ⠼⠃⠚ ⠊⠪⠶⠐ ⠼⠉⠚ ⠊⠪⠶⠮\n⠍⠠⠪⠃⠈⠥ ⠘⠯⠠⠇⠶⠚⠊⠈⠥ ⠠⠗⠶⠫⠁⠚⠗⠌⠊⠾\n⠸⠎⠰⠎⠐⠎⠢ ⠈⠪⠊⠥ ⠨⠈⠕⠺ ⠼⠃⠚ ⠊⠪⠶⠐\n⠼⠉⠚ ⠊⠪⠶⠮ ⠍⠠⠪⠃⠈⠥ ⠘⠯⠠⠇⠶⠚⠊⠈⠥\n⠠⠗⠶⠫⠁⠚⠑⠡⠠⠎ ⠌⠌⠊ ⠑⠥⠐⠪⠈⠝⠌⠊ ⠚⠈⠥ ⠈⠪\n⠨⠐⠕⠝ ⠨⠍⠨⠎⠣⠒⠅⠣ ⠘⠎⠐⠕⠑⠡ ⠎⠠⠨⠎⠉ ⠁⠎\n⠉⠗⠫ ⠈⠪⠈⠞ ⠘⠥⠈⠝ ⠊⠽⠑⠡ ⠎⠠⠨⠎⠉\n⠠⠕⠲⠎⠠⠎⠱⠌⠊⠲\n  ⠎⠠⠊⠹⠚⠊⠵ ⠈⠪⠫ ⠈⠪⠺ ⠼⠃⠚ ⠊⠪⠶⠐\n⠼⠉⠚ ⠊⠪⠶⠮ ⠍⠠⠪⠃⠈⠥ ⠘⠯⠠⠇⠶⠚⠊⠈⠥\n⠉⠪⠠⠈⠕⠨⠕ ⠑⠂⠣⠜⠨⠕ ⠉⠪⠠⠈⠕⠈⠕⠑⠒ ⠚⠑⠡\n⠈⠪⠉⠵ ⠊⠶⠨⠶ ⠨⠍⠨⠎⠣⠒⠅⠈⠝ ⠊⠧⠗ ⠕⠌⠎⠌⠊⠲\n⠈⠪⠉⠵ ⠨⠕⠈⠪⠢ ⠈⠪⠫ ⠈⠽⠐⠥⠃⠈⠥ ⠈⠥⠊⠭⠚⠨⠕\n⠍⠗⠊⠗⠚⠊⠉⠵ ⠈⠞ ⠣⠂⠣⠜ ⠚⠗⠌⠊⠲\n  ⠤⠤⠘⠁⠧⠒⠠⠎⠐ ⠰⠦⠠⠠⠍⠁⠠⠪⠐⠎⠛\n⠈⠥⠘⠗⠁⠴⠆⠨⠍⠶⠝⠠⠎", "    ⠐⠦⠉⠣⠺ ⠘⠥⠘⠗⠄⠊⠎⠶⠎⠐⠕ ⠠⠕⠨⠞⠴⠂\n  ⠍⠐⠕ ⠚⠂⠑⠎⠉⠕⠉⠵ ⠘⠉⠮⠈⠍⠗⠐⠮ ⠠⠈⠏⠗⠎\n⠊⠪⠐⠕⠂ ⠠⠊⠗⠑⠊ ⠠⠦⠣⠕⠈⠥ ⠍⠐⠕\n⠘⠥⠘⠗⠄⠊⠎⠶⠎⠐⠕⠴⠄ ⠚⠑⠡⠠⠎ ⠉⠗ ⠎⠶⠊⠎⠶⠕⠐\n⠓⠥⠊⠁⠈⠎⠐⠱ ⠨⠍⠠⠕⠈⠷ ⠚⠗⠌⠊⠲ ⠑⠱⠉⠪⠐⠕⠐⠮\n⠠⠝⠄⠠⠠⠕⠁⠕⠉ ⠈⠎⠉⠪⠐⠕⠈⠥ ⠇⠠⠱⠠⠎ ⠊⠶⠠⠟⠺\n⠕⠃⠠⠻⠵ ⠑⠯⠐⠷ ⠠⠫⠊⠐⠥⠃⠈⠕ ⠈⠪⠨⠕⠎⠃⠄⠉⠵\n⠻⠫⠢⠉⠕⠢ ⠺⠈⠧⠒ ⠠⠍⠘⠂⠠⠫⠨⠕ ⠑⠿⠠⠊⠶\n⠑⠱⠉⠪⠐⠕⠊⠮⠚⠒⠓⠝ ⠠⠊⠎⠉⠎⠢⠈⠕⠠⠱⠌⠈⠾⠑⠒ ⠱\n⠠⠕⠁⠈⠍ ⠘⠎⠠⠾⠘⠥⠂ ⠊⠗⠉⠵ ⠸⠎⠚⠈⠥\n⠨⠥⠈⠪⠑⠴⠈⠥ ⠑⠥⠉⠒ ⠚⠎⠶⠈⠎⠲ ⠨⠥⠫⠁⠊⠥\n⠘⠎⠐⠕⠨⠕ ⠣⠒⠴⠈⠥ ⠑⠥⠣ ⠊⠍⠎⠌⠊⠫ ⠠⠗⠁ ⠑⠅\n⠋⠪⠈⠥ ⠨⠁⠵ ⠘⠥⠨⠈⠕⠐⠮ ⠑⠒⠊⠪⠉⠵ ⠈⠾\n⠚⠂⠑⠎⠉⠕ ⠑⠭⠄⠕⠎⠌⠊⠲", "    ⠫⠮ ⠘⠥⠜⠁⠪⠐⠥ ⠠⠦⠨⠶⠠⠍⠤⠗⠐\n⠠⠈⠥⠆⠘⠝⠶⠕⠐ ⠠⠇⠶⠘⠳⠕⠴⠄ ⠎⠠⠊⠗⠬⠦\n  ⠠⠕⠁⠬⠶ ⠈⠷⠰⠍⠶⠮ ⠑⠹⠪⠑⠡ ⠠⠕⠢⠚⠳⠈⠧⠒\n⠨⠕⠂⠚⠧⠒⠈⠧ ⠊⠿⠑⠗⠁ ⠈⠻⠚⠧⠧ ⠫⠦⠵ ⠫⠁⠨⠿\n⠨⠕⠂⠘⠻⠮ ⠌⠘⠶⠚⠂ ⠠⠍ ⠕⠌⠉⠵ ⠸⠎⠪⠐⠥\n⠉⠓⠉⠌⠊⠲ ⠕⠂⠘⠍ ⠈⠷⠰⠍⠶⠮ ⠑⠹⠪⠑⠡ ⠈⠵⠩⠁⠕\n⠓⠵⠓⠵⠚⠗⠨⠟⠊⠉⠵ ⠨⠥⠇ ⠈⠳⠈⠧⠊⠥ ⠉⠣⠧⠌⠊⠲\n  ⠨⠶⠠⠍⠤⠗⠉⠵ ⠑⠈⠪⠉⠝⠠⠩⠢⠐⠆⠋⠂⠐⠩⠢ ⠊⠪⠶\n⠑⠍⠈⠕⠨⠕⠂⠈⠧ ⠘⠕⠓⠑⠟ ⠴⠠⠃⠼⠑⠐⠮ ⠙⠍⠶⠘⠍⠚\n⠚⠢⠩⠚⠈⠥ ⠕⠌⠈⠥⠐ ⠊⠿⠑⠗⠁ ⠈⠻⠚⠧ ⠌⠘⠶\n⠚⠬⠈⠧⠫ ⠕⠌⠉⠵ ⠥⠂⠐⠝⠇⠒⠺ ⠚⠢⠐⠜⠶⠕ ⠑⠒⠴⠵\n⠸⠎⠪⠐⠥ ⠉⠓⠉⠌⠊⠲ ⠘⠱⠑⠝⠠⠊⠍⠈⠕⠝⠉⠵\n⠼⠁⠚⠚⠴⠛⠲⠊⠶ ⠼⠋⠛⠲⠓⠴⠛⠲⠺ ⠊⠒⠘⠗⠁⠨⠕⠂⠕\n⠊⠮⠎ ⠕⠌⠉⠵ ⠸⠎⠪⠐⠥ ⠘⠛⠠⠹⠊⠧⠗⠌⠊⠲", "    ⠐⠶⠑⠝⠋⠿ ⠊⠝⠂⠓⠣⠝ ⠈⠕⠊⠗⠎ ⠇⠉⠵\n⠇⠐⠣⠢⠊⠮⠶⠂\n  ⠥⠉⠮⠉⠂ ⠩⠑⠻ ⠈⠧⠒⠈⠧⠶⠨⠕⠐⠥⠊⠥ ⠕⠐⠪⠢⠮\n⠠⠊⠞⠰⠕⠈⠥ ⠕⠌⠉⠵ ⠑⠝⠋⠿ ⠊⠝⠂⠓⠐ ⠁⠎⠟⠨⠕\n⠙⠥⠓⠞⠇⠕⠓⠪⠝⠠⠎ ⠠⠦⠑⠝⠋⠿ ⠊⠝⠂⠓⠴⠄⠐⠮\n⠈⠎⠢⠠⠗⠁⠚⠑⠡ ⠈⠧⠒⠈⠧⠶⠇⠶⠙⠍⠢⠮ ⠠⠥⠈⠗⠚⠉⠵\n⠈⠝⠠⠕⠑⠯⠕ ⠨⠯⠨⠕⠎ ⠉⠣⠷⠊⠲ ⠈⠪⠨⠍⠶⠝⠠⠎⠊⠥\n⠈⠧⠒⠈⠧⠶⠈⠗⠁⠊⠮⠝⠈⠝ ⠓⠪⠁⠘⠳⠚⠕ ⠟⠈⠕⠫ ⠕⠌\n⠈⠥⠄⠵ ⠠⠦⠠⠫⠕⠐⠣⠶⠠⠍⠇⠶⠠⠕⠨⠶⠴⠄⠕⠊⠲\n  ⠘⠕⠭⠚⠒ ⠊⠝⠂⠓⠣⠧ ⠠⠪⠃⠩⠒⠚⠒\n⠑⠷⠠⠛⠈⠕⠚⠍⠉⠵ ⠘⠝⠓⠪⠉⠢⠮ ⠠⠝⠈⠌⠨⠹⠟ ⠠⠇⠂\n⠠⠍⠰⠯⠈⠍⠁⠺ ⠨⠕⠍⠗⠝ ⠥⠂⠐⠱⠉⠧⠌⠊⠲ ⠨⠢⠠⠕\n⠕⠍⠄ ⠈⠍⠁⠫⠐⠮ ⠊⠥⠂⠣⠘⠥⠑⠡ ⠘⠶⠈⠮⠐⠣⠊⠝⠠⠕\n⠊⠝⠂⠓⠐ ⠓⠣⠕⠦⠄⠠⠨⠣⠥⠙⠪⠐⠣⠜⠠⠴⠺ ⠊⠝⠂⠓⠊⠥\n⠇⠨⠻⠕ ⠊⠐⠪⠨⠕ ⠣⠒⠴⠊⠲ ⠕⠊⠮ ⠑⠥⠊⠍ ⠠⠇⠂\n⠊⠗⠈⠍⠁⠕⠊⠲", "    ⠨⠿⠫⠄⠨⠕⠃ ⠊⠠⠎⠄ ⠨⠿⠘⠍⠫ ⠨⠛⠘⠕⠚⠒\n⠊⠠⠎⠄ ⠈⠥⠓⠗⠁⠺ ⠑⠄⠐⠆⠑⠎⠄ ⠕⠜⠈⠕\n  ⠈⠥⠓⠗⠁⠘⠳⠐⠥ ⠰⠣⠘⠳⠚⠧⠚⠒ ⠪⠢⠠⠕⠁⠮\n⠉⠗⠠⠝⠛ ⠓⠍⠎ ⠙⠪⠐⠥⠈⠪⠐⠗⠢⠮ ⠑⠐⠡⠚⠗⠌⠎⠬⠲\n  ⠼⠂ ⠰⠕⠣⠢⠈⠥⠓⠗⠁⠺ ⠰⠣⠧ ⠊⠠⠕⠁\n  ⠼⠆ ⠨⠻⠨⠗⠨⠿⠓⠗⠁⠺ ⠠⠿⠚⠧⠨⠍\n  ⠿⠔⠲ ⠰⠕⠂⠈⠌⠨⠗⠺ ⠊⠥⠠⠕⠐⠣⠁\n  ⠿⠂⠲ ⠠⠍⠤⠗⠊⠶⠺ ⠠⠤⠚⠎⠄⠨⠝⠇⠘⠕⠘⠕⠢⠘⠃⠤\n  ⠸⠦⠼⠑⠴⠇ ⠊⠿⠣⠢⠨⠿⠓⠗⠁⠺ ⠣⠒⠊⠿⠈⠍⠁⠠⠕\n⠊⠪⠶ ⠊⠠⠎⠄ ⠫⠨⠕ ⠪⠢⠠⠕⠁⠮ ⠈⠥⠓⠗⠁⠮\n⠘⠶⠑⠛⠚⠗⠠⠎ ⠨⠕⠁⠨⠎⠃ ⠑⠒⠊⠮⠈⠥ ⠑⠄⠘⠥⠈⠕⠊\n⠚⠉⠵ ⠙⠪⠐⠥⠈⠪⠐⠗⠢⠕⠝⠬⠲", "    ⠈⠥⠋⠙⠝⠟ ⠈⠹⠨⠻⠊⠽⠑⠡ ⠝⠠⠪⠙⠪⠐⠝⠠⠥⠐\n⠋⠥⠂⠐⠝⠠⠪⠓⠝⠐⠥⠂ ⠈⠧⠒⠐⠕⠚⠐⠱⠑⠡ ⠊⠪⠐⠕⠃\n⠋⠎⠙⠕\n  ⠋⠎⠙⠕⠝⠉⠵ ⠋⠙⠝⠟⠕ ⠊⠐⠜⠶ ⠚⠢⠩⠊⠧⠗ ⠕⠌\n⠁⠎ ⠋⠙⠝⠟⠝ ⠑⠟⠫⠢⠚⠒ ⠇⠐⠣⠢⠕⠐⠣⠑⠡ ⠋⠎⠙⠕\n⠠⠭ ⠋⠙⠝⠟ ⠚⠢⠐⠜⠶⠮ ⠣⠂⠣⠊⠍⠉⠵ ⠈⠝ ⠨⠥⠴⠊\n⠋⠙⠝⠟⠵ ⠋⠥⠂⠊⠪⠘⠪⠐⠍ ⠒⠕ ⠚⠗⠒⠊⠪ ⠊⠪⠐⠕⠃\n⠒⠕⠣⠑⠝⠐⠕⠋⠉⠥⠐ ⠝⠠⠪⠙⠪⠐⠝⠠⠥ ⠠⠛⠪⠐⠥\n⠑⠒⠴⠊⠲ ⠝⠠⠪⠙⠪⠐⠝⠠⠥⠉⠵ ⠑⠄⠈⠧ ⠚⠜⠶⠕ ⠨⠟\n⠋⠙⠝⠟⠕ ⠫⠨⠶ ⠑⠒⠴⠮ ⠸⠎ ⠫⠦⠨⠕⠑⠒⠐ ⠚⠒ ⠨\n⠰⠍⠰⠯⠚⠉⠵ ⠠⠕⠫⠒⠕ ⠠⠨⠂⠃⠈⠥ ⠑⠠⠕⠉⠵ ⠜⠶⠊\n⠨⠹⠎ ⠠⠕⠂⠨⠝ ⠠⠎⠃⠰⠍⠗⠚⠉⠵ ⠋⠙⠝⠟ ⠜⠶⠵\n⠇⠶⠊⠗⠨⠹⠪⠐⠥ ⠨⠹⠮ ⠠⠍ ⠕⠌⠊⠲ ⠘⠒⠑⠡\n⠋⠥⠂⠊⠪⠘⠪⠐⠍⠉⠵ ⠰⠣⠒⠑⠯⠝ ⠏⠒⠊⠍⠐⠮ ⠥⠐⠗⠒\n⠠⠕⠫⠒ ⠍⠐⠱⠉⠗⠉⠵ ⠘⠶⠠⠕⠁⠕⠎⠠⠎ ⠋⠙⠝⠟\n⠚⠢⠐⠜⠶⠕ ⠉⠥⠲⠣⠨⠕⠂ ⠠⠍ ⠕⠌⠊⠲", "    ⠐⠦⠙⠡⠠⠪⠓⠥⠐⠣⠶⠴⠂ ⠑⠡⠱⠁⠐⠱⠁ ⠘⠃⠇⠶\n⠑⠝⠉⠩⠫ ⠈⠳⠨⠻⠊⠽⠒⠊\n  ⠰⠽⠊ ⠍⠠⠪⠶⠨ ⠕⠈⠻⠈⠩⠉⠵ ⠠⠈⠥⠠⠈⠥ ⠓⠥⠑\n⠠⠍⠨⠝⠘⠕⠐⠮ ⠰⠽⠨⠿ ⠑⠝⠉⠩⠐⠥ ⠠⠾⠘⠥⠟⠊⠲ ⠕\n⠑⠝⠉⠩⠉⠵ ⠑⠡⠱⠁⠐⠱⠁⠝ ⠨⠥⠴⠵ ⠓⠥⠑⠓⠥⠨⠪⠃⠮\n⠉⠎⠴⠎ ⠘⠒⠨⠍⠁⠚⠒ ⠠⠍⠨⠝⠘⠕⠧ ⠊⠂⠁ ⠩⠁⠠⠍⠐\n⠑⠄⠮ ⠉⠗⠒ ⠑⠝⠉⠩⠊⠲\n  ⠰⠎⠄ ⠙⠡⠠⠌⠙⠪⠝ ⠊⠥⠨⠾⠚⠒ ⠨⠟⠠⠻⠵\n⠫⠒⠙⠡⠚⠑⠡⠠⠎⠊⠥ ⠈⠾⠫⠶⠚⠈⠝ ⠑⠹⠮ ⠠⠍ ⠕⠌⠉\n⠠⠦⠠⠘⠿ ⠘⠎⠑⠍⠐⠕⠴⠄⠐⠮ ⠰⠽⠨⠿ ⠑⠝⠉⠩⠐⠥\n⠉⠗⠉⠥⠴⠉⠵⠊⠲ ⠙⠻⠠⠥ ⠫⠨⠶ ⠨⠮⠈⠱ ⠑⠹⠉⠵ ⠰\n⠫⠒⠠⠕⠁⠟ ⠠⠠⠍⠁⠘⠎⠑⠍⠐⠕⠝ ⠈⠥⠈⠍⠑⠑⠍⠠⠪⠐\n⠓⠿⠙⠦ ⠊⠪⠶⠮ ⠾⠅⠎ ⠧⠒⠠⠻⠚⠒ ⠊⠕⠨⠎⠓⠪\n⠑⠝⠉⠩⠊⠲\n  ⠑⠨⠕⠑⠁⠪⠐⠥ ⠰⠎⠄ ⠊⠥⠨⠾ ⠑⠒⠝ ⠫⠶⠐⠱⠁⠚\n⠍⠠⠪⠶ ⠚⠍⠘⠥⠝ ⠊⠪⠶⠈⠪⠁⠚⠒ ⠨⠾⠚⠌⠘⠟⠺ ⠰⠽\n⠑⠝⠉⠩⠉⠵ ⠚⠪⠁⠑⠉⠮ ⠠⠊⠹⠘⠭⠁⠕⠊⠲ ⠚⠪⠁⠑⠉⠮\n⠨⠟⠗⠁⠕ ⠊⠮⠎⠫⠒ ⠓⠪⠁⠨⠝ ⠠⠥⠠⠪⠐⠥ ⠑⠒⠊⠵\n⠘⠮⠐⠗⠁ ⠠⠊⠹⠘⠭⠁⠕⠝ ⠨⠍⠠⠈⠍⠑⠕⠐⠮ ⠈⠍⠏\n⠫⠉⠕⠠⠕⠐⠥ ⠊⠎⠚⠒ ⠑⠝⠉⠩⠊⠲", "    ⠘⠶⠓⠒⠠⠥⠉⠡⠊⠒ ⠨⠾ ⠠⠝⠈⠌⠐⠮ ⠇⠐⠥⠨⠃\n⠊⠣⠕⠉⠎⠑⠣⠕⠓⠪\n  ⠰⠻⠰⠻ ⠙⠗⠠⠡⠈⠧ ⠋⠞⠐⠎⠙⠯⠚⠒ ⠘⠨⠕⠐\n⠚⠞⠐⠎⠶⠚⠒ ⠠⠱⠰⠪⠧ ⠨⠥⠠⠈⠕⠐ ⠼⠃⠐⠂⠓\n⠫⠐⠪⠑⠣⠺ ⠚⠝⠎⠠⠪⠓⠣⠕⠂ ⠊⠪⠶ ⠼⠁⠊⠛⠚ ⠉⠡⠊\n⠘⠭⠈⠥ ⠙⠗⠠⠡⠪⠐⠥ ⠊⠪⠶⠨⠶⠚⠒ ⠕⠊⠮⠵ ⠠⠟⠉⠉\n⠪⠢⠣⠁⠈⠧ ⠚⠢⠠⠈⠝ ⠑⠥⠢⠮ ⠚⠵⠊⠮⠎ ⠊⠗⠒⠊⠲\n⠚⠉⠮⠮ ⠠⠨⠕⠐⠪⠈⠥⠐ ⠚⠎⠐⠕⠐⠮ ⠊⠥⠂⠐⠕⠈⠥⠐\n⠰⠣⠈⠕⠐⠮ ⠚⠉⠵ ⠰⠍⠢ ⠊⠿⠨⠁⠵ ⠻⠚⠧\n⠐⠶⠓⠥⠬⠕⠂ ⠘⠢⠺ ⠳⠈⠕⠶⠂ ⠠⠭ ⠨⠷\n⠓⠪⠐⠣⠘⠥⠂⠓⠐⠮ ⠠⠊⠎⠥⠂⠐⠕⠈⠝ ⠚⠒⠊⠲\n  ⠦⠋⠥⠐⠥⠉⠼⠁⠊⠐⠥ ⠍⠯⠚⠒ ⠇⠐⠣⠢⠊⠮⠮\n⠍⠗⠐⠥⠚⠈⠥ ⠠⠕⠲⠎⠌⠊⠲⠴⠐⠣⠉⠵ ⠑⠝⠢⠘⠎⠊⠮⠺\n⠘⠐⠣⠢⠰⠎⠐⠎⠢⠐ ⠘⠶⠓⠒⠠⠥⠉⠡⠊⠒⠕ ⠰⠽⠰⠥⠺ ⠻\n⠫⠇⠐⠥ ⠠⠾⠘⠥⠟ ⠕ ⠉⠥⠐⠗⠉⠵ ⠠⠛⠠⠕⠁⠫⠒⠝\n⠫⠁⠨⠿ ⠪⠢⠏⠒ ⠰⠣⠓⠪⠐⠮ ⠚⠍⠗⠃⠠⠠⠮⠈⠥\n⠈⠪⠃⠈⠕⠜ ⠘⠕⠂⠘⠥⠊⠪ ⠠⠕⠶⠈⠮ ⠰⠣⠓⠪ ⠼⠁⠍⠗\n⠊⠂⠠⠻⠚⠉⠵ ⠱⠁⠇⠐⠮ ⠠⠠⠎⠌⠊⠲", "  ⠙⠍⠶⠊⠝⠶⠕⠝⠈⠝ ⠘⠍⠦⠨⠃⠚⠟ ⠎⠢⠨⠕\n⠣⠫⠠⠠⠕⠉⠵ ⠉⠎⠑⠍ ⠑⠍⠠⠎⠏⠌⠊⠲ ⠁⠥\n⠡⠠⠈⠥⠆⠕⠲⠝ ⠑⠍⠁⠁⠱⠠⠎ ⠠⠊⠎⠉⠗⠐⠱⠫⠒\n⠣⠐⠪⠢⠊⠃⠈⠥ ⠚⠣⠜⠒ ⠉⠘⠕ ⠠⠊⠗⠑⠛⠝ ⠑⠣⠪⠢⠕\n⠣⠙⠣⠌⠊⠲ ⠉⠘⠕⠫ ⠨⠯⠮ ⠙⠯⠨⠕ ⠑⠥⠄⠚⠒⠊⠑⠡\n⠈⠯⠢⠎ ⠨⠍⠁⠪⠐⠕⠐⠣⠲ ⠁⠉ ⠙⠍⠶⠊⠝⠶⠕⠉⠵ ⠈⠪\n⠸⠎⠝ ⠨⠾⠚⠱ ⠣⠐⠣⠶⠈⠥⠄⠚⠨⠕ ⠣⠒⠴⠣⠌⠊⠲\n⠈⠪⠐⠎⠈⠥⠉⠵ ⠠⠈⠥⠆⠝⠠⠎ ⠠⠊⠒ ⠠⠈⠯⠮ ⠨⠍⠑⠱\n⠎⠢⠨⠕ ⠣⠫⠠⠠⠕⠧ ⠨⠈⠕⠉⠵ ⠨⠾⠚⠱ ⠊⠐⠪⠈⠝\n⠠⠗⠶⠈⠱⠌⠨⠕⠑⠒ ⠈⠪⠐⠗⠊⠥ ⠣⠨⠍ ⠌⠠⠘⠪⠊⠈⠥\n⠑⠂⠚⠗⠌⠊⠲ ⠙⠍⠶⠊⠝⠶⠕⠊⠮⠵ ⠈⠪⠉⠱⠐⠮\n⠬⠑⠥⠨⠥⠑⠥ ⠠⠊⠪⠔⠎⠘⠥⠊⠎⠉⠕ ⠰⠭⠫⠁⠮\n⠈⠷⠊⠍⠠⠝⠍⠑⠱ ⠑⠂⠚⠗⠌⠊⠲ ⠁⠉ ⠇⠠⠕⠂⠐\n⠈⠪⠉⠱⠉⠵ ⠠⠝⠇⠶⠝⠠⠎ ⠨⠝⠕⠂ ⠌⠠⠘⠎⠌⠪⠑⠱\n⠣⠐⠪⠢⠊⠣⠛ ⠨⠶⠑⠕⠰⠎⠐⠎⠢ ⠘⠍⠊⠪⠐⠎⠃⠈⠥\n⠊⠂⠋⠥⠢⠚⠗⠌⠊⠲\n⠰⠦⠣⠒⠊⠝⠐⠪⠠⠝⠒ ⠊⠿⠚⠧ ⠨⠾⠨⠕⠃⠴⠆ ⠨⠍⠶⠝⠠", "  ⠉⠍⠐⠕⠚⠥⠉⠵ ⠕⠐⠩⠁ ⠨⠾ ⠨⠎⠢⠚⠧⠊⠧⠗\n⠉⠥⠐⠣⠒⠠⠗⠁ ⠘⠯⠠⠈⠥⠆⠮ ⠉⠗⠠⠘⠍⠢⠠⠪⠃⠉⠕⠊⠲\n⠰⠽⠊⠗ ⠰⠍⠐⠱⠁⠝ ⠊⠥⠊⠂⠚⠒ ⠠⠛⠫⠒⠕⠃⠉⠕⠊⠲\n⠕⠨⠝ ⠕⠐⠩⠁⠚⠂ ⠠⠕⠫⠒⠕⠃⠉⠕⠊⠲ ⠘⠂⠇⠊⠗⠫\n⠘⠍⠊⠪⠐⠎⠃⠈⠝ ⠉⠍⠐⠕⠚⠥⠐⠮ ⠉⠥⠴⠣⠨⠍⠃⠉⠕⠊⠲\n⠕⠚⠍ ⠼⠁ ⠊⠒⠈⠧ ⠙⠝⠎⠐⠕⠶⠐ ⠼⠃ ⠊⠒⠕\n⠰⠣⠐⠌⠊⠗⠐⠥ ⠘⠛⠐⠕⠊⠽⠃⠉⠕⠊⠲ ⠕⠂ ⠊⠒⠈⠧ ⠕\n⠊⠒⠝ ⠘⠍⠦⠎ ⠕⠌⠊⠾ ⠋⠑⠝⠐⠣⠉⠵ ⠑⠥⠊⠍\n⠠⠈⠎⠨⠱⠌⠈⠥⠐ ⠻⠇⠶ ⠠⠭ ⠼⠑⠓⠰⠥\n⠨⠕⠨⠎⠢⠘⠍⠓⠎⠉⠵ ⠇⠢ ⠊⠒ ⠐⠥⠋⠝⠄⠝ ⠠⠕⠂⠐⠟\n⠥⠐⠵⠠⠨⠭ ⠇⠶⠊⠒ ⠋⠑⠝⠐⠣⠑⠒ ⠨⠁⠊⠿⠚⠃⠉⠕⠊⠲\n⠻⠇⠶ ⠠⠭ ⠼⠁⠘⠛ ⠨⠕⠨⠎⠢⠘⠍⠓⠎ ⠙⠍⠐⠵ ⠨⠕⠈\n⠘⠥⠕⠃⠉⠕⠊⠲\n  ⠑⠨⠕⠑⠁⠪⠐⠥ ⠑⠥⠚⠻ ⠍⠗⠠⠻⠕\n⠘⠛⠐⠕⠊⠽⠃⠉⠕⠊⠲ ⠚⠨⠕⠑⠒ ⠑⠭⠙⠬ ⠠⠭⠊⠥⠟\n⠰⠥⠠⠭ ⠼⠛⠲⠑⠴⠅⠍⠲⠠⠫⠨⠕⠉⠵ ⠊⠥⠊⠂⠚⠨⠕\n⠑⠥⠄⠚⠗⠌⠠⠪⠃⠉⠕⠊⠲\n  ⠈⠳⠈⠍⠁ ⠑⠥⠚⠻ ⠍⠗⠠⠻⠵ ⠈⠏⠗⠊⠥⠝\n⠣⠒⠰⠣⠁⠚⠨⠕ ⠑⠥⠄⠚⠗⠌⠠⠪⠃⠉⠕⠊⠲\n⠚⠒⠈⠍⠁⠚⠶⠈⠿⠍⠨⠍⠡⠈⠍⠏⠒⠵ ⠚⠥⠨⠍ ⠉⠢⠠⠨⠭\n⠘⠊⠣⠝ ⠠⠊⠞⠎⠨⠱⠌⠮ ⠸⠎⠪⠐⠥ ⠰⠍⠨⠻⠚⠈⠥\n⠕⠌⠠⠪⠃⠉⠕⠊⠲", "    ⠐⠶⠊⠂ ⠓⠢⠇⠠⠾⠶⠂⠑⠻⠰⠕⠶ ⠚⠍⠘⠥ ⠓⠥⠃\n⠓⠝⠒ ⠠⠾⠨⠻\n  ⠥⠐⠗⠒ ⠈⠕⠫⠒ ⠍⠨⠍ ⠠⠾⠨⠟⠈⠍⠁⠺\n⠊⠭⠑⠍⠊⠗⠱⠌⠊⠾ ⠊⠂⠲ ⠈⠪ ⠊⠂⠮ ⠚⠜⠶⠚⠗ ⠫⠂\n⠚⠒⠈⠍⠁ ⠰⠽⠰⠥ ⠓⠢⠇⠠⠾ ⠕⠐⠪⠢⠕ ⠈⠥⠔\n⠈⠳⠨⠻⠊⠽⠒⠊⠲ ⠚⠒⠈⠮⠈⠧ ⠓⠗⠈⠪⠁⠈⠕⠐⠮\n⠠⠗⠈⠕⠈⠥ ⠍⠨⠍⠐⠥ ⠠⠊⠎⠥⠐⠮ ⠚⠒⠈⠍⠁ ⠊⠂\n⠍⠨⠍⠠⠾⠝ ⠈⠧⠒⠠⠕⠢⠕ ⠠⠠⠥⠂⠐⠕⠈⠥ ⠕⠌⠊⠲ ⠰\n⠊⠂ ⠈⠏⠗⠊⠥⠠⠾⠕ ⠈⠗⠘⠂ ⠑⠥⠊⠝⠂⠑⠻ ⠊⠗⠠⠟\n⠈⠿⠠⠕⠁ ⠑⠻⠰⠕⠶⠮ ⠫⠅⠈⠝ ⠊⠽⠒⠊⠲\n⠈⠧⠈⠕⠨⠻⠓⠿⠘⠍⠉⠵ ⠘⠂⠇ ⠌⠨⠻⠟ ⠊⠂ ⠓⠢⠇⠠⠾\n⠚⠍⠘⠥ ⠳ ⠈⠾⠮ ⠠⠾⠨⠻⠚⠣⠱⠌⠈⠥⠐ ⠼⠑⠏⠂ ⠰⠥\n⠰⠽⠨⠿ ⠚⠧⠁⠨⠻ ⠚⠂ ⠈⠌⠚⠽⠁⠕⠊⠲\n\n  ⠐⠔ ⠍⠨⠍ ⠓⠢⠇ ⠈⠕⠘⠒ ⠈⠕⠠⠯⠮ ⠚⠧⠁⠘⠥⠚\n⠍⠗⠚⠗ ⠊⠂ ⠈⠏⠗⠊⠥ ⠨⠾⠕ ⠑⠕⠆ ⠕⠂ ⠉⠡⠫⠒\n⠇⠶⠈⠿ ⠼⠁⠚⠚ ⠋⠕⠂⠐⠥⠑⠕⠓⠎⠺ ⠏⠒ ⠈⠏⠗⠊⠥⠐\n⠊⠥⠂⠑⠱ ⠈⠧⠚⠁ ⠕⠢⠑⠍⠐⠮ ⠠⠍⠚⠗⠶⠚⠉⠵ ⠊⠂⠺\n⠟⠈⠿⠍⠗⠠⠻", "  ⠦⠆⠠⠎⠯ ⠉⠩⠠⠪⠼⠁⠰⠴ ⠊⠗⠚⠻ ⠋⠙⠝⠘⠍⠓⠎\n⠙⠮⠐⠣⠠⠪⠓⠕⠁ ⠑⠎⠈⠪⠋⠎⠃ ⠈⠧⠓⠗⠐⠬ ⠘⠍⠈⠧⠉\n⠩⠤⠌\n  ⠚⠧⠒⠈⠻⠘⠍ ⠨⠻⠰⠗⠁⠪⠐⠥ ⠨⠾⠈⠍⠁ ⠋⠙⠝⠧\n⠪⠢⠠⠕⠁⠨⠎⠢ ⠑⠗⠨⠶⠝⠠⠎ ⠙⠮⠐⠣⠠⠪⠓⠕⠁\n⠕⠂⠚⠽⠬⠶ ⠋⠎⠃⠮ ⠇⠬⠶⠚⠂ ⠠⠍ ⠎⠃⠄⠊⠲\n⠓⠝⠕⠋⠪⠣⠍⠄⠕⠉ ⠘⠗⠊⠂⠮ ⠚⠂ ⠠⠊⠗⠒ ⠇⠬⠶⠕\n⠫⠉⠪⠶⠚⠨⠕⠑⠒ ⠨⠢⠠⠫⠒⠕⠐⠣⠊⠥ ⠑⠗⠨⠶⠝\n⠑⠎⠑⠍⠐⠮ ⠈⠻⠍ ⠑⠎⠈⠪⠋⠎⠃⠮ ⠕⠬⠶⠚⠗⠜ ⠚⠒⠊\n⠊⠑⠒ ⠚⠡⠨⠶ ⠘⠒⠘⠂⠝ ⠈⠧⠓⠗⠐⠬ ⠘⠍⠈⠧⠉⠵ ⠚\n⠣⠒⠴⠉⠵⠊⠑⠱ ⠚⠒⠘⠂ ⠑⠯⠐⠎⠠⠎⠌⠊⠲ ⠨⠹⠘⠂⠊⠽\n⠼⠑⠚ ⠑⠒ ⠏⠒⠈⠔⠼⠃⠚⠚ ⠑⠒ ⠏⠒ ⠈⠧⠓⠗⠐⠬⠫\n⠘⠍⠈⠧⠊⠽⠉⠵⠊⠝ ⠇⠠⠕⠂⠇⠶ ⠑⠍⠈⠕⠚⠒ ⠩⠤⠌\n⠚⠈⠝⠌⠊⠉⠵ ⠸⠎⠕⠊⠲", "    ⠘⠥⠢⠘⠢⠐ ⠌⠄⠨⠕⠃⠪⠐⠥ ⠫⠉⠵ ⠈⠥⠂⠑⠭⠮\n⠚⠝⠑⠗⠊\n  ⠘⠥⠢⠘⠢⠕⠊⠲ ⠕⠠⠊⠗⠠⠨⠪⠢⠘⠍⠓⠎ ⠰⠣⠶⠑⠛⠮\n⠨⠥⠈⠪⠢ ⠳⠎⠉⠥⠴⠈⠕ ⠠⠕⠨⠁⠚⠒⠊⠲ ⠎⠉⠪⠠⠗\n⠘⠐⠣⠢⠊⠥ ⠠⠻⠨⠕⠂⠕ ⠨⠍⠁⠎⠌⠊⠲ ⠘⠍⠊⠪⠐⠎⠃⠈\n⠊⠂⠋⠥⠢⠚⠊⠲ ⠘⠢ ⠉⠊⠮⠕ ⠫⠈⠥ ⠠⠕⠲⠎ ⠑⠥⠢⠕\n⠊⠮⠠⠠⠹⠈⠎⠐⠱⠌⠊⠲\n  ⠑⠚⠵ ⠨⠪⠪⠢⠐ ⠎⠢⠑⠊⠥ ⠉⠰⠎⠐⠎⠢ ⠣⠙⠣⠌⠊\n⠍⠐⠕⠉⠵ ⠎⠢⠑⠐⠮ ⠕⠂⠈⠕⠤⠌⠘⠥⠐⠣⠈⠥ ⠘⠯⠐⠎⠌\n⠉⠂⠠⠠⠕⠊⠥ ⠚⠧⠰⠣⠶⠚⠒⠊⠝ ⠎⠢⠑⠫ ⠍⠇⠒⠮\n⠨⠍⠗⠱⠨⠍⠑⠡ ⠈⠍⠗⠰⠣⠒⠴⠣⠚⠑⠡⠠⠎⠊⠥ ⠎⠠⠨⠞\n⠎⠃⠄⠕ ⠊⠮⠈⠥ ⠫⠂ ⠠⠍⠘⠁⠁⠝ ⠎⠃⠄⠎⠌⠊⠲\n  ⠤⠤⠚⠠⠻⠐⠣⠒⠐ ⠰⠦⠣⠨⠕⠁ ⠠⠞⠐⠝⠉⠵ ⠕⠂⠵\n⠑⠒⠴⠊⠴⠆", "    ⠠⠦⠑⠣⠜⠁⠈⠔⠴⠄ ⠇⠶⠙⠍⠢ ⠙⠬⠚⠡⠐ ⠑⠣⠜\n⠑⠋⠝⠓⠕⠶ ⠣⠲⠪⠐⠥⠉⠵ ⠇⠐⠣⠨⠕⠉⠦\n  ⠰⠽⠈⠵ ⠑⠣⠜⠁⠐⠩ ⠈⠧⠒⠐⠡ ⠘⠎⠢⠨⠽⠫\n⠈⠪⠃⠨⠪⠶⠚⠑⠡⠠⠎ ⠚⠒⠈⠍⠁⠕ ⠑⠣⠜⠁\n⠰⠻⠨⠻⠈⠍⠁⠕⠐⠣⠉⠵ ⠑⠂⠵ ⠌⠄⠑⠂⠕\n⠊⠧⠗⠌⠠⠪⠃⠉⠕⠊⠲ ⠇⠶⠚⠧⠶⠕ ⠕⠐⠎⠴⠊ ⠘⠥⠉⠕\n⠪⠢⠠⠕⠁ ⠣⠲⠝ ⠑⠣⠜⠁⠮ ⠘⠍⠦⠕⠉⠵ ⠑⠋⠝⠓⠕⠶⠕\n⠠⠗⠇⠢ ⠉⠷⠐⠣⠒⠕ ⠊⠽⠈⠥ ⠕⠌⠠⠪⠃⠉⠕⠊⠲ ⠑⠄⠝\n⠨⠍⠶⠊⠭⠊⠽⠂ ⠑⠒⠋⠪⠢ ⠑⠄⠕⠌⠊⠉⠵ ⠠⠊⠪⠄⠪⠐⠥\n⠇⠬⠶⠊⠽⠉⠵ ⠙⠬⠚⠡⠕ ⠑⠍⠘⠛⠘⠳⠚⠈⠝ ⠇⠬⠶⠊⠽⠑\n⠈⠻⠫⠁⠠⠕⠢⠮ ⠉⠅⠰⠯ ⠠⠍ ⠕⠌⠊⠉⠵ ⠍⠐⠱\n⠠⠊⠗⠑⠛⠕⠃⠉⠕⠊⠲ ⠕⠐⠮ ⠈⠩⠨⠝⠚⠈⠕ ⠍⠗⠚⠗ ⠩\n⠜⠁⠑⠯⠕ ⠠⠕⠁⠙⠍⠢ ⠕⠐⠪⠢⠕⠉ ⠈⠧⠶⠈⠥⠝ ⠣⠤⠌\n⠠⠠⠪⠕⠨⠕ ⠑⠥⠄⠚⠊⠥⠐⠭ ⠚⠉⠵ ⠘⠎⠃⠐⠩⠂\n⠈⠗⠨⠻⠣⠒⠕ ⠘⠂⠺⠊⠽⠈⠕⠊⠥ ⠚⠗⠌⠠⠪⠃⠉⠕⠊⠲", "  ⠠⠦⠈⠪⠸⠎⠕ ⠟⠠⠗⠶⠕⠈⠥ ⠈⠪⠐⠕⠍⠢ ⠸⠌ ⠘⠐\n⠉⠎⠊⠲⠴⠄ ⠈⠳⠐⠷⠕⠈⠥ ⠘⠒⠨⠾⠕⠈⠥ ⠚⠉⠣⠺\n⠘⠡⠬⠶⠕⠃⠉⠕⠊⠲ ⠕ ⠠⠕⠉⠵ ⠑⠱⠆ ⠉⠡ ⠨⠾ ⠘⠗\n⠘⠁⠘⠥⠈⠎⠢ ⠠⠠⠕⠧ ⠠⠿⠚⠌⠈⠬ ⠠⠠⠕⠫ ⠨⠍⠡⠮\n⠑⠦⠵ ⠓⠕⠘⠪⠕ ⠊⠪⠐⠣⠑ ⠐⠦⠉⠢⠨ ⠰⠟⠈⠍⠴⠂⠝⠠\n⠊⠍ ⠇⠐⠣⠢⠕ ⠠⠕⠢⠨⠻⠨⠹⠪⠐⠥ ⠈⠿⠩⠚⠒\n⠨⠁⠙⠍⠢⠕⠈⠕⠊⠥ ⠚⠃⠉⠕⠊⠲ ⠁⠎ ⠡⠗⠠⠕⠫\n⠣⠉⠟⠊⠝⠊⠥ ⠡⠗⠠⠕⠰⠎⠐⠎⠢ ⠊⠭⠨⠊⠮⠝⠈⠝\n⠫⠁⠟⠊⠽⠈⠕⠊⠥ ⠚⠗⠌⠠⠪⠃⠉⠕⠊⠲\n  ⠤⠤⠉⠓⠗⠨⠍ ⠠⠪⠙⠝⠠⠳ ⠝⠊⠕⠠⠡ ⠨⠍⠶⠝⠠⠎"];
+
+  /* v245에서 연속 공백을 정리했던 답안을 원본 캡처의 줄/들여쓰기 그대로 교체 */
+  if(DATA["긴 글"] && DATA["긴 글"].length===15){
+    DATA["긴 글"].forEach(function(item,i){
+      item.braille=EXACT_LONG_ANSWERS[i];
+    });
+  }
+
+  /* 기존 draw/showCorrectAnswer가 줄바꿈 문자를 점자 한 칸으로 만들지 않도록
+     긴 글에서만 줄바꿈 전용 요소로 바꾼다. */
+  function renderLong(target,text,withWrong){
+    target.innerHTML="";
+    const exp=[...(q && q.braille ? q.braille : "")];
+    [...text].forEach(function(ch,i){
+      if(ch==="\n"){
+        const br=document.createElement("span");
+        br.className="long-line-break";
+        br.setAttribute("aria-hidden","true");
+        target.appendChild(br);
+      }else{
+        target.appendChild(sixDotCell(ch,withWrong ? exp[i]!==ch : false));
+      }
+    });
+  }
+
+  const oldDraw=draw;
+  draw=function(){
+    if(cat!=="긴 글") return oldDraw();
+    const typed=document.getElementById("typed");
+    if(!typed)return;
+    if(!input){typed.innerHTML="";return;}
+    renderLong(typed,input,true);
+  };
+
+  const oldShow=showCorrectAnswer;
+  showCorrectAnswer=function(){
+    if(cat!=="긴 글") return oldShow();
+    const panel=document.getElementById("answerPanel");
+    const area=document.getElementById("answerDots");
+    if(!panel||!area)return;
+    renderLong(area,q.braille,false);
+    panel.hidden=false;
+  };
+
+  /* 긴 글에서는 Enter=줄바꿈. Ctrl+Enter(맥은 Command+Enter)=제출.
+     캡처 단계에서 먼저 잡아 기존 전역 Enter 제출 동작이 실행되지 않게 한다. */
+  window.addEventListener("keydown",function(e){
+    if(!V.practice.classList.contains("active") || cat!=="긴 글")return;
+    if(e.key!=="Enter" && e.code!=="Enter" && e.keyCode!==13)return;
+    if(e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName||""))return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+
+    if(e.ctrlKey || e.metaKey){
+      submit();
+      return;
+    }
+    if(grading)return;
+    beginTypingClock();
+    input+="\n";
+    typedCells++;
+    draw();
+    liveMetrics();
+  },true);
+
+  /* 긴 글에선 화면의 제출 버튼도 그대로 제출 수단으로 사용 가능 */
+  const ms=document.getElementById("mobileSubmit");
+  if(ms){
+    ms.addEventListener("click",function(){
+      if(cat==="긴 글" && V.practice.classList.contains("active")) submit();
+    },true);
+  }
+})();
+</script>
+
+<style id="gmgj-v251-longtext-search-toggle-spacing">
+/* 긴 글 제목은 가운데 정렬만 유지하고 굵게 하지 않음 */
+#practiceView[data-category="긴 글"] #prompt .long-title{
+  font-weight:inherit!important;
+}
+
+/* 긴 글 문제 검색 */
+#longTextSearchBar{
+  display:none;
+  max-width:1100px;
+  margin:12px auto 16px;
+  padding:0 18px;
+  box-sizing:border-box;
+}
+#practiceView[data-category="긴 글"] #longTextSearchBar{display:block!important;}
+#longTextSearchBar .longtext-search-row{display:flex;gap:8px;align-items:center;}
+#longTextSearchInput{
+  flex:1;min-width:220px;height:44px;padding:0 14px;
+  border:1.5px solid #8da6ae;border-radius:10px;
+  font:inherit;font-size:16px;color:#102b4e;background:#fff;
+}
+#longTextSearchButton,#longTextSearchPrev,#longTextSearchNext,#longTextSearchClear{
+  min-height:44px;padding:0 13px;border:1.5px solid #178b83;border-radius:10px;
+  background:#fff;color:#087d76;font:inherit;font-weight:800;cursor:pointer;
+}
+#longTextSearchStatus{min-height:1.4em;margin-top:7px;text-align:center;color:#52697a;font-size:14px;}
+.high-contrast #longTextSearchInput,.contrast #longTextSearchInput,
+.high-contrast #longTextSearchButton,.contrast #longTextSearchButton,
+.high-contrast #longTextSearchPrev,.contrast #longTextSearchPrev,
+.high-contrast #longTextSearchNext,.contrast #longTextSearchNext,
+.high-contrast #longTextSearchClear,.contrast #longTextSearchClear{
+  background:#202020!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border-color:#fff!important;
+}
+.high-contrast #longTextSearchStatus,.contrast #longTextSearchStatus{color:#fff!important;-webkit-text-fill-color:#fff!important;}
+
+/* 긴 글에서 띄어쓰기 안내를 점자 입력 박스 바로 위에 배치 */
+#practiceView[data-category="긴 글"] .gmgj-spacing-original{
+  display:block!important;
+  order:0!important;
+  margin:7px 0 7px!important;
+  text-align:left!important;
+}
+#practiceView[data-category="긴 글"] #typed{order:1!important;}
+#practiceView[data-category="긴 글"] .exercise>.panel:nth-of-type(2){display:flex!important;flex-direction:column!important;}
+#practiceView[data-category="긴 글"] .exercise>.panel:nth-of-type(2)>.label{order:-2!important;}
+#practiceView[data-category="긴 글"] .exercise>.panel:nth-of-type(2)>.gmgj-spacing-original{order:-1!important;}
+#practiceView[data-category="긴 글"] .exercise>.panel:nth-of-type(2)>.desktop-input-hint{order:2!important;}
+#practiceView[data-category="긴 글"] .gmgj-tablet-spacing-inline{display:none!important;}
+
+@media(max-width:700px){
+  #longTextSearchBar{padding:0 10px;}
+  #longTextSearchBar .longtext-search-row{flex-wrap:wrap;}
+  #longTextSearchInput{flex-basis:100%;width:100%;}
+}
+</style>
+<script id="gmgj-v251-longtext-search-toggle-spacing-script">
+(function(){
+  let longResults=[];
+  let longPos=-1;
+
+  function ensureSearch(){
+    if(document.getElementById("longTextSearchBar")) return;
+    const anchor=document.getElementById("sentenceSearchBar");
+    if(!anchor || !anchor.parentNode) return;
+    const bar=document.createElement("div");
+    bar.id="longTextSearchBar";
+    bar.setAttribute("role","search");
+    bar.setAttribute("aria-label","긴 글 연습 문제 검색");
+    bar.innerHTML='<div class="longtext-search-row">'+
+      '<input id="longTextSearchInput" type="search" placeholder="긴 글 검색 (제목·본문)" aria-label="긴 글 문제 검색어">'+
+      '<button id="longTextSearchButton" type="button">검색</button>'+
+      '<button id="longTextSearchPrev" type="button">이전</button>'+
+      '<button id="longTextSearchNext" type="button">다음</button>'+
+      '<button id="longTextSearchClear" type="button">초기화</button>'+
+      '</div><div id="longTextSearchStatus" aria-live="polite"></div>';
+    anchor.parentNode.insertBefore(bar,anchor);
+
+    document.getElementById("longTextSearchButton").addEventListener("click",searchLong);
+    document.getElementById("longTextSearchPrev").addEventListener("click",function(){moveLong(-1)});
+    document.getElementById("longTextSearchNext").addEventListener("click",function(){moveLong(1)});
+    document.getElementById("longTextSearchClear").addEventListener("click",clearLong);
+    document.getElementById("longTextSearchInput").addEventListener("keydown",function(e){
+      if(e.key==="Enter"){
+        e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();searchLong();
+      }
+    },true);
+  }
+  function norm(v){return String(v||"").toLowerCase().replace(/\s+/g,"");}
+  function searchLong(){
+    if(cat!=="긴 글") return;
+    const inp=document.getElementById("longTextSearchInput"), st=document.getElementById("longTextSearchStatus");
+    const term=norm(inp.value);
+    if(!term){longResults=[];longPos=-1;st.textContent="검색어를 입력하세요.";return;}
+    longResults=[];
+    DATA["긴 글"].forEach(function(item,i){if(norm(item.prompt).includes(term))longResults.push(i);});
+    if(!longResults.length){longPos=-1;st.textContent="일치하는 긴 글이 없습니다.";return;}
+    longPos=0;goLong();
+  }
+  function goLong(){
+    if(cat!=="긴 글" || longPos<0 || !longResults.length)return;
+    wrongOnlyMode=false;queue=DATA["긴 글"].map(function(_,i){return i;});round=longResults[longPos];nextQuestion();
+    document.getElementById("longTextSearchStatus").textContent="검색 결과 "+(longPos+1)+" / "+longResults.length;
+  }
+  function moveLong(d){if(!longResults.length){searchLong();return;}longPos=(longPos+d+longResults.length)%longResults.length;goLong();}
+  function clearLong(){longResults=[];longPos=-1;const i=document.getElementById("longTextSearchInput"),s=document.getElementById("longTextSearchStatus");if(i)i.value="";if(s)s.textContent="";}
+
+  /* 답안 보기: 긴 글에서만 열기/닫기 토글 */
+  const btn=document.getElementById("showAnswerBtn");
+  if(btn){
+    btn.addEventListener("click",function(e){
+      if(cat!=="긴 글" || !V.practice.classList.contains("active"))return;
+      const panel=document.getElementById("answerPanel");
+      if(!panel)return;
+      if(!panel.hidden){
+        e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+        panel.hidden=true;
+        const rs=document.getElementById("resultSymbol"),rt=document.getElementById("resultText"),r=document.getElementById("result");
+        if(rs)rs.textContent="·";if(rt)rt.textContent="입력 대기";if(r)r.className="result";
+      }
+    },true);
+  }
+
+  /* 기존 안내문을 긴 글에서 점자 입력 박스 바로 앞으로 이동 */
+  function placeSpacingNotice(){
+    if(cat!=="긴 글")return;
+    const typed=document.getElementById("typed");
+    const notice=document.querySelector("#practiceView .gmgj-spacing-original");
+    if(typed && notice && typed.parentNode && notice.nextSibling!==typed)typed.parentNode.insertBefore(notice,typed);
+  }
+  document.addEventListener("DOMContentLoaded",function(){ensureSearch();placeSpacingNotice();});
+  document.addEventListener("click",function(){setTimeout(placeSpacingNotice,0);},true);
+  setTimeout(function(){ensureSearch();placeSpacingNotice();},0);
+})();
+</script>
