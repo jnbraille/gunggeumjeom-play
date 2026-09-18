@@ -7818,6 +7818,12 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
       </div>
       <div id="sentenceSearchStatus" aria-live="polite"></div>
     </div>
+    <div id="sentenceLengthFilter" class="sentence-length-filter" role="group" aria-label="문장 길이 선택">
+      <span class="sentence-length-label">문장 선택</span>
+      <button type="button" data-sentence-length="all" class="active" aria-pressed="true">전체</button>
+      <button type="button" data-sentence-length="short" aria-pressed="false">단문</button>
+      <button type="button" data-sentence-length="long" aria-pressed="false">장문</button>
+    </div>
     <div id="spellingSearchBar" role="search" aria-label="맞춤법 연습 문제 검색">
       <div class="spelling-search-row">
         <input id="spellingSearchInput" type="search" placeholder="맞춤법 검색 (예: 금세, 금새)" aria-label="맞춤법 문제 검색어">
@@ -8687,11 +8693,30 @@ function show(n,push=true){
 }
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.view));window.onpopstate=e=>show((e.state&&e.state.v)||"home",false);history.replaceState({v:"home"},"","#home");
 function shuffle(n){let a=[...Array(n).keys()];for(let i=n-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function makeQueue(c){return shuffle(DATA[c].length)}
+let sentenceLengthMode="all";
+function sentencePracticeLength(item){
+  return String((item&&item.prompt)||"").replace(/\s+/g,"").length;
+}
+function makeQueue(c){
+  if(c==="문장" && sentenceLengthMode!=="all"){
+    const wantShort=sentenceLengthMode==="short";
+    const indices=DATA[c].map((item,index)=>{
+      const isShort=sentencePracticeLength(item)<=18;
+      return (wantShort===isShort)?index:-1;
+    }).filter(index=>index>=0);
+    for(let i=indices.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [indices[i],indices[j]]=[indices[j],indices[i]];
+    }
+    return indices;
+  }
+  return shuffle(DATA[c].length);
+}
 function openPractice(c){
   /* v93 테스트: 모바일에서도 모든 점자 타자 연습 메뉴 진입 허용 */
   document.getElementById("practiceView").dataset.category=c;
   wrongOnlyMode=false;
+  if(c==="문장") sentenceLengthMode="all";
   cat=c;round=0;queue=makeQueue(c);
   sessionStart=Date.now();
   typedCells=0;
@@ -18509,3 +18534,81 @@ body.spelling-mode [data-input-status]{
   }
 }
 </style>
+
+<style id="gmjg-v234-sentence-length-filter">
+#sentenceLengthFilter{display:none}
+#practiceView[data-category="문장"] #sentenceLengthFilter{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:12px auto 18px;
+}
+#sentenceLengthFilter .sentence-length-label{
+  font-weight:800;
+  color:#334f61;
+  margin-right:2px;
+}
+#sentenceLengthFilter button{
+  min-width:82px;
+  min-height:44px;
+  padding:9px 18px;
+  border:2px solid #cbdcdd;
+  border-radius:12px;
+  background:#fff;
+  color:#173a52;
+  font-size:1rem;
+  font-weight:900;
+  cursor:pointer;
+}
+#sentenceLengthFilter button.active,
+#sentenceLengthFilter button[aria-pressed="true"]{
+  border-color:#173a52;
+  background:#173a52;
+  color:#fff;
+}
+@media(max-width:768px){
+  #practiceView[data-category="문장"] #sentenceLengthFilter{gap:8px;margin:10px auto 16px}
+  #sentenceLengthFilter .sentence-length-label{width:100%;text-align:center}
+  #sentenceLengthFilter button{min-width:76px;padding:9px 14px}
+}
+</style>
+<script id="gmjg-v234-sentence-length-filter-script">
+(function(){
+  function syncButtons(){
+    document.querySelectorAll("#sentenceLengthFilter button[data-sentence-length]").forEach(function(btn){
+      var on=btn.dataset.sentenceLength===sentenceLengthMode;
+      btn.classList.toggle("active",on);
+      btn.setAttribute("aria-pressed",on?"true":"false");
+    });
+  }
+  document.addEventListener("click",function(e){
+    var btn=e.target.closest && e.target.closest("#sentenceLengthFilter button[data-sentence-length]");
+    if(!btn || cat!=="문장") return;
+    sentenceLengthMode=btn.dataset.sentenceLength;
+    wrongOnlyMode=false;
+    round=0;
+    queue=makeQueue("문장");
+    typedCells=0;
+    document.getElementById("typed").innerHTML="";
+    var result=document.getElementById("result");
+    if(result){
+      result.className="result";
+      result.hidden=false;
+      result.style.display="";
+    }
+    var rs=document.getElementById("resultSymbol"); if(rs) rs.textContent="·";
+    var rt=document.getElementById("resultText"); if(rt) rt.textContent="입력 대기";
+    var ap=document.getElementById("answerPanel"); if(ap) ap.hidden=true;
+    syncButtons();
+    nextQuestion();
+  });
+  document.addEventListener("click",function(e){
+    var card=e.target.closest && e.target.closest("[data-cat='문장'],[data-category='문장']");
+    if(card) setTimeout(syncButtons,0);
+  },true);
+  document.addEventListener("DOMContentLoaded",syncButtons);
+  setTimeout(syncButtons,0);
+})();
+</script>
