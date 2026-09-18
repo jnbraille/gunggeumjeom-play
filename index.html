@@ -11385,6 +11385,74 @@ window.addEventListener("hashchange",()=>{
   else install();
 })();
 </script>
+
+
+<!-- v283: 모바일 랜덤연습 결과 중복 제거 + 홈 입력방법 6키 한 줄 -->
+<style id="gmgj-v283-mobile-result-keyguide-final">
+/* 랜덤 연습에서 추가 생성되던 두 번째 정답/오답 배너는 사용하지 않는다.
+   기존 mobileTopResult 한 곳만 사용하여 정답!/오답!을 표시한다. */
+#randomPracticeFeedback{display:none!important;visibility:hidden!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;}
+
+/* 홈 화면 S/D/F/J/K/L 여섯 키는 모바일에서도 반드시 한 줄 */
+#homeView .home-key-guide-v248{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:5px!important;
+  white-space:nowrap!important;
+  width:100%!important;
+  min-width:0!important;
+}
+#homeView .home-key-guide-v248 .keycap-v248{
+  flex:0 1 auto!important;
+  min-width:0!important;
+  min-height:30px!important;
+  padding:4px 7px!important;
+  font-size:.92em!important;
+  line-height:1.1!important;
+  white-space:nowrap!important;
+}
+#homeView .home-key-guide-v248 .sep-v248{flex:0 0 auto!important;padding:0 1px!important;}
+@media(max-width:600px){
+  #homeView .home-key-guide-v248{gap:3px!important;}
+  #homeView .home-key-guide-v248 .keycap-v248{
+    padding:3px 5px!important;
+    font-size:.78em!important;
+    min-height:28px!important;
+  }
+  #homeView .home-key-guide-v248 .sep-v248{padding:0!important;font-size:.8em!important;}
+}
+@media(max-width:380px){
+  #homeView .home-key-guide-v248{gap:2px!important;}
+  #homeView .home-key-guide-v248 .keycap-v248{padding:3px 4px!important;font-size:.72em!important;}
+}
+</style>
+<script id="gmgj-v283-random-single-feedback-final">
+(function(){
+  function syncRandomResult(){
+    try{
+      const practice=document.getElementById('practiceView');
+      const resultText=document.getElementById('resultText');
+      const top=document.getElementById('mobileTopResult');
+      if(!practice||!resultText||!top) return;
+      if(practice.getAttribute('data-category')!=='점자 랜덤 연습') return;
+      const txt=(resultText.textContent||'').trim();
+      if(txt==='정답!' || txt==='오답!'){
+        top.textContent=txt;
+        top.hidden=false;
+        top.className='mobile-top-result '+(txt==='오답!'?'is-wrong':'is-correct');
+      }
+    }catch(e){}
+  }
+  function install(){
+    const r=document.getElementById('resultText');
+    if(r) new MutationObserver(syncRandomResult).observe(r,{childList:true,subtree:true,characterData:true});
+    document.addEventListener('click',function(){setTimeout(syncRandomResult,0)},true);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install,{once:true}); else install();
+})();
+</script>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
