@@ -11322,6 +11322,114 @@ window.addEventListener("hashchange",()=>{
   setTimeout(function(){applyEdits();panel();sync();},0);
 })();
 </script>
+
+<style id="gmgj-v284-answer-direct-editor-style">
+#gmgjAnswerRegister279.on + #typed .input-cell,
+#gmgjAnswerRegister279.on + #typed .space-gap{cursor:pointer;position:relative}
+#practiceView[data-category="긴 글"] #typed .gmgj-edit-selected{
+  outline:3px solid #f59e0b!important;outline-offset:3px!important;border-radius:5px!important;
+}
+#practiceView[data-category="긴 글"] #typed .input-dot{cursor:pointer}
+#gmgjAnswerEditHelp284{margin-top:8px;font-size:.92em;line-height:1.5}
+</style>
+<script id="gmgj-v284-answer-direct-editor">
+(function(){
+ 'use strict';
+ let anchor=-1, focus=-1, dragging=false, editChord=new Set(), editPressed=new Set();
+ const order={f:1,d:2,s:3,j:4,k:5,l:6};
+ function active(){
+   const p=document.getElementById('gmgjAnswerRegister279');
+   return !!(p&&p.classList.contains('on')&&typeof cat!=='undefined'&&cat==='긴 글');
+ }
+ function chars(){ return [...String(typeof input==='string'?input:'')]; }
+ function setChars(a){ input=a.join(''); grading=false; if(typeof draw==='function') draw(); }
+ function range(){ if(anchor<0||focus<0)return null; return [Math.min(anchor,focus),Math.max(anchor,focus)]; }
+ function cells(){ return [...document.querySelectorAll('#practiceView[data-category="긴 글"] #typed > .input-cell,#practiceView[data-category="긴 글"] #typed > .space-gap')]; }
+ function decorate(){
+   if(!active())return;
+   const r=range();
+   cells().forEach((el,i)=>{
+     el.dataset.gmgjEditIndex=i;
+     el.classList.toggle('gmgj-edit-selected',!!r&&i>=r[0]&&i<=r[1]);
+     el.title=el.classList.contains('space-gap')?'띄어쓰기 선택':'점 클릭: 해당 점 켜기/끄기 · 칸 드래그: 범위 선택';
+   });
+   const p=document.getElementById('gmgjAnswerRegister279');
+   if(p&&!document.getElementById('gmgjAnswerEditHelp284')){
+     const h=document.createElement('div');h.id='gmgjAnswerEditHelp284';
+     h.textContent='수정 방법: 점을 클릭하면 그 점만 켜거나 끌 수 있습니다. 점자칸을 드래그하면 범위를 선택할 수 있고, 선택 후 점자키 입력은 선택 부분을 교체합니다. Backspace/Delete는 선택 부분을 삭제합니다.';
+     p.appendChild(h);
+   }
+ }
+ function replaceSelection(text){
+   const r=range(); if(!r)return false;
+   const a=chars(); a.splice(r[0],r[1]-r[0]+1,...[...text]);
+   const next=r[0]+[...text].length-1; anchor=focus=Math.max(0,next); setChars(a); decorate(); return true;
+ }
+ function toggleDot(cellIndex,dot){
+   const a=chars(); if(cellIndex<0||cellIndex>=a.length||a[cellIndex]===' ')return;
+   const cp=a[cellIndex].codePointAt(0); if(cp<0x2800||cp>0x28ff)return;
+   let bits=cp-0x2800; bits ^= (1<<(dot-1)); a[cellIndex]=String.fromCodePoint(0x2800+bits);
+   anchor=focus=cellIndex; setChars(a); decorate();
+ }
+ document.addEventListener('pointerdown',function(e){
+   if(!active())return;
+   const dot=e.target.closest&&e.target.closest('#typed .input-dot');
+   const cell=e.target.closest&&e.target.closest('#typed > .input-cell,#typed > .space-gap');
+   if(!cell)return;
+   const i=Number(cell.dataset.gmgjEditIndex);
+   if(!Number.isFinite(i))return;
+   e.preventDefault();e.stopPropagation();
+   if(dot){
+     const dots=[...cell.querySelectorAll('.input-dot')]; const pos=dots.indexOf(dot);
+     const map=[1,4,2,5,3,6]; if(pos>=0)toggleDot(i,map[pos]);
+     dragging=false;return;
+   }
+   anchor=focus=i;dragging=true;decorate();
+ },true);
+ document.addEventListener('pointerover',function(e){
+   if(!active()||!dragging)return;
+   const cell=e.target.closest&&e.target.closest('#typed > .input-cell,#typed > .space-gap'); if(!cell)return;
+   const i=Number(cell.dataset.gmgjEditIndex); if(Number.isFinite(i)){focus=i;decorate();}
+ },true);
+ window.addEventListener('pointerup',function(){dragging=false;},true);
+ window.addEventListener('keydown',function(e){
+   if(!active()||!range())return;
+   const tag=(e.target&&e.target.tagName||'').toLowerCase(); if(tag==='input'||tag==='textarea')return;
+   const k=String(e.key||'').toLowerCase();
+   if(e.key==='Backspace'||e.key==='Delete'){
+     e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+     replaceSelection(''); anchor=focus=-1; decorate(); return;
+   }
+   if(e.key===' '||e.code==='Space'){
+     e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();replaceSelection(' ');return;
+   }
+   if(order[k]){
+     e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+     editPressed.add(k);editChord.add(order[k]);
+   }
+ },true);
+ window.addEventListener('keyup',function(e){
+   if(!active()||!range())return;
+   const k=String(e.key||'').toLowerCase(); if(!order[k])return;
+   e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+   editPressed.delete(k);
+   if(!editPressed.size&&editChord.size){
+     let n=0;[...editChord].forEach(d=>n|=1<<(d-1)); editChord.clear(); replaceSelection(String.fromCodePoint(0x2800+n));
+   }
+ },true);
+ /* draw 뒤에 편집 인덱스/선택 표시를 다시 붙인다. */
+ if(typeof draw==='function'){
+   const baseDraw=draw;
+   draw=function(){ baseDraw(); setTimeout(decorate,0); };
+ }
+ document.addEventListener('click',function(e){
+   if(e.target&&e.target.closest&&e.target.closest('#gmgjLoadAnswer283')) setTimeout(function(){anchor=focus=-1;decorate();},0);
+ },true);
+ const mo=new MutationObserver(function(){ if(active())decorate(); });
+ document.addEventListener('DOMContentLoaded',function(){ const t=document.getElementById('typed'); if(t)mo.observe(t,{childList:true}); setTimeout(decorate,0); });
+ setTimeout(function(){ const t=document.getElementById('typed'); if(t)mo.observe(t,{childList:true}); decorate(); },50);
+})();
+</script>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
