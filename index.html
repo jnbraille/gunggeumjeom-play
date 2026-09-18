@@ -11430,6 +11430,82 @@ window.addEventListener("hashchange",()=>{
  setTimeout(function(){ const t=document.getElementById('typed'); if(t)mo.observe(t,{childList:true}); decorate(); },50);
 })();
 </script>
+
+
+<!-- v285: 긴 글 답안 수정 화면 - 내부 세로 스크롤 제거, 전체 스크롤 하나만 사용 -->
+<style id="gmgj-v285-longtext-single-scroll">
+/* 긴 글 입력 영역은 내용만큼 늘어나고 자체 세로 스크롤을 만들지 않는다. */
+#practiceView[data-category="긴 글"] #typed{
+  height:auto!important;
+  min-height:150px!important;
+  max-height:none!important;
+  overflow-y:visible!important;
+  overflow-x:visible!important;
+  scrollbar-width:none!important;
+}
+#practiceView[data-category="긴 글"] #typed::-webkit-scrollbar{
+  display:none!important;
+  width:0!important;
+  height:0!important;
+}
+/* 답안 수정 도구는 공간을 덜 차지하도록 압축 */
+#practiceView[data-category="긴 글"] #gmgjAnswerRegister279{
+  margin:8px 0 10px!important;
+  padding:10px 12px!important;
+}
+#practiceView[data-category="긴 글"] #gmgjAnswerRegister279 .row{
+  gap:6px!important;
+  align-items:center!important;
+}
+#practiceView[data-category="긴 글"] #gmgjAnswerRegister279 .row strong{
+  margin-right:4px!important;
+}
+#practiceView[data-category="긴 글"] #gmgjAnswerRegister279 button{
+  padding:6px 10px!important;
+  min-height:38px!important;
+}
+#practiceView[data-category="긴 글"] #gmgjAnswerRegister279 .status{
+  margin-top:6px!important;
+}
+#practiceView[data-category="긴 글"] #gmgjAnswerEditHelp284{
+  margin-top:5px!important;
+  line-height:1.35!important;
+}
+@media (max-width:700px){
+  #practiceView[data-category="긴 글"] #gmgjAnswerRegister279 .row{
+    align-items:stretch!important;
+  }
+  #practiceView[data-category="긴 글"] #gmgjAnswerRegister279 .row strong{
+    flex-basis:100%!important;
+  }
+  #practiceView[data-category="긴 글"] #gmgjAnswerRegister279 button{
+    flex:1 1 46%!important;
+  }
+}
+</style>
+<script id="gmgj-v285-disable-inner-autoscroll">
+(function(){
+  'use strict';
+  function expandTyped(){
+    if(typeof cat==='undefined'||cat!=='긴 글')return;
+    const t=document.getElementById('typed');
+    if(!t)return;
+    t.style.setProperty('height','auto','important');
+    t.style.setProperty('max-height','none','important');
+    t.style.setProperty('overflow-y','visible','important');
+    t.scrollTop=0;
+  }
+  document.addEventListener('DOMContentLoaded',expandTyped);
+  document.addEventListener('click',function(){setTimeout(expandTyped,0);},true);
+  document.addEventListener('keydown',function(){setTimeout(expandTyped,0);},true);
+  const mo=new MutationObserver(expandTyped);
+  setTimeout(function(){
+    const t=document.getElementById('typed');
+    if(t)mo.observe(t,{childList:true,subtree:false});
+    expandTyped();
+  },50);
+})();
+</script>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
