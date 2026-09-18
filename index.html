@@ -11171,6 +11171,64 @@ window.addEventListener("hashchange",()=>{
 }
 </style>
 
+
+<style id="gmgj-v278-longtext-dot-geometry-only-final">
+/* v278: 긴 글 점형의 '크기/간격'만 최종 통일.
+   색상은 건드리지 않는다. 정상/오답/빈점 모두 같은 13px 원을 사용한다. */
+#practiceView[data-category="긴 글"] #typed .input-cell,
+#practiceView[data-category="긴 글"] #typed .input-cell.wrong,
+#practiceView[data-category="긴 글"] #typed .input-cell.error,
+#practiceView[data-category="긴 글"] #typed .braille-cell,
+#practiceView[data-category="긴 글"] #answerDots .input-cell,
+#practiceView[data-category="긴 글"] #answerDots .braille-cell{
+  grid-template-columns:repeat(2,13px)!important;
+  grid-template-rows:repeat(3,13px)!important;
+  column-gap:6px!important;
+  row-gap:6px!important;
+  min-width:32px!important;
+  width:32px!important;
+  max-width:32px!important;
+  min-height:51px!important;
+  height:51px!important;
+  max-height:51px!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+  transform:scale(.78)!important;
+  transform-origin:center!important;
+  margin:-4px -3px!important;
+}
+
+/* 상태 클래스와 관계없이 실제 점의 외형 치수를 완전히 동일하게 고정 */
+#practiceView[data-category="긴 글"] #typed .input-dot,
+#practiceView[data-category="긴 글"] #typed .input-dot.on,
+#practiceView[data-category="긴 글"] #typed .input-dot.wrong,
+#practiceView[data-category="긴 글"] #typed .input-dot.error,
+#practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot,
+#practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
+#practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot,
+#practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
+#practiceView[data-category="긴 글"] #answerDots .input-dot,
+#practiceView[data-category="긴 글"] #answerDots .input-dot.on{
+  width:13px!important;
+  height:13px!important;
+  min-width:13px!important;
+  min-height:13px!important;
+  max-width:13px!important;
+  max-height:13px!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:50%!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+  outline:none!important;
+  box-shadow:none!important;
+}
+
+#practiceView[data-category="긴 글"] #typed,
+#practiceView[data-category="긴 글"] #answerDots{
+  gap:3px!important;
+}
+</style>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
