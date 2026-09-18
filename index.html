@@ -20304,3 +20304,77 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   setTimeout(forceBrlV268,500);
 })();
 </script>
+
+
+<!-- v269: 긴 글 채점은 점형만 비교(공백/줄바꿈 무시), 오답 점형 수직 위치 보정 -->
+<style id="gmgj-v269-long-wrong-align">
+/* 긴 글 오답/정답 결과 상태가 바뀌어도 입력 점형 위치가 움직이지 않도록 고정 */
+#practiceView[data-category="긴 글"] #typed{
+  transform:none!important;
+  translate:none!important;
+  vertical-align:top!important;
+}
+#practiceView[data-category="긴 글"] #typed .input-cell,
+#practiceView[data-category="긴 글"] #typed .braille-cell,
+#practiceView[data-category="긴 글"] #typed .input-dot{
+  transform:none!important;
+  translate:none!important;
+}
+#practiceView[data-category="긴 글"] #result.correct ~ #typed,
+#practiceView[data-category="긴 글"] #result.wrong ~ #typed,
+#practiceView[data-category="긴 글"] #result.ok ~ #typed,
+#practiceView[data-category="긴 글"] #result.bad ~ #typed{
+  transform:none!important;
+  translate:none!important;
+}
+</style>
+
+<script id="gmgj-v269-long-grade">
+(function(){
+  /* BRL의 출력용 공백/줄배치는 채점에서 제외하고 실제 6점 점형만 비교 */
+  function cellsOnlyV269(v){
+    return Array.from(String(v||""))
+      .filter(function(ch){
+        var cp=ch.codePointAt(0);
+        return cp>=0x2800 && cp<=0x28ff;
+      })
+      .join("");
+  }
+
+  function installV269(){
+    var old=document.getElementById("longTextSubmit256");
+    if(!old || old.dataset.v269==="1") return;
+
+    /* v264/v265의 이전 채점 이벤트를 통째로 제거 */
+    var btn=old.cloneNode(true);
+    btn.dataset.v269="1";
+    btn.removeAttribute("onclick");
+    old.parentNode.replaceChild(btn,old);
+
+    btn.addEventListener("click",function(e){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      if(typeof cat==="undefined" || cat!=="긴 글" || typeof q==="undefined" || !q) return;
+
+      var expected=cellsOnlyV269(q._gmgjExactBraille || q.braille || "");
+      var actual=cellsOnlyV269(typeof input!=="undefined" ? input : "");
+
+      var r=document.getElementById("result");
+      var rt=document.getElementById("resultText");
+      if(r){
+        r.className=(expected===actual)?"correct":"wrong";
+        r.style.visibility="visible";
+      }
+      if(rt) rt.textContent=(expected===actual)?"정답!":"오답!";
+
+      /* 답안 보기 상태는 건드리지 않음. 입력/문제 이동도 하지 않음. */
+    }, true);
+  }
+
+  document.addEventListener("DOMContentLoaded",installV269);
+  document.addEventListener("click",function(){setTimeout(installV269,0);},true);
+  setTimeout(installV269,0);
+  setTimeout(installV269,200);
+  setTimeout(installV269,600);
+})();
+</script>
