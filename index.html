@@ -7312,52 +7312,6 @@ html.gmgj-tablet-touch #practiceView .mobile-braille-actions button{
   }
 }
 </style>
-
-<style id="gmgj-v287-longtext-vertical-layout">
-/* v287: 긴 글 연습도 다른 연습과 동일하게 문제 위 / 점자 입력 아래 */
-@media (min-width:769px){
-  #practiceView[data-category="긴 글"] .exercise{
-    display:flex!important;
-    flex-direction:column!important;
-    gap:0!important;
-    padding:0!important;
-    overflow:visible!important;
-  }
-  #practiceView[data-category="긴 글"] .exercise>.panel:first-child,
-  #practiceView[data-category="긴 글"] .exercise>.panel:nth-of-type(2){
-    width:100%!important;
-    max-height:none!important;
-    overflow:visible!important;
-    border:0!important;
-    border-radius:0!important;
-    padding:22px 28px!important;
-  }
-  #practiceView[data-category="긴 글"] .exercise>.panel:first-child{
-    border-bottom:1px solid #dfe8e8!important;
-  }
-  #practiceView[data-category="긴 글"] .feedback-column{
-    width:100%!important;
-    position:static!important;
-  }
-  #practiceView[data-category="긴 글"] #prompt{
-    min-height:0!important;
-    max-height:none!important;
-    overflow:visible!important;
-  }
-  #practiceView[data-category="긴 글"] #typed{
-    min-height:220px!important;
-    max-height:none!important;
-    overflow:visible!important;
-    align-content:flex-start!important;
-    align-items:flex-start!important;
-    justify-content:flex-start!important;
-  }
-  #practiceView[data-category="긴 글"] #answerPanel{
-    max-height:none!important;
-    overflow:visible!important;
-  }
-}
-</style>
 </head><body>
 <style id="gmgj-logo-hc-whale-dark-final-v5">
 /*
@@ -11302,6 +11256,98 @@ window.addEventListener("hashchange",()=>{
 
 
 
+
+
+<!-- v287: 긴 글 연습을 다른 연습과 동일한 상/하 배치로 최종 고정 -->
+<style id="gmgj-v287-longtext-vertical-final">
+/* 기존 v245/v249의 PC 좌우 전용 규칙을 최종 덮어씀 */
+#practiceView[data-category="긴 글"] .exercise{
+  display:flex!important;
+  flex-direction:column!important;
+  grid-template-columns:none!important;
+  grid-template-rows:none!important;
+  gap:0!important;
+  padding:0!important;
+  align-items:stretch!important;
+  overflow:hidden!important;
+}
+#practiceView[data-category="긴 글"] .exercise>.panel:first-child,
+#practiceView[data-category="긴 글"] .exercise>.panel:nth-of-type(2){
+  grid-column:auto!important;
+  grid-row:auto!important;
+  width:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  overflow:visible!important;
+  border:0!important;
+  border-radius:0!important;
+  padding:22px 28px!important;
+  min-width:0!important;
+}
+#practiceView[data-category="긴 글"] .exercise>.panel:first-child{
+  border-bottom:1px solid #dfe8e8!important;
+}
+#practiceView[data-category="긴 글"] .exercise>.panel:nth-of-type(2){
+  border-bottom:1px solid #dfe8e8!important;
+}
+#practiceView[data-category="긴 글"] .feedback-column{
+  grid-column:auto!important;
+  grid-row:auto!important;
+  position:static!important;
+  width:100%!important;
+  min-width:0!important;
+}
+#practiceView[data-category="긴 글"] #prompt{
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  padding:10px 2px!important;
+}
+#practiceView[data-category="긴 글"] #typed{
+  min-height:220px!important;
+  max-height:none!important;
+  overflow:visible!important;
+  align-content:flex-start!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  padding:16px 8px!important;
+}
+#practiceView[data-category="긴 글"] #result{
+  position:static!important;
+  transform:none!important;
+  width:100%!important;
+  margin:0!important;
+}
+#practiceView[data-category="긴 글"] #answerPanel{
+  max-height:none!important;
+  overflow:visible!important;
+  margin:0!important;
+}
+@media(max-width:768px){
+  #practiceView[data-category="긴 글"] .exercise>.panel:first-child,
+  #practiceView[data-category="긴 글"] .exercise>.panel:nth-of-type(2){padding:18px!important}
+  #practiceView[data-category="긴 글"] #typed{min-height:180px!important}
+}
+</style>
+<script id="gmgj-v287-longtext-vertical-final-script">
+(function(){
+  function restoreLongVertical(){
+    var view=document.getElementById('practiceView');
+    if(!view || view.dataset.category!=='긴 글') return;
+    var feedback=view.querySelector('.exercise>.feedback-column');
+    var result=document.getElementById('result');
+    var answer=document.getElementById('answerPanel');
+    if(!feedback) return;
+    if(result && result.parentNode!==feedback) feedback.insertBefore(result, feedback.firstChild);
+    if(answer && answer.parentNode!==feedback) feedback.appendChild(answer);
+  }
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(restoreLongVertical,0)});
+  document.addEventListener('click',function(){setTimeout(restoreLongVertical,0)},true);
+  document.addEventListener('keydown',function(){setTimeout(restoreLongVertical,0)},true);
+  window.addEventListener('resize',function(){setTimeout(restoreLongVertical,0)});
+  setTimeout(restoreLongVertical,0);
+})();
+</script>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
