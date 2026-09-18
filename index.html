@@ -20004,3 +20004,144 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   setTimeout(apply,0);
 })();
 </script>
+
+<style id="gmgj-v264-longtext-stable-result-answer">
+/* 긴 글 결과: 제출 버튼 바로 아래에 정답/오답만 작게 표시 */
+#practiceView[data-category="긴 글"] #result{
+  order:unset!important;
+  position:static!important;
+  width:auto!important;
+  min-height:24px!important;
+  margin:7px auto 3px!important;
+  padding:0!important;
+  text-align:center!important;
+  font-size:18px!important;
+  font-weight:800!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#practiceView[data-category="긴 글"] #result .symbol{display:none!important}
+#practiceView[data-category="긴 글"] #result .result-text{
+  display:block!important;
+  font-size:18px!important;
+  line-height:1.35!important;
+}
+
+/* 답안 대조가 쉽도록 긴 글 정답 점형을 다시 크게 표시 */
+#practiceView[data-category="긴 글"] #answerDots .input-dot{
+  transform:scale(.96)!important;
+  margin:-1px 0!important;
+}
+#practiceView[data-category="긴 글"] #answerDots{
+  gap:5px!important;
+}
+#practiceView[data-category="긴 글"] #answerPanel{
+  max-height:52vh!important;
+}
+</style>
+
+<script id="gmgj-v264-longtext-stable-result-answer-script">
+(function(){
+  function normalizeLongForGrade(v){
+    return String(v||"")
+      .split("\n")
+      .map(function(line){return line.replace(/^ +/,"");})
+      .filter(function(line){return line.length>0;})
+      .join("\n");
+  }
+
+  function restoreResultStructure(){
+    const r=document.getElementById("result");
+    if(!r) return;
+    if(!document.getElementById("resultSymbol") || !document.getElementById("resultText")){
+      r.innerHTML='<div id="resultSymbol" class="symbol">·</div><div id="resultText" class="result-text">입력 대기</div>';
+    }
+  }
+
+  function renderExactAnswer(exact){
+    const panel=document.getElementById("answerPanel");
+    const area=document.getElementById("answerDots");
+    if(!panel||!area||typeof sixDotCell!=="function") return;
+    area.innerHTML="";
+    [...exact].forEach(function(ch){
+      if(ch==="\n"){
+        const br=document.createElement("span");
+        br.className="long-line-break";
+        area.appendChild(br);
+      }else{
+        area.appendChild(sixDotCell(ch,false));
+      }
+    });
+    panel.hidden=false;
+  }
+
+  function installCleanSubmit(){
+    const old=document.getElementById("longTextSubmit256");
+    if(!old || old.dataset.v264Clean==="1") return;
+
+    /* v261~v263에서 붙은 이전 결과 이벤트를 모두 제거하기 위해 버튼을 새 노드로 교체 */
+    const btn=old.cloneNode(true);
+    btn.dataset.v264Clean="1";
+    btn.removeAttribute("onclick");
+    old.parentNode.replaceChild(btn,old);
+
+    btn.addEventListener("click",function(e){
+      e.preventDefault();
+      if(typeof cat==="undefined" || cat!=="긴 글" || typeof q==="undefined" || !q) return;
+      if(typeof grading!=="undefined" && grading) return;
+
+      restoreResultStructure();
+
+      /* 15개 원본 이미지에서 추출한 답안은 그대로 보관/표시.
+         문제를 왼쪽 정렬한 현재 입력 방식에 맞춰 채점할 때만 줄 앞 들여쓰기와 빈 줄을 제외. */
+      const exact=q._gmgjExactBraille || q.braille || "";
+      const savedAnswer=q.braille;
+      const savedInput=input;
+
+      q.braille=normalizeLongForGrade(exact);
+      input=normalizeLongForGrade(savedInput);
+
+      submit();
+
+      /* submit()이 정답 패널을 만든 뒤 원본 답안으로 다시 그려 대조용 답안은 사용자가 준 형태를 유지 */
+      renderExactAnswer(exact);
+
+      q.braille=savedAnswer;
+      input=savedInput;
+
+      /* 결과 DOM은 절대 textContent로 덮지 않고 기존 resultText만 사용 */
+      const rt=document.getElementById("resultText");
+      if(rt) rt.textContent=(normalizeLongForGrade(savedInput)===normalizeLongForGrade(exact))?"정답!":"오답!";
+    });
+  }
+
+  function restoreExactBank(){
+    if(typeof DATA==="undefined" || !DATA["긴 글"] ||
+       typeof EXACT_LONG_ANSWERS==="undefined") return;
+    DATA["긴 글"].forEach(function(item,i){
+      if(EXACT_LONG_ANSWERS[i]){
+        item._gmgjExactBraille=EXACT_LONG_ANSWERS[i];
+        /* v256의 가공 데이터 대신 원본 이미지에서 추출한 답안을 데이터 기준으로 복원 */
+        item.braille=EXACT_LONG_ANSWERS[i];
+      }
+    });
+  }
+
+  function placeResult(){
+    const btn=document.getElementById("longTextSubmit256");
+    const r=document.getElementById("result");
+    if(btn&&r&&btn.nextSibling!==r) btn.parentNode.insertBefore(r,btn.nextSibling);
+  }
+
+  function apply(){
+    restoreExactBank();
+    restoreResultStructure();
+    installCleanSubmit();
+    placeResult();
+  }
+
+  document.addEventListener("DOMContentLoaded",apply);
+  setTimeout(apply,0);
+})();
+</script>
