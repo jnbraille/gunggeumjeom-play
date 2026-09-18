@@ -11156,6 +11156,21 @@ window.addEventListener("hashchange",()=>{
 
 
 
+
+<style id="gmgj-v277-longtext-typed-size-match-answer-only">
+/* v277: 긴 글 입력 점형은 색/점 크기를 별도 지정하지 않는다.
+   기존 공통 점형 CSS를 그대로 사용하고, 답안보기와 동일한 축소율/간격만 적용한다. */
+#practiceView[data-category="긴 글"] #typed .input-cell,
+#practiceView[data-category="긴 글"] #typed .braille-cell{
+  transform:scale(.78)!important;
+  transform-origin:center!important;
+  margin:-4px -3px!important;
+}
+#practiceView[data-category="긴 글"] #typed{
+  gap:3px!important;
+}
+</style>
+
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
@@ -19960,106 +19975,3 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
 </script>
 
 <!-- v268: 긴 글 오답 점형 크기 최종 통일 -->
-<style id="gmgj-v268-longtext-wrong-dot-size-final">
-/* 긴 글에서는 정상/오답 여부와 관계없이 모든 점을 완전히 같은 외곽 크기로 사용한다.
-   오답은 크기/간격을 바꾸지 않고 색상만 빨간색으로 표시한다. */
-#practiceView[data-category="긴 글"] #typed .input-cell,
-#practiceView[data-category="긴 글"] #typed .input-cell.wrong,
-#practiceView[data-category="긴 글"] #typed .input-cell.error,
-#practiceView[data-category="긴 글"] #typed .braille-cell{
-  display:grid!important;
-  grid-template-columns:repeat(2,13px)!important;
-  grid-template-rows:repeat(3,13px)!important;
-  column-gap:5px!important;
-  row-gap:7px!important;
-  padding:0!important;
-  margin:0!important;
-  transform:none!important;
-  border:0!important;
-  outline:0!important;
-  box-shadow:none!important;
-  background:transparent!important;
-  flex:0 0 auto!important;
-}
-#practiceView[data-category="긴 글"] #typed .input-dot,
-#practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot,
-#practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot{
-  width:13px!important;
-  height:13px!important;
-  min-width:13px!important;
-  min-height:13px!important;
-  max-width:13px!important;
-  max-height:13px!important;
-  box-sizing:border-box!important;
-  border-width:1px!important;
-  border-style:solid!important;
-  border-radius:50%!important;
-  margin:0!important;
-  padding:0!important;
-  transform:none!important;
-  box-shadow:none!important;
-}
-/* 일반 입력 점 */
-html:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-dot.on{
-  background:#26383d!important;
-  background-color:#26383d!important;
-  border-color:#26383d!important;
-}
-/* 오답 점: 크기는 위 규칙 그대로, 색만 변경 */
-html:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
-html:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
-html:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-dot.wrong,
-html:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast) #practiceView[data-category="긴 글"] #typed .input-dot.error{
-  width:13px!important;
-  height:13px!important;
-  min-width:13px!important;
-  min-height:13px!important;
-  max-width:13px!important;
-  max-height:13px!important;
-  box-sizing:border-box!important;
-  background:#ef4444!important;
-  background-color:#ef4444!important;
-  border:1px solid #ef4444!important;
-  border-radius:50%!important;
-  transform:none!important;
-}
-</style>
-
-
-<style id="gmgj-v276-longtext-hc-dot-match-final">
-/* v276: 긴 글 연습 고대비 점형 최종 보정. 다른 일반 연습과 같은 흰색 채움/밝은 빈점 테두리 사용. */
-html.high-contrast #practiceView[data-category="긴 글"] #typed .input-dot.on,
-html.contrast #practiceView[data-category="긴 글"] #typed .input-dot.on,
-body.high-contrast #practiceView[data-category="긴 글"] #typed .input-dot.on,
-body.contrast #practiceView[data-category="긴 글"] #typed .input-dot.on{
-  background:#fff!important; background-color:#fff!important; border-color:#fff!important; box-shadow:none!important; filter:none!important; forced-color-adjust:none!important;
-}
-html.high-contrast #practiceView[data-category="긴 글"] #typed .input-dot:not(.on),
-html.contrast #practiceView[data-category="긴 글"] #typed .input-dot:not(.on),
-body.high-contrast #practiceView[data-category="긴 글"] #typed .input-dot:not(.on),
-body.contrast #practiceView[data-category="긴 글"] #typed .input-dot:not(.on){
-  background:transparent!important; background-color:transparent!important; border-color:#6f6f6f!important; box-shadow:none!important; filter:none!important; forced-color-adjust:none!important;
-}
-html.high-contrast #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
-html.contrast #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
-body.high-contrast #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
-body.contrast #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
-html.high-contrast #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
-html.contrast #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
-body.high-contrast #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on,
-body.contrast #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on{
-  background:#ef4444!important; background-color:#ef4444!important; border-color:#ef4444!important;
-}
-@media (forced-colors:active), (prefers-contrast:more){
-  #practiceView[data-category="긴 글"] #typed .input-dot.on{
-    forced-color-adjust:none!important; background:#fff!important; background-color:#fff!important; border-color:#fff!important; box-shadow:none!important; filter:none!important;
-  }
-  #practiceView[data-category="긴 글"] #typed .input-dot:not(.on){
-    forced-color-adjust:none!important; background:transparent!important; background-color:transparent!important; border-color:#6f6f6f!important; box-shadow:none!important; filter:none!important;
-  }
-  #practiceView[data-category="긴 글"] #typed .input-cell.wrong .input-dot.on,
-  #practiceView[data-category="긴 글"] #typed .input-cell.error .input-dot.on{
-    forced-color-adjust:none!important; background:#ef4444!important; background-color:#ef4444!important; border-color:#ef4444!important;
-  }
-}
-</style>
