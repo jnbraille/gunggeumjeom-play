@@ -18916,3 +18916,151 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   setTimeout(syncLongCards,100);
 })();
 </script>
+
+<style id="gmgj-v247-longtext-title-indent">
+/* 긴 글 연습 문제: 첫 줄 제목 가운데 정렬 + 본문 문단 첫 줄 들여쓰기 */
+#practiceView[data-category="긴 글"] #prompt{
+  white-space:normal!important;
+}
+#practiceView[data-category="긴 글"] #prompt .long-title{
+  display:block!important;
+  width:100%!important;
+  text-align:center!important;
+  font-weight:800!important;
+  margin:0 0 18px!important;
+  text-indent:0!important;
+}
+#practiceView[data-category="긴 글"] #prompt .long-paragraph{
+  display:block!important;
+  width:100%!important;
+  text-align:left!important;
+  text-indent:2em!important;
+  margin:0 0 12px!important;
+  line-height:1.8!important;
+}
+</style>
+<script id="gmgj-v247-longtext-title-indent-script">
+(function(){
+  function formatLongPrompt(){
+    if(typeof cat==="undefined" || cat!=="긴 글") return;
+    var p=document.getElementById("prompt");
+    if(!p || p.dataset.longFormatted247==="1") return;
+    var raw=(p.textContent||"").trim();
+    if(!raw) return;
+    var lines=raw.split(/\n+/).map(function(x){return x.trim();}).filter(Boolean);
+    if(!lines.length) return;
+
+    p.textContent="";
+    var title=document.createElement("div");
+    title.className="long-title";
+    title.textContent=lines[0];
+    p.appendChild(title);
+
+    for(var i=1;i<lines.length;i++){
+      var para=document.createElement("div");
+      para.className="long-paragraph";
+      para.textContent=lines[i];
+      p.appendChild(para);
+    }
+    p.dataset.longFormatted247="1";
+  }
+
+  function refresh(){
+    var p=document.getElementById("prompt");
+    if(p) delete p.dataset.longFormatted247;
+    setTimeout(formatLongPrompt,0);
+  }
+
+  document.addEventListener("click",function(){setTimeout(formatLongPrompt,0);},true);
+  document.addEventListener("keydown",function(){setTimeout(formatLongPrompt,0);},true);
+  document.addEventListener("DOMContentLoaded",formatLongPrompt);
+  setTimeout(formatLongPrompt,0);
+
+  /* 문제 전환 시 기존 렌더링 후 다시 제목/문단 형식 적용 */
+  if(typeof window.nextQuestion==="function"){
+    var oldNext=window.nextQuestion;
+    window.nextQuestion=function(){
+      var r=oldNext.apply(this,arguments);
+      refresh();
+      return r;
+    };
+  }
+})();
+</script>
+
+<style id="gmgj-v248-home-keycaps-only">
+.home-key-guide-v248{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:6px!important;
+}
+.home-key-guide-v248 .keycap-v248{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:34px!important;
+  padding:5px 9px!important;
+  border:1px solid currentColor!important;
+  border-radius:6px!important;
+  background:transparent!important;
+  font:inherit!important;
+  font-weight:700!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+}
+.home-key-guide-v248 .sep-v248{padding:0 2px!important}
+</style>
+<script id="gmgj-v248-home-keycaps-only-script">
+(function(){
+  const guide=/S-3점\s+D-2점\s+F-1점\s*\/\s*J-4점\s+K-5점\s+L-6점/;
+
+  function applyHomeOnly(){
+    /* '입력 방법' 제목을 가진 홈 화면 안내 카드 안에서만 찾는다. */
+    const candidates=[].slice.call(document.querySelectorAll("body *")).filter(function(el){
+      return (el.textContent||"").trim()==="입력 방법";
+    });
+
+    candidates.forEach(function(title){
+      let box=title.parentElement;
+      for(let depth=0; box && depth<4; depth++, box=box.parentElement){
+        if(box.closest && box.closest("#practiceView")) break; /* 연습하기 내부는 절대 제외 */
+        const els=box.querySelectorAll ? box.querySelectorAll("*") : [];
+        for(const el of els){
+          if(el.dataset && el.dataset.homeKeycaps248==="1") continue;
+          const txt=el.textContent||"";
+          if(!guide.test(txt)) continue;
+          if(el.closest("#practiceView")) continue;
+
+          const m=txt.match(guide);
+          const rest=txt.replace(guide,"").replace(/^\s*[·ㆍ]\s*/,"").trim();
+          el.textContent="";
+          el.classList.add("home-key-guide-v248");
+
+          [["S","3"],["D","2"],["F","1"]].forEach(function(k){
+            const x=document.createElement("span");
+            x.className="keycap-v248"; x.textContent=k[0]+"-"+k[1]+"점"; el.appendChild(x);
+          });
+          const slash=document.createElement("span");
+          slash.className="sep-v248"; slash.textContent="/"; el.appendChild(slash);
+          [["J","4"],["K","5"],["L","6"]].forEach(function(k){
+            const x=document.createElement("span");
+            x.className="keycap-v248"; x.textContent=k[0]+"-"+k[1]+"점"; el.appendChild(x);
+          });
+          if(rest){
+            const dot=document.createElement("span");
+            dot.className="sep-v248"; dot.textContent="·"; el.appendChild(dot);
+            const tail=document.createElement("span");
+            tail.textContent=rest; el.appendChild(tail);
+          }
+          el.dataset.homeKeycaps248="1";
+          return;
+        }
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded",applyHomeOnly);
+  setTimeout(applyHomeOnly,0);
+})();
+</script>
