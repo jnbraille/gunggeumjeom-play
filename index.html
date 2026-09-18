@@ -19064,3 +19064,91 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   setTimeout(applyHomeOnly,0);
 })();
 </script>
+
+<style id="gmgj-v249-longtext-compact-answer-below">
+/* v249: 긴 글에서만 입력 점형 축소 */
+#practiceView[data-category="긴 글"] #typed .input-cell,
+#practiceView[data-category="긴 글"] #typed .braille-cell{
+  transform:scale(.82)!important;
+  transform-origin:center!important;
+  margin:-3px -2px!important;
+}
+#practiceView[data-category="긴 글"] #typed{
+  gap:4px!important;
+}
+
+/* 긴 글 답안은 문제 아래쪽에 표시 */
+@media (min-width:769px){
+  #practiceView[data-category="긴 글"] .exercise{
+    grid-template-columns:minmax(0,46fr) minmax(0,54fr)!important;
+    grid-template-rows:auto!important;
+    align-items:start!important;
+  }
+  #practiceView[data-category="긴 글"] .exercise>.panel:first-child{
+    grid-column:1!important;
+    grid-row:1!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  #practiceView[data-category="긴 글"] .exercise>.panel:nth-of-type(2){
+    grid-column:2!important;
+    grid-row:1!important;
+  }
+  #practiceView[data-category="긴 글"] .feedback-column{
+    grid-column:2!important;
+    grid-row:1!important;
+  }
+
+  /* answerPanel은 스크립트가 문제 패널 안으로 이동시킴 */
+  #practiceView[data-category="긴 글"] .panel:first-child #answerPanel{
+    margin-top:18px!important;
+    padding-top:16px!important;
+    border-top:1px solid var(--line)!important;
+    max-height:34vh!important;
+    overflow:auto!important;
+  }
+  #practiceView[data-category="긴 글"] .panel:first-child #answerDots .input-cell,
+  #practiceView[data-category="긴 글"] .panel:first-child #answerDots .braille-cell{
+    transform:scale(.78)!important;
+    transform-origin:center!important;
+    margin:-4px -3px!important;
+  }
+  #practiceView[data-category="긴 글"] .panel:first-child #answerDots{
+    gap:3px!important;
+    justify-content:flex-start!important;
+  }
+}
+</style>
+
+<script id="gmgj-v249-longtext-answer-below-script">
+(function(){
+  let originalParent=null, originalNext=null;
+
+  function placeLongAnswer(){
+    const view=document.getElementById("practiceView");
+    const panel=document.getElementById("answerPanel");
+    if(!view || !panel) return;
+
+    if(view.dataset.category==="긴 글"){
+      const problemPanel=view.querySelector(".exercise>.panel:first-child");
+      if(!problemPanel) return;
+      if(!originalParent){
+        originalParent=panel.parentNode;
+        originalNext=panel.nextSibling;
+      }
+      if(panel.parentNode!==problemPanel) problemPanel.appendChild(panel);
+    }else if(originalParent && panel.parentNode!==originalParent){
+      if(originalNext && originalNext.parentNode===originalParent){
+        originalParent.insertBefore(panel,originalNext);
+      }else{
+        originalParent.appendChild(panel);
+      }
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded",placeLongAnswer);
+  document.addEventListener("click",function(){ setTimeout(placeLongAnswer,0); },true);
+  document.addEventListener("keydown",function(){ setTimeout(placeLongAnswer,0); },true);
+  setTimeout(placeLongAnswer,0);
+})();
+</script>
