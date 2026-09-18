@@ -18462,3 +18462,50 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
   justify-content:center!important;
 }
 </style>
+
+<style id="gmjg-v232-spelling-hide-input-status">
+/* v232: 맞춤법 연습은 키보드 입력형이 아니므로 하단 공용 입력 상태 영역을 표시하지 않음 */
+body.spelling-mode #result,
+body.spelling-mode #inputStatus,
+body.spelling-mode .input-status,
+body.spelling-mode [data-input-status]{
+  display:none !important;
+}
+</style>
+<script id="gmjg-v232-spelling-status-guard">
+(function(){
+  function syncSpellingStatus(){
+    var isSpelling = (typeof cat!=="undefined" && cat==="맞춤법");
+    var body=document.body;
+    if(!body) return;
+    body.classList.toggle("spelling-mode", !!isSpelling);
+    if(isSpelling){
+      ["result","inputStatus"].forEach(function(id){
+        var el=document.getElementById(id);
+        if(el){ el.hidden=true; el.style.setProperty("display","none","important"); }
+      });
+      document.querySelectorAll(".input-status,[data-input-status]").forEach(function(el){
+        el.hidden=true; el.style.setProperty("display","none","important");
+      });
+    }
+  }
+  document.addEventListener("click",function(){ setTimeout(syncSpellingStatus,0); },true);
+  document.addEventListener("DOMContentLoaded",syncSpellingStatus);
+  setTimeout(syncSpellingStatus,0);
+})();
+</script>
+
+<style id="gmjg-v233-spelling-cue-size">
+/* v233: 맞춤법 연습 '제시어:' 글씨 확대 - PC/태블릿/모바일 공통 */
+#practiceView[data-category="맞춤법"] #spellingCue,
+#practiceView[data-category="맞춤법"] .spelling-cue{
+  font-size:1.35rem !important;
+  line-height:1.65 !important;
+}
+@media (max-width:768px){
+  #practiceView[data-category="맞춤법"] #spellingCue,
+  #practiceView[data-category="맞춤법"] .spelling-cue{
+    font-size:1.3rem !important;
+  }
+}
+</style>
