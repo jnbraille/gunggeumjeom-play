@@ -8897,7 +8897,7 @@ function nextQuestion(){
     if(note)note.hidden=true;
   }
 
-  document.getElementById("rule").textContent=(cat==="문장" || cat==="단어") ? "" : (q.rule
+  document.getElementById("rule").textContent=(cat==="문장" || cat==="단어" || (cat==="점자 랜덤 연습" && (q.sourceCategory==="단어" || q.sourceCategory==="문장"))) ? "" : (q.rule
     ? (/^제\d+회\s+점역·교정사/.test(q.rule)
       ? q.rule
       : "2024년 한글 점자 규정 " + (q.rule||"").replace(/\s*·?\s*PDF\s*\d+쪽/g,""))
@@ -11949,6 +11949,21 @@ html.gmgj-tablet-touch .mobile-dot{
   width:74px!important;
   height:74px!important;
   font-size:1.32rem!important;
+}
+</style>
+
+
+<!-- v302: 랜덤연습 점자 읽기 - 한글 정답 표기만 확대 -->
+<style id="gmgj-v302-random-reading-korean-answer-size">
+#practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingFeedback{
+  font-size:1.68rem!important;
+  line-height:1.65!important;
+  font-weight:850!important;
+}
+@media(max-width:768px){
+  #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingFeedback{
+    font-size:1.52rem!important;
+  }
 }
 </style>
 </body>
