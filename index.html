@@ -8145,7 +8145,7 @@ const DATA={"초성":[{"prompt":"ㄱ","braille":"⠈","rule":"제1항 첫소리 
 const RANDOM_GAME_CATS=["초성","종성","모음","약자·약어","로마자","숫자","문장부호","단어","문장","점자 읽기"];
 DATA["점자 랜덤 연습"]=RANDOM_GAME_CATS.flatMap(sourceCategory=>(DATA[sourceCategory]||[]).map(item=>({...item,sourceCategory})));
 const CATS=["초성","종성","모음","약자·약어","로마자","숫자","문장부호","단어","문장","점자 읽기","맞춤법","점자 랜덤 연습"];
-const DESC={"초성":"첫소리·된소리","종성":"받침·겹받침","문장부호":"문장부호","모음":"기본·복합 모음","약자·약어":"약자 + 약어 7개","단어":"2~10글자 단어","문장":"단문 · 장문","숫자":"세 자리 이내 숫자","로마자":"대·소문자 혼합","긴 글":"실전 장문 점역 · 준비중","점자 읽기":"점자를 읽고 한글로 입력","맞춤법":"헷갈리고 틀리기 쉬운 우리말&nbsp;&amp;&nbsp;외래어","점자 랜덤 연습":"초성부터 단어까지 무작위 연습"};
+const DESC={"초성":"첫소리·된소리","종성":"받침·겹받침","문장부호":"문장부호","모음":"기본·복합 모음","약자·약어":"약자 + 약어 7개","단어":"2~10글자 단어","문장":"단문 · 장문","숫자":"세 자리 이내 숫자","로마자":"대·소문자 혼합","긴 글":"실전 장문 점역 · 준비중","점자 읽기":"점자를 읽고 한글로 입력","맞춤법":"헷갈리고 틀리기 쉬운 우리말&nbsp;&amp;&nbsp;외래어","점자 랜덤 연습":"학습한 점자<br>무작위 복습"};
 const COUNT=0,$=x=>document.getElementById(x);
 const V={home:$("homeView"),brailleStory:$("brailleStoryView"),select:$("selectView"),practice:$("practiceView"),brailleReader:$("brailleReaderView"),records:$("recordsView"),guide:$("guideView")};
 const KD={f:1,d:2,s:3,j:4,k:5,l:6};
@@ -11647,7 +11647,7 @@ window.addEventListener("hashchange",()=>{
   function search(){
     var term=(input.value||'').trim().toLowerCase();
     if(!term){results=[];pos=-1;status.textContent='검색어를 입력하세요.';return;}
-    var bank=(window.DATA && DATA['점자 랜덤 연습']) || [];
+    var bank=(typeof DATA!=='undefined' && Array.isArray(DATA['점자 랜덤 연습'])) ? DATA['점자 랜덤 연습'] : [];
     results=[];
     for(var i=0;i<bank.length;i++) if(searchable(bank[i]).indexOf(term)!==-1) results.push(i);
     if(!results.length){pos=-1;status.textContent='검색 결과가 없습니다.';return;}
