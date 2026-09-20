@@ -1,6 +1,6 @@
 <!doctype html><html lang="ko"><head>
 <!-- Google tag (gtag.js) - Google Analytics 4 -->
-<script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Dyzvzbuf2pCnGk9mtKPdJ8JRDz_8EyaHgpwTMaDMmL3e5_kz_M1b1IXilw6ITq1I6h7W79vQGKFVbWmuE-hMZA4yk7s2KLA6Bx5qsBlXwaThOY2HfwSTuHCTgWJl-t5D3tSNqmKBfroExJEJ2O9ecEygKzF0XB4ezkfBmqcCD81FJPpwkyWSN8NW0ULCI2BBBQRbkSkUqHz4lZEWkaGglTDpZdTdB4qYZ14wrUsM9uElRVvznoYJfVrdsZSAJZezCTw3sdOh9Z-RfOwkeq3Pv6Dk1kPY8qva6wMfk3ARBq7bWTyhMemgh-Vj7ntpOH9PQaZnK0UvAOK1LNp8OplEESRYrojbkvJL2b16g21sdTwR8_ELOg7HeXiLOFilhrumeWZDELH0BKDbt8zQrnRdPB35wRS8UbBObp6IdFK8PYTDx1al0l9L8sbCqmPNWj9RrrDHteL3-iHB8mzCvlcc5LWT73W9H2kY9sFZL3ApTCj1xBItPvnM6XT4bQl3SZw8" charset="UTF-8"></script><script async src="https://www.googletagmanager.com/gtag/js?id=G-2KYSEMM3G9"></script>
+<script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=2nc-64LIvJ_Za2pbCam4nDu5-JzA11TkJax-F9l76bOIAm-2Np63aMDjnpjwe-jETLe8yMD1zD3jyj-k6rMCS_bZDhH3hxJV-znGMor_gnCKnphHUA8nKO-lsxeBZmxqT0LeSINYe-dfdB9RJLCYG8CZzcB8W1Gvp-5naLps-a7mSMPqUCqHwHSmNcHCI9jEI2Buguk4ihJ068PXatF4_Y3dAAyUJcps16-tC6ICtSg5eytrHsDY9vjxy8gF1xaxCkbVHUle5PT8FxRwXxByjXEPwZjioZBv3OKqmoVBJK2PNZ5PG64cc9gES12Qrymfo1Sx_OOvM7CbIbjfk50JfJpSBUJv_YNMOhJWbfkAVMzIVRM6XGF46IYkdmjNFKwn0HdlGm6hCLfGv8ovbAriifzNua9yRNDrzTKRax7-Oq_sTHemYV97PpKzQBl1iz-UHqrxytCkZS5Mnq3Apxy73A" charset="UTF-8"></script><script async src="https://www.googletagmanager.com/gtag/js?id=G-2KYSEMM3G9"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -3545,30 +3545,6 @@ header .fund-text::after,
   opacity:1!important;
 }
 
-/* 웨일 일반(밝은) 모드: 입력한 점은 남색, 틀린 칸의 입력점은 빨간색으로 표시한다. */
-@media (prefers-color-scheme: light){
-  html.whale-browser #practiceView #typed .input-dot.on,
-  html.whale-browser #practiceView #typed .input-dot.on.whale-text-dot{
-    display:block!important;
-    background:#26383d!important;
-    background-color:#26383d!important;
-    border-color:#26383d!important;
-    color:#26383d!important;
-    -webkit-text-fill-color:#26383d!important;
-    opacity:1!important;
-    font-size:0!important;
-    text-indent:-9999px!important;
-    overflow:hidden!important;
-  }
-  html.whale-browser #practiceView #typed .input-cell.wrong .input-dot.on,
-  html.whale-browser #practiceView #typed .input-cell.error .input-dot.on{
-    background:var(--bad)!important;
-    background-color:var(--bad)!important;
-    border-color:var(--bad)!important;
-    color:var(--bad)!important;
-    -webkit-text-fill-color:var(--bad)!important;
-  }
-}
 </style>
 <script id="gmgj-v295-final-result-restore">
 (function(){
@@ -16245,15 +16221,15 @@ html.whale-browser #practiceView #typed
   padding:0!important;
   margin:0!important;
 
-  /* 흰 점 문자만 중앙 표시 */
-  color:#ffffff!important;
-  -webkit-text-fill-color:#ffffff!important;
+  /* 정답 점형과 동일한 텍스트 색상: 웨일 자체 다크 변환 허용 */
+  color:#173f5f!important;
+  -webkit-text-fill-color:currentColor!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
   font-family:Arial,"Segoe UI Symbol",sans-serif!important;
   font-size:30px!important;
-  font-weight:700!important;
+  font-weight:400!important;
   line-height:8px!important;
   letter-spacing:0!important;
   text-indent:0!important;
@@ -20875,42 +20851,4 @@ html body #practiceView[data-category="점자 랜덤 연습"][data-source-catego
 }
 </style>
 
-<!-- v296: 네이버 웨일 일반 모드 입력 점형 최종 강제 복원 (파일 최후단) -->
-<style id="gmgj-v296-whale-input-dot-final">
-html.whale-browser:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast)
-#practiceView #typed .input-cell .input-dot.on,
-html.whale-browser:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast)
-#practiceView #typed .input-cell .input-dot.on.whale-text-dot{
-  display:block!important;
-  visibility:visible!important;
-  width:14px!important;
-  height:14px!important;
-  min-width:14px!important;
-  min-height:14px!important;
-  max-width:14px!important;
-  max-height:14px!important;
-  background:#26383d!important;
-  background-color:#26383d!important;
-  border:1px solid #26383d!important;
-  border-radius:50%!important;
-  color:#26383d!important;
-  -webkit-text-fill-color:#26383d!important;
-  opacity:1!important;
-  font-size:0!important;
-  line-height:0!important;
-  text-indent:-9999px!important;
-  overflow:hidden!important;
-  box-shadow:none!important;
-}
-
-html.whale-browser:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast)
-#practiceView #typed .input-cell.wrong .input-dot.on,
-html.whale-browser:not(.high-contrast):not(.contrast) body:not(.high-contrast):not(.contrast)
-#practiceView #typed .input-cell.error .input-dot.on{
-  background:var(--bad)!important;
-  background-color:var(--bad)!important;
-  border-color:var(--bad)!important;
-  color:var(--bad)!important;
-  -webkit-text-fill-color:var(--bad)!important;
-}
-</style>
+<!-- v297: 고정 배경색 덮어쓰기 제거. 입력점은 정답점과 같은 텍스트 렌더링 사용. -->
