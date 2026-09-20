@@ -11919,6 +11919,38 @@ html.whale-browser #practiceView[data-category="점자 랜덤 연습"][data-sour
   else boot();
 })();
 </script>
+
+<!-- v303: 입력 대기 상태의 점 제거 + 화면 점자 키보드 소폭 축소 -->
+<style id="gmgj-v303-empty-result-and-keyboard-size">
+/* 맞춤법을 제외한 연습에서 입력 전 결과 기호(·)를 숨김. 정답/오답 표시는 그대로 유지 */
+#practiceView:not([data-category="맞춤법"]) #result:not(.ok):not(.no):not(.correct):not(.wrong):not(.bad) #resultSymbol{
+  display:none!important;
+}
+/* 휴대폰 화면 점자 키보드만 기존 56px에서 조금 축소 */
+@media(max-width:768px){
+  .mobile-braille-cell{
+    grid-template-columns:repeat(2,52px)!important;
+    grid-template-rows:repeat(3,52px)!important;
+    gap:5px 16px!important;
+  }
+  .mobile-dot{
+    width:52px!important;
+    height:52px!important;
+    font-size:.96rem!important;
+  }
+}
+/* 태블릿용 화면 점자 키보드도 비율을 유지하며 소폭 축소 */
+html.gmgj-tablet-touch .mobile-braille-cell{
+  grid-template-columns:repeat(2,74px)!important;
+  grid-template-rows:repeat(3,74px)!important;
+  gap:9px 24px!important;
+}
+html.gmgj-tablet-touch .mobile-dot{
+  width:74px!important;
+  height:74px!important;
+  font-size:1.32rem!important;
+}
+</style>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
