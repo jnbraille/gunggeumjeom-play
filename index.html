@@ -1,6 +1,8 @@
 <!doctype html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- Google tag (gtag.js) - Google Analytics 4 -->
-<script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=4xRLDHzlS2Yoq8Fs8Jo52ST3LY-b6GO7SajTCE4Omzc5SfktV55lKkg8fxGC4l9RejONMkj9eIz5YFRHEaW7Z2iuRktTsTwz0UmMer2vWiiTI3JAP2BbBNiTdysOaarE67GY-aWthkH5972SUoksxjL7rvdqSVGteCfs8R6VALnpEuhWgfpjyOQnt64Hg2eJwtSnY9tHsPecXb5kx4CVgBfSx7KtM3XtRhjy_86MjofagJoJ12YawOKuXHSbVq-Py6eGHsvtdQdVhxzJI4G-hVQCV0oOyBpQ2n62dQ52Sv9shfTRYVVlB3HzuK-p37hhlmNCbkXiMfcwp8Ibx_u1FoKtJsaT45PfLziY08F6amrkUbkbY8boaKOWVCN8E3ULGr9CzKyCZI88nC1t5y9vfVTRD9OesraeeSSAMmtJke1gnojT1PxRYt5DBrzrFRZgK5Xm3QYasqll8y__6vih1bNRJlR3UBspnqbTZqicDek_Deg5CKAFq-txEz2sYG0e" charset="UTF-8"></script><script async src="https://www.googletagmanager.com/gtag/js?id=G-2KYSEMM3G9"></script>
+<script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=kfWhr-_RMG2ufQksDBwSfO_GbtDCn3ZiT4rmO11Z-PvNrMV5Y4Vt47CidlceTA6ketTkxVOmcO0xIp0zkIeQjN9yIbn__KNiDBpODBR-M1JIDTJjJtqSyJeMa1Jcx2Y-HNE3eqaNM7t9W6BgiceGfIwXd1xwPmbX0U504tS71U-hfKtNhl-L8BGnAZcOw56MJ5FDqUjCFjeVdWaar70wW4u6w4D8hEU4Y8MX7otnPsv4W8LURN2hIELoSjDe6YLCeqFQfp9egT6LI2OZsr-6Tg" charset="UTF-8"></script><script async src="https://www.googletagmanager.com/gtag/js?id=G-2KYSEMM3G9"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -87,7 +89,6 @@
 }
 </script>
 
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <!-- v90: 궁금점 PLAY 외부 링크/브라우저 아이콘 -->
 <link rel="icon" type="image/svg+xml" href="https://jnbraille.github.io/gunggeumjeom-play/gunggeumjeom-play-icon.svg">
 <link rel="shortcut icon" href="https://jnbraille.github.io/gunggeumjeom-play/gunggeumjeom-play-icon.svg">
@@ -19515,30 +19516,6 @@ html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille 
 }
 </style>
 
-<style id="gmjg-v243-hide-waiting-result">
-@media (min-width:769px){
-  #practiceView:not([data-category="맞춤법"]):not([data-category="점자 읽기"]) #result:not(.correct):not(.wrong):not(.ok):not(.bad){
-    visibility:hidden!important;
-  }
-}
-</style>
-<script id="gmjg-v243-hide-waiting-result-script">
-(function(){
-  function syncWaitingResult(){
-    if(typeof cat==="undefined" || cat==="맞춤법" || cat==="점자 읽기") return;
-    var r=document.getElementById("result");
-    var t=document.getElementById("resultText");
-    if(!r || !t) return;
-    var waiting=(t.textContent||"").trim()==="입력 대기";
-    r.style.visibility=waiting?"hidden":"visible";
-  }
-  document.addEventListener("click",function(){setTimeout(syncWaitingResult,0);},true);
-  document.addEventListener("keydown",function(){setTimeout(syncWaitingResult,0);},true);
-  document.addEventListener("DOMContentLoaded",syncWaitingResult);
-  setTimeout(syncWaitingResult,0);
-})();
-</script>
-
 <style id="gmjg-v244-reading-whale-forced-colors-fix">
 @media (forced-colors:active){
   html.whale-browser #practiceView[data-category="점자 읽기"] #readingBraille .input-dot{
@@ -20926,31 +20903,34 @@ html body #practiceView[data-category="점자 랜덤 연습"][data-source-catego
 <!-- v300: 8번 단어·9번 문장 연습 문제 글자 확대 -->
 <style id="gmgj-v300-word-sentence-prompt-size">
 #practiceView[data-category="단어"] #prompt{
-  font-size:3rem!important;
+  font-size:2.65rem!important;
   line-height:1.4!important;
   font-weight:900!important;
 }
 #practiceView[data-category="문장"] #prompt{
-  font-size:2.65rem!important;
+  font-size:2.3rem!important;
   line-height:1.5!important;
   font-weight:850!important;
 }
 @media(max-width:768px){
   #practiceView[data-category="단어"] #prompt{
-    font-size:2.7rem!important;
+    font-size:2.35rem!important;
   }
   #practiceView[data-category="문장"] #prompt{
-    font-size:2.25rem!important;
+    font-size:2rem!important;
     line-height:1.5!important;
   }
 }
 </style>
 
-<!-- v301: Whale 정오답 표시 최종 복구 -->
-<style id="gmgj-v301-whale-result-visible-final">
+<!-- v302: 모든 브라우저 정오답 상태 표시 복구 -->
+<style id="gmgj-v302-result-state-visible-final">
 @media(min-width:769px){
-  html.whale-browser #practiceView #result.ok,
-  html.whale-browser #practiceView #result.no{
+  #practiceView #result.ok,
+  #practiceView #result.no,
+  #practiceView #result.correct,
+  #practiceView #result.wrong,
+  #practiceView #result.bad{
     display:flex!important;
     visibility:visible!important;
     opacity:1!important;
@@ -20960,8 +20940,8 @@ html body #practiceView[data-category="점자 랜덤 연습"][data-source-catego
   }
 }
 @media(max-width:768px){
-  html.whale-browser #mobileTopResult.is-correct,
-  html.whale-browser #mobileTopResult.is-wrong{
+  #mobileTopResult.is-correct,
+  #mobileTopResult.is-wrong{
     display:flex!important;
     visibility:visible!important;
     opacity:1!important;
@@ -20971,32 +20951,3 @@ html body #practiceView[data-category="점자 랜덤 연습"][data-source-catego
   }
 }
 </style>
-<script id="gmgj-v301-whale-result-visible-final-script">
-(function(){
-  function boot(){
-    if(!/Whale/i.test(navigator.userAgent||"")) return;
-    document.documentElement.classList.add("whale-browser");
-    var text=document.getElementById("resultText");
-    var result=document.getElementById("result");
-    if(!text || !result) return;
-
-    function sync(){
-      var message=(text.textContent||"").trim();
-      if(message!=="정답!" && message!=="오답!") return;
-      result.style.setProperty("visibility","visible","important");
-      result.style.setProperty("opacity","1","important");
-      if(window.innerWidth>768)result.style.setProperty("display","flex","important");
-      var top=document.getElementById("mobileTopResult");
-      if(window.innerWidth<=768 && top){
-        top.textContent=message;
-        top.hidden=false;
-        top.className="mobile-top-result "+(message==="정답!"?"is-correct":"is-wrong");
-      }
-    }
-    new MutationObserver(sync).observe(text,{childList:true,subtree:true,characterData:true});
-    sync();
-  }
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});
-  else boot();
-})();
-</script>
