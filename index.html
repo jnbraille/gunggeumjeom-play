@@ -1,6 +1,6 @@
 <!doctype html><html lang="ko"><head>
 <!-- Google tag (gtag.js) - Google Analytics 4 -->
-<script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=2nc-64LIvJ_Za2pbCam4nDu5-JzA11TkJax-F9l76bOIAm-2Np63aMDjnpjwe-jETLe8yMD1zD3jyj-k6rMCS_bZDhH3hxJV-znGMor_gnCKnphHUA8nKO-lsxeBZmxqT0LeSINYe-dfdB9RJLCYG8CZzcB8W1Gvp-5naLps-a7mSMPqUCqHwHSmNcHCI9jEI2Buguk4ihJ068PXatF4_Y3dAAyUJcps16-tC6ICtSg5eytrHsDY9vjxy8gF1xaxCkbVHUle5PT8FxRwXxByjXEPwZjioZBv3OKqmoVBJK2PNZ5PG64cc9gES12Qrymfo1Sx_OOvM7CbIbjfk50JfJpSBUJv_YNMOhJWbfkAVMzIVRM6XGF46IYkdmjNFKwn0HdlGm6hCLfGv8ovbAriifzNua9yRNDrzTKRax7-Oq_sTHemYV97PpKzQBl1iz-UHqrxytCkZS5Mnq3Apxy73A" charset="UTF-8"></script><script async src="https://www.googletagmanager.com/gtag/js?id=G-2KYSEMM3G9"></script>
+<script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=H7kcCNWpu3NTGW0Rr6q26Qs4s8Dr1aHlIlLVijKYvDNwgD2UAhsO5PreaI1aafJB4UooDCrR5G3ADrGLd64Z2a9SxiOOUjE17lJdUHm1JuVHT6ao5akGNggK6X4xsIvs_gOIV7fYfqwSjLftXozbXlgIBacDMMddWrvYBlJ8XoXUkNMAiFRUedqCo_4vBXK2yB8fwBgk2RK-LW2PKZP2ru_1V2023BzlXyB5aXzfTVaM0lOYiqTnhpLj9af-0qGhVFK61kSmJFzhsHMbKLKoNsMq3SMs2IBBrOjKGRRf3fWZw2ryN79C_kb6bsWUCFuRsaSmxEqdzg11kZl7L8-Wbc8o4HlNf8e2ycTB8MI1u2C2ueyxLpBb-rldgyMiVPXJX9xM2mQ3od3mA3IxLfCWL-12f01ZGViWYm6zA6XHwtW-4UaUq4rZN5maZHtOjBU1VuW1A5SsLNKV2SGPbb7Cgp_53ZirQvsPXQoyCM7PIflXvUJUNtDunvCWwdHtpQjH_T6r8fC5KhvW4mcbP-HYaQ" charset="UTF-8"></script><script async src="https://www.googletagmanager.com/gtag/js?id=G-2KYSEMM3G9"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -3546,32 +3546,8 @@ header .fund-text::after,
 }
 
 </style>
-<script id="gmgj-v295-final-result-restore">
-(function(){
- function boot(){
-  var result=document.getElementById("result");
-  var textEl=document.getElementById("resultText");
-  if(!result || !textEl) return;
-
-  function sync(){
-    var message=(textEl.textContent||"").trim();
-    if(message==="정답!" || message==="오답!"){
-      result.style.setProperty("visibility","visible","important");
-      result.removeAttribute("hidden");
-    }else if(message==="입력 대기"){
-      result.style.removeProperty("visibility");
-    }
-  }
-
-  new MutationObserver(sync).observe(result,{attributes:true,childList:true,subtree:true,characterData:true});
-  document.addEventListener("keydown",function(){setTimeout(sync,0);},true);
-  document.addEventListener("click",function(){setTimeout(sync,0);},true);
-  sync();
- }
- if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot,{once:true});
- else boot();
-})();
-</script>
+<!-- v299: 모바일·패드에서 반복될 수 있는 결과 영역 MutationObserver 제거.
+     정오답 가시성은 위의 #result.ok/#result.no CSS만으로 처리한다. -->
 <style>
 .apply-inline p{margin:.65rem 0; line-height:1.55}
 .apply-inline strong{color:#008c84}
@@ -20852,3 +20828,97 @@ html body #practiceView[data-category="점자 랜덤 연습"][data-source-catego
 </style>
 
 <!-- v297: 고정 배경색 덮어쓰기 제거. 입력점은 정답점과 같은 텍스트 렌더링 사용. -->
+
+<!-- v298: 랜덤연습 속 점자 읽기 정오답을 다른 랜덤 문제와 같은 형식으로 통일 -->
+<style id="gmgj-v298-random-reading-result-unify">
+#randomReadingResult{
+  display:none;
+}
+#practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"]
+#randomReadingResult.show{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:16px!important;
+  width:100%!important;
+  min-height:74px!important;
+  margin:18px 0 18px!important;
+  border-top:1px solid #9eb4bd!important;
+  border-bottom:1px solid #4c6f7e!important;
+  font-size:1.55rem!important;
+  font-weight:900!important;
+  text-align:center!important;
+}
+#randomReadingResult .random-reading-result-symbol{
+  font-size:3rem!important;
+  line-height:1!important;
+  font-weight:400!important;
+}
+#randomReadingResult.ok{color:var(--good)!important;}
+#randomReadingResult.no{color:var(--bad)!important;}
+
+/* 랜덤 읽기에서만 라벨 옆의 중복 정답·오답 문구를 감춘다. */
+#practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"]
+#readingInlineStatus{
+  display:none!important;
+}
+@media(max-width:768px){
+  #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"]
+  #randomReadingResult.show{
+    min-height:62px!important;
+    margin:14px 0!important;
+    font-size:1.3rem!important;
+  }
+  #randomReadingResult .random-reading-result-symbol{font-size:2.55rem!important;}
+}
+</style>
+<script id="gmgj-v298-random-reading-result-unify-script">
+(function(){
+  function boot(){
+    var panel=document.getElementById("readingPanel");
+    var labelRow=panel && panel.querySelector(".reading-label-row");
+    var status=document.getElementById("readingInlineStatus");
+    if(!panel || !labelRow || !status) return;
+
+    var box=document.getElementById("randomReadingResult");
+    if(!box){
+      box=document.createElement("div");
+      box.id="randomReadingResult";
+      box.setAttribute("role","status");
+      box.setAttribute("aria-live","polite");
+      labelRow.parentNode.insertBefore(box,labelRow);
+    }
+
+    function isRandomReading(){
+      var pv=document.getElementById("practiceView");
+      return pv && pv.dataset.category==="점자 랜덤 연습" &&
+        pv.dataset.sourceCategory==="점자 읽기";
+    }
+    function sync(){
+      var message=(status.textContent||"").trim();
+      var ok=status.classList.contains("ok") || message==="정답!";
+      var no=status.classList.contains("no") || message==="오답!";
+      if(!isRandomReading() || (!ok && !no)){
+        box.className="";
+        box.replaceChildren();
+        return;
+      }
+      box.className=(ok?"ok":"no")+" show";
+      var symbol=document.createElement("span");
+      symbol.className="random-reading-result-symbol";
+      symbol.textContent=ok?"✓":"×";
+      symbol.setAttribute("aria-hidden","true");
+      var text=document.createElement("span");
+      text.textContent=ok?"정답!":"오답!";
+      box.replaceChildren(symbol,text);
+    }
+
+    new MutationObserver(sync).observe(status,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
+    var pv=document.getElementById("practiceView");
+    if(pv)new MutationObserver(sync).observe(pv,{attributes:true,attributeFilter:["data-category","data-source-category"]});
+    sync();
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});
+  else boot();
+})();
+</script>
