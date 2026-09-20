@@ -11633,9 +11633,9 @@ window.addEventListener("hashchange",()=>{
   var pos=-1;
 
   function searchable(item){
-    if(!item) return '';
-    var parts=[item.prompt,item.sourceCategory,item.rule,item.answer,item.text,item.word,item.question];
-    return parts.filter(function(v){return typeof v==='string';}).join(' ').toLowerCase();
+    if(!item || typeof item.prompt!=='string') return '';
+    /* 검색 대상은 실제 출제되는 순수 문제 문구(prompt)만 사용한다. */
+    return item.prompt.toLowerCase();
   }
   function showResult(){
     if(!results.length || pos<0) return;
