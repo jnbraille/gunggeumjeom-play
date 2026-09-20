@@ -20708,7 +20708,9 @@ html body #practiceView[data-category="점자 랜덤 연습"][data-source-catego
 }
 /* 3) 랜덤연습에서 입력창 위에 중복으로 뜨는 정답/오답 #result만 제거.
       기존 정답 확인/오답 점형/읽기 피드백은 그대로 둔다. */
-#practiceView[data-category="점자 랜덤 연습"] #result{
+/* v294: 기존 #result 정답/오답 표시는 모든 연습에서 원래대로 유지한다.
+   랜덤연습에서 중복 생성되는 상단 복제 표시만 숨긴다. */
+#practiceView[data-category="점자 랜덤 연습"] #mobileTopResult{
   display:none!important;
   visibility:hidden!important;
 }
@@ -20774,3 +20776,40 @@ html body #practiceView[data-category="점자 랜덤 연습"][data-source-catego
   },true);
 })();
 </script>
+
+
+<!-- v293: 네이버 웨일 일반 모드에서 랜덤연습의 '점자 읽기' 점형만 원래 읽기 연습과 동일하게 복원 -->
+<style id="gmgj-v293-whale-normal-random-reading-dot-restore">
+@media (prefers-color-scheme: light){
+  html.whale-browser #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille{
+    color:#173f5f!important;
+  }
+  html.whale-browser #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot.on,
+  html.whale-browser #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot.on.whale-text-dot{
+    display:block!important;
+    width:14px!important;height:14px!important;
+    min-width:14px!important;min-height:14px!important;
+    max-width:14px!important;max-height:14px!important;
+    background:#173f5f!important;
+    background-color:#173f5f!important;
+    border:2px solid #173f5f!important;
+    border-radius:50%!important;
+    color:#173f5f!important;
+    -webkit-text-fill-color:#173f5f!important;
+    font-size:0!important;line-height:0!important;
+    text-indent:-9999px!important;overflow:hidden!important;
+    opacity:1!important;
+  }
+  html.whale-browser #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+    display:block!important;
+    width:14px!important;height:14px!important;
+    min-width:14px!important;min-height:14px!important;
+    max-width:14px!important;max-height:14px!important;
+    background:transparent!important;
+    background-color:transparent!important;
+    border:2px solid #173f5f!important;
+    border-radius:50%!important;
+    opacity:.48!important;
+  }
+}
+</style>
