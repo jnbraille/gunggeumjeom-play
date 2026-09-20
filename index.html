@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- Google tag (gtag.js) - Google Analytics 4 -->
-<script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=kfWhr-_RMG2ufQksDBwSfO_GbtDCn3ZiT4rmO11Z-PvNrMV5Y4Vt47CidlceTA6ketTkxVOmcO0xIp0zkIeQjN9yIbn__KNiDBpODBR-M1JIDTJjJtqSyJeMa1Jcx2Y-HNE3eqaNM7t9W6BgiceGfIwXd1xwPmbX0U504tS71U-hfKtNhl-L8BGnAZcOw56MJ5FDqUjCFjeVdWaar70wW4u6w4D8hEU4Y8MX7otnPsv4W8LURN2hIELoSjDe6YLCeqFQfp9egT6LI2OZsr-6Tg" charset="UTF-8"></script><script async src="https://www.googletagmanager.com/gtag/js?id=G-2KYSEMM3G9"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2KYSEMM3G9"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -11890,6 +11890,35 @@ html.whale-browser #practiceView[data-category="점자 랜덤 연습"][data-sour
   }
 }
 </style>
+
+
+<!-- v303: 모바일/태블릿 배포 안정화 + 맞춤법 제외 '입력 대기' 제거 -->
+<script id="gmgj-v303-mobile-access-waiting-text-fix">
+(function(){
+  function clearWaitingText(){
+    var pv=document.getElementById("practiceView");
+    var rt=document.getElementById("resultText");
+    if(!pv || !rt) return;
+    if(pv.dataset.category!=="맞춤법" && (rt.textContent||"").trim()==="입력 대기"){
+      rt.textContent="";
+    }
+  }
+  function boot(){
+    clearWaitingText();
+    var rt=document.getElementById("resultText");
+    if(rt){
+      new MutationObserver(clearWaitingText).observe(rt,{childList:true,subtree:true,characterData:true});
+    }
+    var pv=document.getElementById("practiceView");
+    if(pv){
+      new MutationObserver(clearWaitingText).observe(pv,{attributes:true,attributeFilter:["data-category","data-source-category"]});
+    }
+    document.addEventListener("click",function(){setTimeout(clearWaitingText,0);},true);
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot,{once:true});
+  else boot();
+})();
+</script>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
