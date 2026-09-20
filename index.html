@@ -11842,6 +11842,40 @@ html body #practiceView[data-category="점자 랜덤 연습"][data-source-catego
 }
 </style>
 
+
+
+<!-- v291: 랜덤연습의 점자 읽기 빈점 테두리만 원래 점자 읽기와 동일하게 표시 -->
+<style id="gmgj-v291-random-reading-empty-dot-match">
+#practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+  background:transparent!important;
+  background-color:transparent!important;
+  border:2px solid currentColor!important;
+  opacity:.48!important;
+}
+html.high-contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+body.high-contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+html.contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+body.contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+  background:transparent!important;
+  background-color:transparent!important;
+  border-color:#6f6f6f!important;
+  opacity:1!important;
+}
+html.whale-browser #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+  background:transparent!important;
+  border:2px solid currentColor!important;
+  opacity:1!important;
+}
+@media (forced-colors:active){
+  #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+    forced-color-adjust:none!important;
+    background:transparent!important;
+    background-color:transparent!important;
+    border-color:#6f6f6f!important;
+    opacity:1!important;
+  }
+}
+</style>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
