@@ -11677,6 +11677,142 @@ window.addEventListener("hashchange",()=>{
   ['keyup','keypress','input','beforeinput'].forEach(function(type){input.addEventListener(type,function(e){e.stopPropagation();});});
 })();
 </script>
+
+
+<!-- v288: 랜덤연습의 점자 읽기 문제를 10번 점자 읽기와 동일한 가로/줄바꿈 배치로 표시 -->
+<style id="gmgj-v288-random-reading-horizontal-fix">
+/* 기존 answer-dots/Whale 답안용 규칙과 읽기 영역을 완전히 분리한다. */
+#practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:wrap!important;
+  justify-content:center!important;
+  align-items:center!important;
+  align-content:center!important;
+  gap:10px!important;
+  max-width:1060px!important;
+  margin:12px auto 28px!important;
+  padding:8px 0!important;
+  background:transparent!important;
+  border:0!important;
+  line-height:1!important;
+  color:#173f5f;
+}
+#practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-cell{
+  display:grid!important;
+  grid-template-columns:repeat(2,14px)!important;
+  grid-template-rows:repeat(3,14px)!important;
+  gap:6px!important;
+  grid-auto-flow:row!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:34px!important;
+  min-height:54px!important;
+  padding:4px!important;
+  margin:0!important;
+  box-sizing:content-box!important;
+  align-items:center!important;
+  justify-items:center!important;
+  flex:0 0 auto!important;
+  background:transparent!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+#practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot{
+  position:static!important;
+  display:block!important;
+  width:14px!important;
+  height:14px!important;
+  min-width:14px!important;
+  min-height:14px!important;
+  max-width:14px!important;
+  max-height:14px!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:50%!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  opacity:1!important;
+  font-size:0!important;
+  line-height:0!important;
+  text-indent:-9999px!important;
+  overflow:hidden!important;
+}
+/* 일반/웨일 일반: 기존 답안과 같은 남색 채움점 + 빈점 테두리 */
+#practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot.on{
+  background:currentColor!important;
+  background-color:currentColor!important;
+  border:2px solid currentColor!important;
+}
+#practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+  background:transparent!important;
+  background-color:transparent!important;
+  border:2px solid currentColor!important;
+  opacity:.48!important;
+}
+/* 사이트 고대비: 셀 박스 없이 기존 고대비 답안처럼 흰 채움점/흰 빈점 테두리 */
+html.high-contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille,
+body.high-contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille,
+html.contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille,
+body.contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille{
+  color:#fff!important;
+}
+html.high-contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+body.high-contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+html.contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on),
+body.contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+  background:transparent!important;
+  border-color:#6f6f6f!important;
+  opacity:1!important;
+}
+html.high-contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot.on,
+body.high-contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot.on,
+html.contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot.on,
+body.contrast #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot.on{
+  background:#fff!important;
+  border-color:#fff!important;
+  opacity:1!important;
+}
+/* OS/브라우저 강제 고대비에서는 시스템 색을 사용해 반전 후에도 사라지지 않게 한다. */
+@media (forced-colors:active){
+  #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille{color:CanvasText!important;}
+  #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot.on{
+    forced-color-adjust:auto!important;
+    background:CanvasText!important;
+    border-color:CanvasText!important;
+  }
+  #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+    forced-color-adjust:auto!important;
+    background:transparent!important;
+    border-color:CanvasText!important;
+    opacity:1!important;
+  }
+}
+/* 웨일은 웹페이지 색을 자체 변환하므로 고정 흰 점 문자로 바꾸지 않는다.
+   currentColor를 쓰면 일반/다크 변환에 맞춰 점도 함께 변한다. */
+html.whale-browser #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot.on,
+html.whale-browser #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot.on.whale-text-dot{
+  display:block!important;
+  color:inherit!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:currentColor!important;
+  background-color:currentColor!important;
+  border:2px solid currentColor!important;
+  width:14px!important;height:14px!important;min-width:14px!important;min-height:14px!important;
+  max-width:14px!important;max-height:14px!important;
+  font-size:0!important;line-height:0!important;text-indent:-9999px!important;overflow:hidden!important;
+}
+html.whale-browser #practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] #readingBraille .input-dot:not(.on){
+  background:transparent!important;
+  border:2px solid currentColor!important;
+}
+#practiceView[data-category="점자 랜덤 연습"][data-source-category="점자 읽기"] .reading-space-guide{display:none!important;}
+</style>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
