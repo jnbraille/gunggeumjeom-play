@@ -21045,3 +21045,59 @@ html body #practiceView[data-category="점자 랜덤 연습"][data-source-catego
   }
 }
 </style>
+
+
+<!-- v304: 모바일 입력 대기 점 제거 + 화면 점자키보드 소폭 축소 (최종 우선 적용) -->
+<style id="gmgj-v304-mobile-idle-dot-keyboard-final">
+@media (max-width:768px){
+  /* 정답/오답이 나오기 전의 가운데 점만 숨김 */
+  #practiceView:not([data-category="맞춤법"]) #result.result:not(.ok):not(.no):not(.correct):not(.wrong):not(.bad) #resultSymbol{
+    display:none!important;
+  }
+
+  /* 화면 점자키보드: 기존 최종 56px보다 한 단계 작게 */
+  #mobileSixDotWrap .mobile-braille-cell{
+    grid-template-columns:repeat(2,48px)!important;
+    grid-template-rows:repeat(3,48px)!important;
+    gap:4px 14px!important;
+    margin:2px auto 6px!important;
+  }
+  #mobileSixDotWrap .mobile-dot{
+    width:48px!important;
+    height:48px!important;
+    font-size:.92rem!important;
+    border-width:2px!important;
+  }
+}
+</style>
+<script id="gmgj-v304-mobile-idle-dot-guard">
+(function(){
+  function clearIdleDot(){
+    if(!window.matchMedia || !window.matchMedia('(max-width:768px)').matches) return;
+    var pv=document.getElementById('practiceView');
+    var result=document.getElementById('result');
+    var symbol=document.getElementById('resultSymbol');
+    var text=document.getElementById('resultText');
+    if(!pv || !result || !symbol || !text || pv.dataset.category==='맞춤법') return;
+    var answered=result.classList.contains('ok') || result.classList.contains('no') ||
+      result.classList.contains('correct') || result.classList.contains('wrong') || result.classList.contains('bad');
+    var t=(text.textContent||'').trim();
+    if(!answered && (t==='' || t==='입력 대기') && (symbol.textContent||'').trim()==='·'){
+      symbol.textContent='';
+    }
+  }
+  function boot(){
+    clearIdleDot();
+    var pv=document.getElementById('practiceView');
+    var result=document.getElementById('result');
+    var symbol=document.getElementById('resultSymbol');
+    var text=document.getElementById('resultText');
+    [pv,result,symbol,text].forEach(function(el){
+      if(el) new MutationObserver(clearIdleDot).observe(el,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['class','data-category']});
+    });
+    document.addEventListener('click',function(){setTimeout(clearIdleDot,0);},true);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
+</script>
