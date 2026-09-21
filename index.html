@@ -8732,6 +8732,24 @@ function makeQueue(c){
     }
     return indices;
   }
+  /* v302: 문장·점자 읽기는 같은 내용이 한 사이클 안에서 다시 나오지 않도록
+     문제 내용을 기준으로 중복을 제거한 뒤 전체를 한 번 섞어 순서대로 출제한다.
+     큐를 모두 소진한 뒤에만 새로 섞는다. 다른 연습의 출제 방식은 변경하지 않는다. */
+  if(c==="문장" || c==="점자 읽기"){
+    const seen=new Set();
+    const indices=[];
+    DATA[c].forEach((item,index)=>{
+      const key=c==="점자 읽기"
+        ? String(item.braille||"")+"\u0000"+String(item.answer||"")
+        : String(item.prompt||"")+"\u0000"+String(item.braille||"");
+      if(!seen.has(key)){ seen.add(key); indices.push(index); }
+    });
+    for(let i=indices.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [indices[i],indices[j]]=[indices[j],indices[i]];
+    }
+    return indices;
+  }
   const mixed=shuffle(DATA[c].length);
   return mixed;
 }
