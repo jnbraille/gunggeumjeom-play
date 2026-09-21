@@ -11984,6 +11984,55 @@ html.gmgj-tablet-touch .mobile-dot{
   }
 }
 </style>
+
+
+<!-- v305: 모바일 랜덤연습 정오답 표시 + 갤럭시/다크모드 점형 구분 강화 -->
+<style id="gmgj-v305-random-result-galaxy-dark-dots">
+@media (max-width:768px){
+  /* 랜덤연습도 채점이 끝난 뒤에는 상단 정답/오답 표시를 보여준다. */
+  #practiceView[data-category="점자 랜덤 연습"] #mobileTopResult.is-correct,
+  #practiceView[data-category="점자 랜덤 연습"] #mobileTopResult.is-wrong{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    height:auto!important;
+    min-height:48px!important;
+    overflow:visible!important;
+  }
+}
+
+/* 갤럭시 등 OS 다크모드: 찍힌 점과 빈 점을 명확하게 구분 */
+@media (prefers-color-scheme:dark){
+  #practiceView #typed .input-dot:not(.on),
+  #practiceView #answerDots .input-dot:not(.on),
+  #practiceView .answer-dots .input-dot:not(.on){
+    background:#151515!important;
+    background-color:#151515!important;
+    border:2px solid #ffffff!important;
+    box-shadow:none!important;
+    opacity:1!important;
+    filter:none!important;
+    forced-color-adjust:none!important;
+  }
+  #practiceView #typed .input-dot.on,
+  #practiceView #answerDots .input-dot.on,
+  #practiceView .answer-dots .input-dot.on{
+    background:#00b7ff!important;
+    background-color:#00b7ff!important;
+    border:2px solid #00b7ff!important;
+    box-shadow:none!important;
+    opacity:1!important;
+    filter:none!important;
+    forced-color-adjust:none!important;
+  }
+  #practiceView #typed .input-cell.wrong .input-dot.on,
+  #practiceView #typed .input-cell.error .input-dot.on{
+    background:#ff3b30!important;
+    background-color:#ff3b30!important;
+    border-color:#ff3b30!important;
+  }
+}
+</style>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
