@@ -12117,28 +12117,56 @@ html.gmgj-tablet-touch .mobile-dot{
   zoom:.78!important;
 }
 </style>
-<script id="gmgj-reading-fit-width-v2">
+<style id="gmgj-reading-crisp-round-dots-v3">
+/* 점자 읽기 전용: 소수점 zoom 대신 정수 px 원형을 직접 렌더링 */
+#readingBraille .reading-manual-row{
+  zoom:1!important;
+  gap:var(--reading-cell-gap,8px)!important;
+}
+#readingBraille .reading-manual-row .reading-braille-cell{
+  zoom:1!important;
+  grid-template-columns:repeat(2,var(--reading-dot-size,10px))!important;
+  grid-template-rows:repeat(3,var(--reading-dot-size,10px))!important;
+  gap:var(--reading-dot-gap,4px)!important;
+  padding:0!important;
+  box-sizing:content-box!important;
+}
+#readingBraille .reading-manual-row .reading-braille-cell .input-dot{
+  width:var(--reading-dot-size,10px)!important;
+  height:var(--reading-dot-size,10px)!important;
+  box-sizing:border-box!important;
+  border-radius:50%!important;
+  flex-shrink:0!important;
+  transform:none!important;
+}
+</style>
+<script id="gmgj-reading-fit-crisp-dots-v3">
 (function(){
   function fit(){
     var root=document.getElementById('readingBraille');
-    if(!root) return;
+    if(!root)return;
     var rows=Array.from(root.querySelectorAll('.reading-manual-row'));
     if(!rows.length)return;
     var available=Math.max(1,root.clientWidth-8);
-    var widest=0;
-    rows.forEach(function(row){
-      row.style.setProperty('zoom','1','important');
-      widest=Math.max(widest,row.getBoundingClientRect().width);
-    });
-    var scale=Math.min(.78,available/Math.max(1,widest));
-    rows.forEach(function(row){row.style.setProperty('zoom',String(scale),'important');});
+    var maxCells=Math.max.apply(null,rows.map(function(row){return row.children.length;}));
+    // 정수 픽셀 단위의 원형만 사용해 브라우저 축소 보간을 방지
+    var chosen={dot:10,gap:4,between:8};
+    for(var d=11;d>=6;d--){
+      var g=Math.max(2,Math.round(d*.4));
+      var between=Math.max(3,Math.round(d*.7));
+      var cellWidth=2*d+g;
+      var total=maxCells*cellWidth+Math.max(0,maxCells-1)*between;
+      if(total<=available){chosen={dot:d,gap:g,between:between};break;}
+      chosen={dot:d,gap:g,between:between};
+    }
+    root.style.setProperty('--reading-dot-size',chosen.dot+'px');
+    root.style.setProperty('--reading-dot-gap',chosen.gap+'px');
+    root.style.setProperty('--reading-cell-gap',chosen.between+'px');
   }
   function init(){
-    var root=document.getElementById('readingBraille');
-    if(!root)return;
-    new MutationObserver(function(){requestAnimationFrame(fit);}).observe(root,{childList:true,subtree:true});
-    window.addEventListener('resize',fit,{passive:true});
-    fit();
+    var root=document.getElementById('readingBraille');if(!root)return;
+    new MutationObserver(function(){requestAnimationFrame(fit);}).observe(root,{childList:true});
+    window.addEventListener('resize',fit,{passive:true});fit();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
