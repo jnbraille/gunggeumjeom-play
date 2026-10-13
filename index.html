@@ -12117,12 +12117,12 @@ html.gmgj-tablet-touch .mobile-dot{
   zoom:.78!important;
 }
 </style>
-<style id="gmgj-reading-crisp-round-dots-v4">
+<style id="gmgj-reading-crisp-round-dots-v5">
 /* 점자 읽기 전용. 기존 색상·고대비 규칙 유지. */
 #readingBraille .reading-manual-row{
   zoom:1!important;
   gap:var(--reading-cell-gap,6px)!important;
-  max-width:100%!important;
+  max-width:none!important;
 }
 #readingBraille .reading-manual-row .reading-braille-cell{
   zoom:1!important;
@@ -12149,19 +12149,19 @@ html.gmgj-tablet-touch .mobile-dot{
   transform:none!important;
 }
 </style>
-<script id="gmgj-reading-fit-crisp-dots-v4">
+<script id="gmgj-reading-fit-crisp-dots-v5">
 (function(){
   function fit(){
     var root=document.getElementById('readingBraille');
     if(!root)return;
     var rows=Array.from(root.querySelectorAll('.reading-manual-row'));
     if(!rows.length)return;
-    var available=Math.max(1,root.clientWidth-12);
+    var available=Math.max(1,root.clientWidth-24);
     var maxCells=Math.max.apply(null,rows.map(function(row){return row.children.length;}));
     // 정수 픽셀 크기로 계산하고 실제 렌더링 너비를 재확인한다.
-    for(var d=11;d>=3;d--){
-      var g=Math.max(1,Math.round(d*.35));
-      var between=Math.max(1,Math.round(d*.6));
+    for(var d=10;d>=2;d--){
+      var g=Math.max(2,Math.round(d*.55));
+      var between=Math.max(3,Math.round(d*1.15));
       root.style.setProperty('--reading-dot-size',d+'px');
       root.style.setProperty('--reading-dot-gap',g+'px');
       root.style.setProperty('--reading-cell-gap',between+'px');
