@@ -12117,56 +12117,65 @@ html.gmgj-tablet-touch .mobile-dot{
   zoom:.78!important;
 }
 </style>
-<style id="gmgj-reading-crisp-round-dots-v3">
-/* 점자 읽기 전용: 소수점 zoom 대신 정수 px 원형을 직접 렌더링 */
+<style id="gmgj-reading-crisp-round-dots-v4">
+/* 점자 읽기 전용. 기존 색상·고대비 규칙 유지. */
 #readingBraille .reading-manual-row{
   zoom:1!important;
-  gap:var(--reading-cell-gap,8px)!important;
+  gap:var(--reading-cell-gap,6px)!important;
+  max-width:100%!important;
 }
 #readingBraille .reading-manual-row .reading-braille-cell{
   zoom:1!important;
-  grid-template-columns:repeat(2,var(--reading-dot-size,10px))!important;
-  grid-template-rows:repeat(3,var(--reading-dot-size,10px))!important;
-  gap:var(--reading-dot-gap,4px)!important;
+  display:grid!important;
+  flex:0 0 auto!important;
+  width:calc(2 * var(--reading-dot-size,9px) + var(--reading-dot-gap,3px))!important;
+  min-width:0!important;
+  height:calc(3 * var(--reading-dot-size,9px) + 2 * var(--reading-dot-gap,3px))!important;
+  grid-template-columns:repeat(2,var(--reading-dot-size,9px))!important;
+  grid-template-rows:repeat(3,var(--reading-dot-size,9px))!important;
+  gap:var(--reading-dot-gap,3px)!important;
+  margin:0!important;
   padding:0!important;
-  box-sizing:content-box!important;
+  box-sizing:border-box!important;
 }
 #readingBraille .reading-manual-row .reading-braille-cell .input-dot{
-  width:var(--reading-dot-size,10px)!important;
-  height:var(--reading-dot-size,10px)!important;
+  width:var(--reading-dot-size,9px)!important;
+  height:var(--reading-dot-size,9px)!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
   box-sizing:border-box!important;
   border-radius:50%!important;
-  flex-shrink:0!important;
   transform:none!important;
 }
 </style>
-<script id="gmgj-reading-fit-crisp-dots-v3">
+<script id="gmgj-reading-fit-crisp-dots-v4">
 (function(){
   function fit(){
     var root=document.getElementById('readingBraille');
     if(!root)return;
     var rows=Array.from(root.querySelectorAll('.reading-manual-row'));
     if(!rows.length)return;
-    var available=Math.max(1,root.clientWidth-8);
+    var available=Math.max(1,root.clientWidth-12);
     var maxCells=Math.max.apply(null,rows.map(function(row){return row.children.length;}));
-    // 정수 픽셀 단위의 원형만 사용해 브라우저 축소 보간을 방지
-    var chosen={dot:10,gap:4,between:8};
-    for(var d=11;d>=6;d--){
-      var g=Math.max(2,Math.round(d*.4));
-      var between=Math.max(3,Math.round(d*.7));
-      var cellWidth=2*d+g;
-      var total=maxCells*cellWidth+Math.max(0,maxCells-1)*between;
-      if(total<=available){chosen={dot:d,gap:g,between:between};break;}
-      chosen={dot:d,gap:g,between:between};
+    // 정수 픽셀 크기로 계산하고 실제 렌더링 너비를 재확인한다.
+    for(var d=11;d>=3;d--){
+      var g=Math.max(1,Math.round(d*.35));
+      var between=Math.max(1,Math.round(d*.6));
+      root.style.setProperty('--reading-dot-size',d+'px');
+      root.style.setProperty('--reading-dot-gap',g+'px');
+      root.style.setProperty('--reading-cell-gap',between+'px');
+      var predicted=maxCells*(2*d+g)+Math.max(0,maxCells-1)*between;
+      var actual=Math.max.apply(null,rows.map(function(row){return row.scrollWidth;}));
+      if(predicted<=available && actual<=available)break;
     }
-    root.style.setProperty('--reading-dot-size',chosen.dot+'px');
-    root.style.setProperty('--reading-dot-gap',chosen.gap+'px');
-    root.style.setProperty('--reading-cell-gap',chosen.between+'px');
   }
   function init(){
     var root=document.getElementById('readingBraille');if(!root)return;
     new MutationObserver(function(){requestAnimationFrame(fit);}).observe(root,{childList:true});
-    window.addEventListener('resize',fit,{passive:true});fit();
+    window.addEventListener('resize',function(){requestAnimationFrame(fit);},{passive:true});
+    if(window.ResizeObserver)new ResizeObserver(function(){requestAnimationFrame(fit);}).observe(root);
+    requestAnimationFrame(fit);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
