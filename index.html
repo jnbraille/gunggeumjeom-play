@@ -7339,6 +7339,18 @@ html.gmgj-tablet-touch #practiceView .mobile-braille-actions button{
   #practiceView[data-category="점자 랜덤 연습"] #mobileBrailleInput{display:block;}
 }
 </style>
+
+<style id="gmgj-reading-card-title-responsive-wrap">
+/* 점자 읽기 카드만: 좁은 창에서도 제목을 카드 폭에 맞춰 줄바꿈 */
+#homeGrid .lesson[data-category="점자 읽기"] h3,
+#selectGrid .lesson[data-category="점자 읽기"] h3 {
+  white-space:normal!important;
+  overflow-wrap:break-word!important;
+  word-break:keep-all!important;
+  max-width:100%!important;
+  line-height:1.4!important;
+}
+</style>
 </head><body>
 <style id="gmgj-logo-hc-whale-dark-final-v5">
 /*
