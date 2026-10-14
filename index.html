@@ -7351,6 +7351,16 @@ html.gmgj-tablet-touch #practiceView .mobile-braille-actions button{
   line-height:1.4!important;
 }
 </style>
+<style id="gmgj-reading-title-responsive-wrap">
+/* 넓은 화면에서는 한 줄, 좁은 카드에서는 단어 사이에서 자연스럽게 줄바꿈 */
+#homeGrid .lesson[data-category="점자 읽기"] h3,
+#selectGrid .lesson[data-category="점자 읽기"] h3 {
+  white-space:normal!important;
+  word-break:keep-all!important;
+  overflow-wrap:normal!important;
+  min-width:0;
+}
+</style>
 </head><body>
 <style id="gmgj-logo-hc-whale-dark-final-v5">
 /*
@@ -8723,7 +8733,7 @@ function card(c,i){
   b.dataset.category=c;
   const locked=false;
   const isGame=(c==="점자 랜덤 연습");
-  b.innerHTML=`<div><div class="num">${String(i+1).padStart(2,"0")}</div><h3>${c==="점자 읽기"?"점자 읽기<br>연습":(isGame?"점자 랜덤 연습":c+" 연습")}</h3><p>${DESC[c]}</p></div><div class="go">${isGame?"연습하기 ›":"연습하기 ›"}</div>`;
+  b.innerHTML=`<div><div class="num">${String(i+1).padStart(2,"0")}</div><h3>${c==="점자 읽기"?"점자 읽기 연습":(isGame?"점자 랜덤 연습":c+" 연습")}</h3><p>${DESC[c]}</p></div><div class="go">${isGame?"연습하기 ›":"연습하기 ›"}</div>`;
   b.onclick=()=>openPractice(c);
   return b
 }
