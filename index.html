@@ -12202,6 +12202,20 @@ html.gmgj-tablet-touch .mobile-dot{
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 </script>
+
+<style id="reading-card-wrap-final-fix">
+/* 마지막 우선순위: 기존 901px 이상 nowrap 규칙도 덮어씀 */
+#homeGrid .lesson[data-category="점자 읽기"] h3,
+#selectGrid .lesson[data-category="점자 읽기"] h3 {
+  white-space:normal!important;
+  word-break:keep-all!important;
+  overflow-wrap:normal!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+</style>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
