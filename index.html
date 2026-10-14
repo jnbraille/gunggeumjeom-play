@@ -7393,6 +7393,17 @@ header .shell.brand>.braillesense-entry{grid-column:1 / -1!important;grid-row:2!
 header .shell.brand>.braillesense-entry+div{grid-column:1 / -1!important;grid-row:3!important}
 header .shell.brand>.fund-message{grid-column:1 / -1!important;grid-row:4!important;justify-self:start!important}
 }
+</style><style id="gmgj-header-inward-adjustment">
+/* 두 하단 정보 영역을 양끝에서 안쪽으로 모으고 간편 모드 버튼 폭을 축소 */
+@media(min-width:761px){
+ header .shell.brand>.braillesense-entry+div{margin-left:clamp(55px,7vw,120px)!important;}
+ header .shell.brand>.fund-message{margin-right:clamp(45px,6vw,100px)!important;}
+ header .shell.brand>.braillesense-entry{justify-self:center!important;width:min(100%,390px)!important;padding:5px 12px!important;min-height:45px!important;}
+ header .shell.brand>.braillesense-entry svg{width:44px!important;height:29px!important;}
+}
+@media(max-width:760px){
+ header .shell.brand>.braillesense-entry{justify-self:center!important;width:min(100%,390px)!important;padding:7px 10px!important;}
+}
 </style></head><body>
 <style id="gmgj-logo-hc-whale-dark-final-v5">
 /*
