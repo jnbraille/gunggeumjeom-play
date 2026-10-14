@@ -8723,7 +8723,7 @@ function card(c,i){
   b.dataset.category=c;
   const locked=false;
   const isGame=(c==="점자 랜덤 연습");
-  b.innerHTML=`<div><div class="num">${String(i+1).padStart(2,"0")}</div><h3>${isGame?"점자 랜덤 연습":c+" 연습"}</h3><p>${DESC[c]}</p></div><div class="go">${isGame?"연습하기 ›":"연습하기 ›"}</div>`;
+  b.innerHTML=`<div><div class="num">${String(i+1).padStart(2,"0")}</div><h3>${c==="점자 읽기"?"점자 읽기<br>연습":(isGame?"점자 랜덤 연습":c+" 연습")}</h3><p>${DESC[c]}</p></div><div class="go">${isGame?"연습하기 ›":"연습하기 ›"}</div>`;
   b.onclick=()=>openPractice(c);
   return b
 }
