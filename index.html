@@ -7404,6 +7404,32 @@ header .shell.brand>.fund-message{grid-column:1 / -1!important;grid-row:4!import
 @media(max-width:760px){
  header .shell.brand>.braillesense-entry{justify-self:center!important;width:min(100%,390px)!important;padding:7px 10px!important;}
 }
+</style><style id="gmgj-header-nav-aligned-v2">
+/* 두 번째 줄은 내비게이션과 같은 shell 폭 안에 정렬 */
+@media (min-width:761px){
+ header .shell.brand{box-sizing:border-box!important;}
+ header .shell.brand>.braillesense-entry+div{
+   margin-left:0!important;margin-right:0!important;
+   padding-left:0!important;justify-self:start!important;
+   max-width:100%!important;
+ }
+ header .shell.brand>.fund-message{
+   margin-left:0!important;margin-right:0!important;
+   padding-right:0!important;justify-self:end!important;
+   max-width:100%!important;
+ }
+ /* 진입 버튼을 가운데보다 왼쪽으로 이동, 너비는 그대로 */
+ header .shell.brand>.braillesense-entry{
+   position:relative!important;left:-75px!important;
+   max-width:calc(100% + 75px)!important;
+ }
+}
+@media (max-width:1100px) and (min-width:761px){
+ header .shell.brand>.braillesense-entry{left:-25px!important;max-width:100%!important;}
+}
+@media (max-width:760px){
+ header .shell.brand>.braillesense-entry{left:auto!important;}
+}
 </style></head><body>
 <style id="gmgj-logo-hc-whale-dark-final-v5">
 /*
