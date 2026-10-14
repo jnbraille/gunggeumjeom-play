@@ -7361,7 +7361,18 @@ html.gmgj-tablet-touch #practiceView .mobile-braille-actions button{
   min-width:0;
 }
 </style>
-</head><body>
+<style id="gmgj-reading-title-wrap-same-as-spelling-v2">
+#homeGrid .lesson[data-category="점자 읽기"] > div:first-child,
+#selectGrid .lesson[data-category="점자 읽기"] > div:first-child {min-width:0!important;max-width:100%!important;width:100%!important;}
+#homeGrid .lesson[data-category="점자 읽기"] h3,
+#selectGrid .lesson[data-category="점자 읽기"] h3 {
+  white-space:normal!important;
+  word-break:keep-all!important;
+  overflow-wrap:break-word!important;
+  max-width:100%!important;
+  min-width:0!important;
+}
+</style></head><body>
 <style id="gmgj-logo-hc-whale-dark-final-v5">
 /*
   궁금점 PLAY 로고 v5
@@ -11000,7 +11011,7 @@ window.addEventListener("hashchange",()=>{
   #homeGrid .lesson,#selectGrid .lesson{grid-column:span 5!important}
   #homeGrid .lesson:nth-child(n+7),#selectGrid .lesson:nth-child(n+7){grid-column:span 6!important}
   #homeGrid .lesson:nth-child(11) h3,#selectGrid .lesson:nth-child(11) h3{
-    white-space:nowrap!important;
+    white-space:normal!important;
     font-size:1.08rem!important;
     letter-spacing:-.04em!important;
   }
@@ -11013,7 +11024,7 @@ window.addEventListener("hashchange",()=>{
   #homeGrid,#selectGrid{grid-template-columns:repeat(30,minmax(0,1fr))!important}
   #homeGrid .lesson,#selectGrid .lesson{grid-column:span 5!important}
   #homeGrid .lesson:nth-child(n+7),#selectGrid .lesson:nth-child(n+7){grid-column:span 6!important}
-  #homeGrid .lesson:nth-child(11) h3,#selectGrid .lesson:nth-child(11) h3{white-space:nowrap!important;font-size:1.08rem!important;letter-spacing:-.04em!important}
+  #homeGrid .lesson:nth-child(11) h3,#selectGrid .lesson:nth-child(11) h3{white-space:normal!important;font-size:1.08rem!important;letter-spacing:-.04em!important}
 }
 </style>
 
@@ -18666,7 +18677,7 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
   #homeGrid .lesson[data-category="점자 읽기"] h3,
   #selectGrid .lesson[data-category="점자 읽기"] h3{
     font-size:1.18rem!important;
-    white-space:nowrap!important;
+    white-space:normal!important;
   }
 }
 </style>
@@ -18684,7 +18695,7 @@ html.gmgj-tablet-touch #practiceView #mobileBrailleInput.gmgj-tablet-collapsed{d
   #homeGrid .lesson[data-category="점자 읽기"] h3,
   #selectGrid .lesson[data-category="점자 읽기"] h3{
     font-size:1.34rem!important;
-    white-space:nowrap!important;
+    white-space:normal!important;
   }
 }
 
