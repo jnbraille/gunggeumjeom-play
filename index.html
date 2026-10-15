@@ -7656,13 +7656,13 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
   </span>
   <span class="gmgj-play">PLAY</span>
 </div>
-<a class="braillesense-entry" href="simple.html" aria-label="한소네 간편 모드 진입">
+<a class="braillesense-entry" href="simple.html" aria-label="한소네 간편 모드 진입 준비중">
 <svg aria-hidden="true" viewBox="0 0 68 42" width="56" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect x="2" y="3" width="64" height="36" rx="6" fill="#f4f8fa" stroke="#24475d" stroke-width="2"/>
 <rect x="10" y="9" width="48" height="10" rx="2" fill="#24475d"/>
 <g fill="#24475d"><circle cx="16" cy="26" r="2.4"/><circle cx="25" cy="26" r="2.4"/><circle cx="34" cy="26" r="2.4"/><circle cx="43" cy="26" r="2.4"/><circle cx="52" cy="26" r="2.4"/></g>
 </svg>
-<span>한소네 간편 모드 진입</span>
+<span>한소네 간편 모드 진입 준비중</span>
 </a><div><div class="tag"><span>일상에서 만난 점자, 배움으로 이어지다</span></div><div class="org gmgj-center-menu-label">전남점자도서관 시각장애인학습지원센터</div></div><div class="fund-message">
   <button type="button" id="fundAudioBtn" class="fund-audio-btn" aria-label="식스럭식스닷 음원 재생" aria-pressed="false" title="식스럭식스닷 음원 재생">
     <span class="lucky-bag-icon" aria-hidden="true">
@@ -11729,14 +11729,20 @@ window.addEventListener("hashchange",()=>{
     var rb=document.getElementById("readingBraille");
     if(rb){
       rb.innerHTML="";
-      Array.from(String(q.braille||q.prompt||"")).forEach(function(ch){
-        var cell=sixDotCell(ch===" " ? "⠀" : ch);
-        cell.classList.add("reading-braille-cell");
-        if(ch===" " || ch==="⠀"){
-          cell.classList.add("reading-empty-cell");
-          cell.setAttribute("aria-label","띄어쓰기");
-        }
-        rb.appendChild(cell);
+      /* 랜덤 연습에서도 점자 읽기 전용과 같은 행 단위 레이아웃을 사용한다. */
+      (q.readingLines || [String(q.braille||q.prompt||"")]).forEach(function(line){
+        var row=document.createElement("div");
+        row.className="reading-manual-row";
+        Array.from(String(line)).forEach(function(ch){
+          var cell=sixDotCell(ch===" " ? "⠀" : ch);
+          cell.classList.add("reading-braille-cell");
+          if(ch===" " || ch==="⠀"){
+            cell.classList.add("reading-empty-cell");
+            cell.setAttribute("aria-label","띄어쓰기");
+          }
+          row.appendChild(cell);
+        });
+        rb.appendChild(row);
       });
     }
     var a=document.getElementById("readingAnswer");
