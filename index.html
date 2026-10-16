@@ -7441,57 +7441,7 @@ header .shell.brand>.fund-message{grid-column:1 / -1!important;grid-row:4!import
  header .shell.brand>.braillesense-entry{left:0!important;position:relative!important;transform:translateX(clamp(-365px,-24vw,-130px))!important;width:min(390px,100%)!important;max-width:100%!important;justify-self:center!important;}
 }
 @media(max-width:760px){header .shell.brand>.braillesense-entry{transform:none!important;}}
-</style>
-<style id="gmgj-practice-prompt-unified-size-v1">
-/* 초성~문장 및 랜덤 연습의 같은 유형 문제에 동일한 기준 크기 적용 */
-#practiceView[data-category="초성"] .prompt,
-#practiceView[data-category="종성"] .prompt,
-#practiceView[data-category="모음"] .prompt,
-#practiceView[data-category="약자·약어"] .prompt,
-#practiceView[data-category="로마자"] .prompt,
-#practiceView[data-category="숫자"] .prompt,
-#practiceView[data-category="문장부호"] .prompt,
-#practiceView[data-category="단어"] .prompt,
-#practiceView[data-category="문장"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="초성"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="종성"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="모음"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="약자·약어"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="로마자"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="숫자"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="문장부호"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="단어"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="문장"] .prompt{font-size:3rem!important;line-height:1.45!important;}
-#practiceView[data-category="로마자"] .roman-symbol,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="로마자"] .roman-symbol,
-#practiceView[data-category="문장부호"] .punct-symbol,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="문장부호"] .punct-symbol{font-size:3rem!important;}
-@media(max-width:768px){
-#practiceView[data-category="초성"] .prompt,
-#practiceView[data-category="종성"] .prompt,
-#practiceView[data-category="모음"] .prompt,
-#practiceView[data-category="약자·약어"] .prompt,
-#practiceView[data-category="로마자"] .prompt,
-#practiceView[data-category="숫자"] .prompt,
-#practiceView[data-category="문장부호"] .prompt,
-#practiceView[data-category="단어"] .prompt,
-#practiceView[data-category="문장"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="초성"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="종성"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="모음"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="약자·약어"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="로마자"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="숫자"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="문장부호"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="단어"] .prompt,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="문장"] .prompt,
-#practiceView[data-category="로마자"] .roman-symbol,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="로마자"] .roman-symbol,
-#practiceView[data-category="문장부호"] .punct-symbol,
-#practiceView[data-category="점자 랜덤 연습"][data-source-category="문장부호"] .punct-symbol{font-size:2.6rem!important;}
-}
-</style>
-</head><body>
+</style></head><body>
 <style id="gmgj-logo-hc-whale-dark-final-v5">
 /*
   궁금점 PLAY 로고 v5
@@ -11180,7 +11130,31 @@ window.addEventListener("hashchange",()=>{
   }
 }
 </style>
-
+<script id="v168-mobile-five-prompt-force-script">
+(function(){
+  const pv=document.getElementById("practiceView");
+  const prompt=document.getElementById("prompt");
+  if(!pv || !prompt) return;
+  const targets=new Set(["초성","종성","모음","약자·약어","숫자"]);
+  function sync(){
+    const on=targets.has(pv.dataset.category||"");
+    pv.classList.toggle("gmgj-v168-five-large",on);
+    if(window.matchMedia("(max-width:768px)").matches && on){
+      prompt.style.setProperty("font-size","3.5rem","important");
+      prompt.style.setProperty("line-height","1.3","important");
+      prompt.style.setProperty("font-weight","800","important");
+    }else{
+      prompt.style.removeProperty("font-size");
+      prompt.style.removeProperty("line-height");
+      prompt.style.removeProperty("font-weight");
+    }
+  }
+  new MutationObserver(sync).observe(pv,{attributes:true,attributeFilter:["data-category"]});
+  window.addEventListener("resize",sync);
+  document.addEventListener("click",()=>setTimeout(sync,0),true);
+  sync();
+})();
+</script>
 
 <style id="gmgj-v172-reading-long-menu">
 @media (min-width:769px){
@@ -12286,35 +12260,6 @@ html.gmgj-tablet-touch .mobile-dot{
  requestAnimationFrame(fit);
 })();
 </script>
-
-<style id="gmgj-unified-question-font-final-v2">
-/* 실제 문제 요소 #prompt에 적용. 후반부의 유형별 크기 규칙보다 뒤에 배치. */
-html body #practiceView[data-category="점자 랜덤 연습"] #prompt,
-html body #practiceView[data-category="초성"] #prompt,
-html body #practiceView[data-category="종성"] #prompt,
-html body #practiceView[data-category="모음"] #prompt,
-html body #practiceView[data-category="약자·약어"] #prompt,
-html body #practiceView[data-category="로마자"] #prompt,
-html body #practiceView[data-category="숫자"] #prompt,
-html body #practiceView[data-category="문장부호"] #prompt,
-html body #practiceView[data-category="단어"] #prompt,
-html body #practiceView[data-category="문장"] #prompt {
- font-size:3rem!important;
- line-height:1.45!important;
-}
-@media(max-width:768px){
-html body #practiceView[data-category="점자 랜덤 연습"] #prompt,
-html body #practiceView[data-category="초성"] #prompt,
-html body #practiceView[data-category="종성"] #prompt,
-html body #practiceView[data-category="모음"] #prompt,
-html body #practiceView[data-category="약자·약어"] #prompt,
-html body #practiceView[data-category="로마자"] #prompt,
-html body #practiceView[data-category="숫자"] #prompt,
-html body #practiceView[data-category="문장부호"] #prompt,
-html body #practiceView[data-category="단어"] #prompt,
-html body #practiceView[data-category="문장"] #prompt {font-size:2.6rem!important;}
-}
-</style>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
@@ -21432,26 +21377,3 @@ html body #practiceView[data-category="점자 랜덤 연습"][data-source-catego
   else boot();
 })();
 </script>
-
-<style id="gmgj-question-size-consistency-v3">
-/* 맞춤법/점자 읽기 제외: 독립 연습과 랜덤 연습 모두 동일한 문제 텍스트 스타일 */
-html body #practiceView:not([data-category="맞춤법"]):not([data-category="점자 읽기"]) #prompt{
-  font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif!important;
-  font-size:3rem!important;
-  font-weight:800!important;
-  line-height:1.45!important;
-  letter-spacing:.02em!important;
-}
-/* 기존 로마자/문장부호 기호 자체의 별도 확대·축소 규칙 무효화 */
-html body #practiceView:not([data-category="맞춤법"]):not([data-category="점자 읽기"]) #prompt .roman-symbol,
-html body #practiceView:not([data-category="맞춤법"]):not([data-category="점자 읽기"]) #prompt .punct-symbol{
-  font-size:inherit!important;
-  font-weight:inherit!important;
-}
-@media(max-width:768px){
-  html body #practiceView:not([data-category="맞춤법"]):not([data-category="점자 읽기"]) #prompt{
-    font-size:2.6rem!important;
-    line-height:1.45!important;
-  }
-}
-</style>
