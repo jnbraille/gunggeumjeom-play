@@ -12310,6 +12310,35 @@ html.gmgj-tablet-touch .mobile-dot{
  requestAnimationFrame(fit);
 })();
 </script>
+
+<style id="gmgj-unified-question-font-final-v2">
+/* 실제 문제 요소 #prompt에 적용. 후반부의 유형별 크기 규칙보다 뒤에 배치. */
+html body #practiceView[data-category="점자 랜덤 연습"] #prompt,
+html body #practiceView[data-category="초성"] #prompt,
+html body #practiceView[data-category="종성"] #prompt,
+html body #practiceView[data-category="모음"] #prompt,
+html body #practiceView[data-category="약자·약어"] #prompt,
+html body #practiceView[data-category="로마자"] #prompt,
+html body #practiceView[data-category="숫자"] #prompt,
+html body #practiceView[data-category="문장부호"] #prompt,
+html body #practiceView[data-category="단어"] #prompt,
+html body #practiceView[data-category="문장"] #prompt {
+ font-size:3rem!important;
+ line-height:1.45!important;
+}
+@media(max-width:768px){
+html body #practiceView[data-category="점자 랜덤 연습"] #prompt,
+html body #practiceView[data-category="초성"] #prompt,
+html body #practiceView[data-category="종성"] #prompt,
+html body #practiceView[data-category="모음"] #prompt,
+html body #practiceView[data-category="약자·약어"] #prompt,
+html body #practiceView[data-category="로마자"] #prompt,
+html body #practiceView[data-category="숫자"] #prompt,
+html body #practiceView[data-category="문장부호"] #prompt,
+html body #practiceView[data-category="단어"] #prompt,
+html body #practiceView[data-category="문장"] #prompt {font-size:2.6rem!important;}
+}
+</style>
 </body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
