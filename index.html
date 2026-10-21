@@ -7441,7 +7441,30 @@ header .shell.brand>.fund-message{grid-column:1 / -1!important;grid-row:4!import
  header .shell.brand>.braillesense-entry{left:0!important;position:relative!important;transform:translateX(clamp(-365px,-24vw,-130px))!important;width:min(390px,100%)!important;max-width:100%!important;justify-self:center!important;}
 }
 @media(max-width:760px){header .shell.brand>.braillesense-entry{transform:none!important;}}
-</style></head><body>
+</style>
+<style id="gmq-banner-overlay-button-fix">
+/* 이미지 안에 이미 그려진 버튼 글씨를 가리지 않도록 클릭 영역만 투명하게 둔다. */
+#brailleStoryView #storyQuizEntry #gmqStart.gmq-banner-hit,
+#brailleStoryView #storyQuizEntry #gmqStart.gmq-banner-hit:hover,
+#brailleStoryView #storyQuizEntry #gmqStart.gmq-banner-hit:active,
+#brailleStoryView #storyQuizEntry #gmqStart.gmq-banner-hit:focus {
+ background:transparent!important;
+ background-color:transparent!important;
+ background-image:none!important;
+ color:transparent!important;
+ border:0!important;
+ box-shadow:none!important;
+ text-shadow:none!important;
+ opacity:1!important;
+ appearance:none!important;
+ -webkit-appearance:none!important;
+ transform:none!important;
+}
+#brailleStoryView #storyQuizEntry #gmqStart.gmq-banner-hit::before,
+#brailleStoryView #storyQuizEntry #gmqStart.gmq-banner-hit::after{content:none!important;display:none!important}
+#brailleStoryView #storyQuizEntry #gmqStart.gmq-banner-hit:focus-visible{outline:3px solid #f3bd26!important;outline-offset:2px!important}
+</style>
+</head><body>
 <style id="gmgj-logo-hc-whale-dark-final-v5">
 /*
   궁금점 PLAY 로고 v5
