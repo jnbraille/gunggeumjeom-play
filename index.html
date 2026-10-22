@@ -7750,6 +7750,7 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
         <button type="button" id="storyTtsStop" disabled>■ 정지</button>
         <label for="storyTtsVoice">음성 선택</label>
         <select id="storyTtsVoice" aria-label="한국어 음성 선택"><option value="">기본 한국어 음성</option></select>
+        <label for="storyTtsPitch">목소리 느낌</label><select id="storyTtsPitch" aria-label="목소리 밝기"><option value="1">기본</option><option value="1.16" selected>밝고 경쾌하게</option><option value="1.28">더 발랄하게</option></select>
         <label for="storyTtsRate">읽기 속도</label>
         <select id="storyTtsRate" aria-label="음성 읽기 속도"><option value="0.8">느리게</option><option value="1" selected>보통</option><option value="1.2">빠르게</option></select>
       </div>
@@ -12531,7 +12532,7 @@ html.high-contrast #brailleStoryView .gmq-options button .gmq-choice-number{
 (function(){
   const view=document.getElementById('brailleStoryView');
   if(!view)return;
-  const play=document.getElementById('storyTtsPlay'), pause=document.getElementById('storyTtsPause'), stop=document.getElementById('storyTtsStop'), rate=document.getElementById('storyTtsRate'), voiceSelect=document.getElementById('storyTtsVoice'), status=document.getElementById('storyTtsStatus');
+  const play=document.getElementById('storyTtsPlay'), pause=document.getElementById('storyTtsPause'), stop=document.getElementById('storyTtsStop'), rate=document.getElementById('storyTtsRate'), pitch=document.getElementById('storyTtsPitch'), voiceSelect=document.getElementById('storyTtsVoice'), status=document.getElementById('storyTtsStatus');
   const synth=window.speechSynthesis;
   let pieces=[],idx=0,active=false,paused=false,token=0,waitTimer=null,waiting=false;
   let koVoices=[];
@@ -12586,7 +12587,7 @@ html.high-contrast #brailleStoryView .gmq-options button .gmq-choice-number{
     if(idx>=pieces.length){end('궁금점 이야기 음성 읽기를 마쳤습니다.');return;}
     const part=pieces[idx];
     const utterance=new SpeechSynthesisUtterance(typeof part==='string'?part:part.text);
-    utterance.lang='ko-KR';utterance.rate=Number(rate.value)||1;
+    utterance.lang='ko-KR';utterance.rate=Number(rate.value)||1;utterance.pitch=Number(pitch.value)||1;
     const selected=voiceSelect.value;
     if(selected!==''&&koVoices[Number(selected)])utterance.voice=koVoices[Number(selected)];
     utterance.onend=()=>{
@@ -12612,6 +12613,7 @@ html.high-contrast #brailleStoryView .gmq-options button .gmq-choice-number{
   pause.addEventListener('click',()=>{if(!active||paused)return;paused=true;if(waitTimer!==null){clearTimeout(waitTimer);waitTimer=null;}synth.pause();ui('일시정지했습니다. 이어 듣기를 누르면 계속됩니다.');});
   stop.addEventListener('click',()=>end('음성 읽기를 정지했습니다.'));
   rate.addEventListener('change',()=>{if(active)status.textContent='변경한 속도는 다음 문장부터 적용됩니다.';});
+  pitch.addEventListener('change',()=>{if(active)status.textContent='변경한 목소리 느낌은 다음 문장부터 적용됩니다.';});
   // Stop speech when leaving the story view or hiding the tab.
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&active&&!paused){paused=true;synth.pause();ui('화면이 전환되어 일시정지했습니다.');}});
   const observer=new MutationObserver(()=>{if(active&&!view.classList.contains('active'))end('궁금점 이야기 화면을 나가 음성 읽기를 정지했습니다.');});
