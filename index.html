@@ -7748,6 +7748,8 @@ html.whale-browser .gmgj-dotmark .gmgj-braille i::before{
         <button type="button" id="storyTtsPlay">▶ 전체 듣기</button>
         <button type="button" id="storyTtsPause" disabled>⏸ 일시정지</button>
         <button type="button" id="storyTtsStop" disabled>■ 정지</button>
+        <label for="storyTtsVoice">음성 선택</label>
+        <select id="storyTtsVoice" aria-label="한국어 음성 선택"><option value="">기본 한국어 음성</option></select>
         <label for="storyTtsRate">읽기 속도</label>
         <select id="storyTtsRate" aria-label="음성 읽기 속도"><option value="0.8">느리게</option><option value="1" selected>보통</option><option value="1.2">빠르게</option></select>
       </div>
@@ -12521,6 +12523,7 @@ html.high-contrast #brailleStoryView .gmq-options button .gmq-choice-number{
 #brailleStoryView .story-tts-controls button:first-child{background:#087f7a;color:#fff}
 #brailleStoryView .story-tts-controls button:disabled{opacity:.52;cursor:not-allowed}
 #brailleStoryView .story-tts-controls label{font-weight:750;margin-left:5px}
+#brailleStoryView #storyTtsVoice{max-width:260px;width:100%;font-weight:600}
 #brailleStoryView #storyTtsStatus{margin:10px 0 0;font-size:.96rem;line-height:1.5}
 @media(max-width:600px){#brailleStoryView .story-tts-panel{padding:14px}#brailleStoryView .story-tts-controls button{flex:1 1 auto}}
 </style>
@@ -12528,21 +12531,41 @@ html.high-contrast #brailleStoryView .gmq-options button .gmq-choice-number{
 (function(){
   const view=document.getElementById('brailleStoryView');
   if(!view)return;
-  const play=document.getElementById('storyTtsPlay'), pause=document.getElementById('storyTtsPause'), stop=document.getElementById('storyTtsStop'), rate=document.getElementById('storyTtsRate'), status=document.getElementById('storyTtsStatus');
+  const play=document.getElementById('storyTtsPlay'), pause=document.getElementById('storyTtsPause'), stop=document.getElementById('storyTtsStop'), rate=document.getElementById('storyTtsRate'), voiceSelect=document.getElementById('storyTtsVoice'), status=document.getElementById('storyTtsStatus');
   const synth=window.speechSynthesis;
-  let pieces=[],idx=0,active=false,paused=false,token=0;
+  let pieces=[],idx=0,active=false,paused=false,token=0,waitTimer=null,waiting=false;
+  let koVoices=[];
+  function refreshVoices(){
+    if(!synth)return;
+    const previous=voiceSelect.value;
+    koVoices=synth.getVoices().filter(v=>(v.lang||'').toLowerCase().startsWith('ko'));
+    voiceSelect.replaceChildren(new Option('기본 한국어 음성',''));
+    koVoices.forEach((v,i)=>voiceSelect.add(new Option(v.name+(v.localService?' (기기)':' (온라인)')+' — '+v.lang,String(i))));
+    if([...voiceSelect.options].some(o=>o.value===previous))voiceSelect.value=previous;
+    else if(koVoices.length)voiceSelect.value='0';
+    if(!koVoices.length)status.textContent='한국어 음성이 표시되지 않으면 기기 설정에서 한국어 음성을 추가해 주세요.';
+  }
+  refreshVoices();
+  if(synth&&synth.addEventListener)synth.addEventListener('voiceschanged',refreshVoices);
+  voiceSelect.addEventListener('change',()=>{if(active)status.textContent='변경한 음성은 다음 문장부터 적용됩니다.';});
   function ui(msg){
     play.textContent=paused?'▶ 이어 듣기':'▶ 전체 듣기';
     pause.disabled=!active||paused;stop.disabled=!active;
     if(msg)status.textContent=msg;
   }
-  function end(msg){active=false;paused=false;pieces=[];idx=0;token++;if(synth)synth.cancel();ui(msg||'음성 읽기를 마쳤습니다.');}
+  function end(msg){if(waitTimer!==null){clearTimeout(waitTimer);waitTimer=null;}waiting=false;active=false;paused=false;pieces=[];idx=0;token++;if(synth)synth.cancel();ui(msg||'음성 읽기를 마쳤습니다.');}
   function collect(){
     const nodes=view.querySelectorAll('.story-card');
     const result=[];
     nodes.forEach(card=>{
       const copy=card.cloneNode(true);
-      copy.querySelectorAll('button,script,style,[aria-hidden="true"],svg').forEach(x=>x.remove());
+      copy.querySelectorAll('button,script,style,[aria-hidden="true"],svg,.story-sixdot').forEach(x=>x.remove());
+      const heading=copy.querySelector('h2,h3,h4');
+      if(heading){
+        const title=(heading.textContent||'').replace(/\s+/g,' ').trim();
+        if(title)result.push({text:title,afterTitle:true});
+        heading.remove();
+      }
       const t=(copy.innerText||copy.textContent||'').replace(/\s+/g,' ').trim();
       if(!t)return;
       // Long utterances may be truncated by browser engines; split into short sentence-like chunks.
@@ -12561,24 +12584,32 @@ html.high-contrast #brailleStoryView .gmq-options button .gmq-choice-number{
   function next(myToken){
     if(!active||paused||myToken!==token)return;
     if(idx>=pieces.length){end('궁금점 이야기 음성 읽기를 마쳤습니다.');return;}
-    const utterance=new SpeechSynthesisUtterance(pieces[idx]);
+    const part=pieces[idx];
+    const utterance=new SpeechSynthesisUtterance(typeof part==='string'?part:part.text);
     utterance.lang='ko-KR';utterance.rate=Number(rate.value)||1;
-    const voices=synth.getVoices();
-    const korean=voices.find(v=>v.lang.toLowerCase()==='ko-kr')||voices.find(v=>v.lang.toLowerCase().startsWith('ko'));
-    if(korean)utterance.voice=korean;
-    utterance.onend=()=>{if(myToken!==token)return;idx++;next(myToken);};
+    const selected=voiceSelect.value;
+    if(selected!==''&&koVoices[Number(selected)])utterance.voice=koVoices[Number(selected)];
+    utterance.onend=()=>{
+      if(myToken!==token)return;
+      idx++;
+      if(part&&part.afterTitle){
+        waiting=true;
+        waitTimer=setTimeout(()=>{waitTimer=null;waiting=false;if(active&&!paused&&myToken===token)next(myToken);},850);
+      }else next(myToken);
+    };
     utterance.onerror=e=>{if(myToken!==token)return;if(e.error==='canceled'||e.error==='interrupted')return;end('음성 재생에 문제가 발생했습니다. 기기의 한국어 음성 설정을 확인해 주세요.');};
     synth.speak(utterance);
     ui('궁금점 이야기 읽는 중… ('+(idx+1)+' / '+pieces.length+')');
   }
   play.addEventListener('click',()=>{
     if(!synth||!window.SpeechSynthesisUtterance){status.textContent='이 브라우저는 음성 읽기를 지원하지 않습니다.';return;}
-    if(active&&paused){paused=false;synth.resume();ui('음성 읽기를 이어서 재생합니다.');return;}
+    if(active&&paused){paused=false;synth.resume();if(waiting){waiting=false;next(token);}ui('음성 읽기를 이어서 재생합니다.');return;}
+    if(waitTimer!==null){clearTimeout(waitTimer);waitTimer=null;}waiting=false;
     token++;synth.cancel();pieces=collect();idx=0;
     if(!pieces.length){ui('읽을 이야기 본문을 찾지 못했습니다.');return;}
     active=true;paused=false;ui();next(token);
   });
-  pause.addEventListener('click',()=>{if(!active||paused)return;paused=true;synth.pause();ui('일시정지했습니다. 이어 듣기를 누르면 계속됩니다.');});
+  pause.addEventListener('click',()=>{if(!active||paused)return;paused=true;if(waitTimer!==null){clearTimeout(waitTimer);waitTimer=null;}synth.pause();ui('일시정지했습니다. 이어 듣기를 누르면 계속됩니다.');});
   stop.addEventListener('click',()=>end('음성 읽기를 정지했습니다.'));
   rate.addEventListener('change',()=>{if(active)status.textContent='변경한 속도는 다음 문장부터 적용됩니다.';});
   // Stop speech when leaving the story view or hiding the tab.
