@@ -12359,7 +12359,21 @@ function render(){
  byId("gmqStats").textContent="누적 "+state.total+"문제 · 정답 "+state.correct+"문제 · 정답률 "+(state.total?Math.round(state.correct/state.total*100):0)+"%";
 }
 function choose(i){if(state.answered)return;const ok=i===questions[state.order[state.cursor]][2];state.answered=true;state.selected=i;state.total++;if(ok)state.correct++;try{if(typeof playFeedbackSound==="function")playFeedbackSound(ok);}catch(_){}save();render();}
-byId("gmqStart").addEventListener("click",()=>{entry.hidden=true;panel.hidden=false;render();panel.scrollIntoView({behavior:"smooth",block:"start"});});
+byId("gmqStart").addEventListener("click",()=>{
+ // 이전에 정답을 선택한 상태가 저장돼 있어도 새로 진입할 때는 미응답 문제부터 보여준다.
+ if(state.answered){
+   if(state.cursor===questions.length-1){
+     const oldLast=state.order[state.cursor];
+     state.order=shuffle();
+     if(state.order[0]===oldLast){[state.order[0],state.order[1]]=[state.order[1],state.order[0]];}
+     state.cursor=0;
+   }else state.cursor++;
+   state.answered=false;
+   state.selected=null;
+   save();
+ }
+ entry.hidden=true;panel.hidden=false;render();panel.scrollIntoView({behavior:"smooth",block:"start"});
+});
 byId("gmqBack").addEventListener("click",()=>{panel.hidden=true;entry.hidden=false;entry.scrollIntoView({behavior:"smooth",block:"start"});});
 byId("gmqNext").addEventListener("click",()=>{if(!state.answered)return;if(state.cursor===questions.length-1){const oldLast=state.order[state.cursor];state.order=shuffle();if(state.order[0]===oldLast){[state.order[0],state.order[1]]=[state.order[1],state.order[0]];}state.cursor=0;}else state.cursor++;state.answered=false;state.selected=null;save();render();byId("gmqQuestion").focus();});
 save();
