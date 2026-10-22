@@ -12334,7 +12334,7 @@ function render(){
 
  byId("gmqQuestion").textContent=q[0];
  const wrap=byId("gmqOptions");wrap.replaceChildren();
- q[1].forEach((answer,i)=>{const b=document.createElement("button");b.type="button";b.textContent=(i+1)+"번. "+answer;
+ q[1].forEach((answer,i)=>{const b=document.createElement("button");b.type="button";const num=document.createElement("span");num.className="gmq-choice-number";num.textContent=(i+1)+"번";num.setAttribute("aria-hidden","true");const content=document.createElement("span");content.className="gmq-choice-answer";content.textContent=answer;b.append(num,content);b.setAttribute("aria-label",(i+1)+"번. "+answer);
  if(state.answered){
    b.disabled=true;
    if(i===q[2])b.classList.add("gmq-correct");
@@ -12448,7 +12448,24 @@ header .braillesense-entry .braillesense-device-icon{display:block!important;wid
   :is(body.high-contrast,body.contrast,html.high-contrast,html.contrast) #brailleStoryView #storyQuizEntry #gmqStart.gmq-banner-image-button {min-height:180px!important;padding:20px 12px!important;}
 }
 </style>
-</body>
+<style id="gmq-choice-number-contrast-v1">
+/* 보기 번호와 점형/문장 내용의 시각적 구분 */
+#brailleStoryView .gmq-options button .gmq-choice-number{
+ display:inline-flex!important;align-items:center;justify-content:center;
+ flex:none;min-width:3.25em;padding:.27em .55em;margin-right:.8em;
+ border-radius:.55em;background:#d8f3ee!important;color:#064e4a!important;
+ font-weight:900!important;font-size:.94em!important;letter-spacing:0!important;
+ border:1px solid #81c9c1;
+}
+#brailleStoryView .gmq-options button .gmq-choice-answer{font-weight:500;overflow-wrap:anywhere}
+#brailleStoryView .gmq-options button.gmq-correct .gmq-choice-number{background:#b9ebc9!important;color:#124d26!important}
+#brailleStoryView .gmq-options button.gmq-wrong .gmq-choice-number{background:#ffd2d2!important;color:#842222!important}
+body.high-contrast #brailleStoryView .gmq-options button .gmq-choice-number,
+body.highContrast #brailleStoryView .gmq-options button .gmq-choice-number,
+html.high-contrast #brailleStoryView .gmq-options button .gmq-choice-number{
+ background:#ffeb58!important;color:#000!important;border-color:#fff!important;
+}
+</style></body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
