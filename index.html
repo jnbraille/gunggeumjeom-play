@@ -12465,7 +12465,25 @@ body.highContrast #brailleStoryView .gmq-options button .gmq-choice-number,
 html.high-contrast #brailleStoryView .gmq-options button .gmq-choice-number{
  background:#ffeb58!important;color:#000!important;border-color:#fff!important;
 }
-</style></body>
+</style>
+<style id="gmq-choice-stats-font-enlarge-v1">
+/* 점자 상식 퀴즈의 보기 및 누적 성적 글자만 확대 */
+#brailleStoryView #gmqOptions.gmq-options button {
+  font-size:1.18rem!important;line-height:1.65!important;
+}
+#brailleStoryView #gmqOptions.gmq-options button .gmq-choice-number,
+#brailleStoryView #gmqOptions.gmq-options button .gmq-choice-answer {
+  font-size:inherit!important;line-height:inherit!important;
+}
+#brailleStoryView #gmqStats.gmq-stats {
+  font-size:1.15rem!important;line-height:1.65!important;font-weight:800!important;
+}
+@media(max-width:600px){
+  #brailleStoryView #gmqOptions.gmq-options button {font-size:1.08rem!important;}
+  #brailleStoryView #gmqStats.gmq-stats {font-size:1.05rem!important;}
+}
+</style>
+</body>
 </html>
 <style>.practice-card .sub, .menu-card .sub{white-space:nowrap}</style>
 <style>
