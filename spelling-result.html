@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>맞춤법 채점 결과 | 궁금점 PLAY</title>
+<title></title>
 <style>
 body { margin: 1rem auto; max-width: 36rem; padding: 0 1rem; color: #172a3a; background: #fff; font: 1.125rem/1.6 system-ui, sans-serif; }
 a { color: #174c72; }
@@ -1289,6 +1289,8 @@ main:has(section:target) section:not(:target) { display: none; }
     while (main.firstChild) main.removeChild(main.firstChild);
     main.appendChild(current);
     current.style.display = "block";
+    var feedback = current.querySelector("h2").textContent;
+    document.title = feedback.indexOf("오답입니다.") === 0 ? "오답입니다" : "정답입니다";
   }
   showCurrentSection();
   window.addEventListener("hashchange", showCurrentSection);
