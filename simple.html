@@ -17,7 +17,7 @@ main:has(section:target) section:not(:target) { display: none; }
 </head>
 <body>
 <main>
-<section id="q1"><p>스페이스와 4점을 함께 눌러 제시어와 보기를 차례로 읽으세요. 원하는 보기나 다음 문제에서 엔터를 누르세요.</p><p>제시어: 술을 조금 마셔 ___ 싶을 만큼 취했다.</p><ol style="list-style:none;padding:0"><li><a href="spelling-result.html?step=r1-1" data-spelling-correct="false">1. 건아하다</a></li><li><a href="spelling-result.html?step=r1-2" data-spelling-correct="true">2. 거나하다</a></li></ol></section>
+<section id="q1"><p id="practice-instructions">스페이스와 4점을 함께 눌러 제시어와 보기를 차례로 읽으세요. 원하는 보기나 다음 문제에서 엔터를 누르세요.</p><p>제시어: 술을 조금 마셔 ___ 싶을 만큼 취했다.</p><ol style="list-style:none;padding:0"><li><a href="spelling-result.html?step=r1-1" data-spelling-correct="false">1. 건아하다</a></li><li><a href="spelling-result.html?step=r1-2" data-spelling-correct="true">2. 거나하다</a></li></ol></section>
 <section id="q2"><p>제시어: 소파 옆에 텔레비전 ___이 놓여 있다.</p><ol style="list-style:none;padding:0"><li><a href="spelling-result.html?step=r2-1" data-spelling-correct="false">1. 리모콘</a></li><li><a href="spelling-result.html?step=r2-2" data-spelling-correct="true">2. 리모컨</a></li></ol></section>
 <section id="q3"><p>제시어: 아침을 거르고 나니 속이 몹시 ___.</p><ol style="list-style:none;padding:0"><li><a href="spelling-result.html?step=r3-1" data-spelling-correct="false">1. 구프다</a></li><li><a href="spelling-result.html?step=r3-2" data-spelling-correct="true">2. 구쁘다</a></li></ol></section>
 <section id="q4"><p>제시어: 밥상에 ___과 젓가락을 놓았다.</p><ol style="list-style:none;padding:0"><li><a href="spelling-result.html?step=r4-1" data-spelling-correct="false">1. 숫가락</a></li><li><a href="spelling-result.html?step=r4-2" data-spelling-correct="true">2. 숟가락</a></li></ol></section>
@@ -654,13 +654,54 @@ main:has(section:target) section:not(:target) { display: none; }
   for (var section = first; section; section = section.nextElementSibling) {
     sections[section.id] = section;
   }
+  function makeOrder(seed, count) {
+    var order = [];
+    for (var i = 1; i <= count; i++) order.push(i);
+    for (var i = count - 1; i > 0; i--) {
+      seed = (seed * 16807) % 2147483647;
+      var j = seed % (i + 1);
+      var value = order[i];
+      order[i] = order[j];
+      order[j] = value;
+    }
+    return order;
+  }
+  function freshOrder(count, avoid) {
+    var seed = Math.floor(Math.random() * 2147483646) + 1;
+    while (makeOrder(seed, count)[0] === avoid) seed = seed % 2147483646 + 1;
+    return seed;
+  }
+  function isReload() {
+    var timing = window.performance;
+    if (!timing) return false;
+    var entries = timing.getEntriesByType && timing.getEntriesByType("navigation");
+    return entries && entries.length ? entries[0].type === "reload" :
+      Boolean(timing.navigation && timing.navigation.type === 1);
+  }
+  var instructions = document.getElementById("practice-instructions");
   function showCurrentSection() {
-    var query = window.location.search.slice(1).replace(/^step=/, "");
-    var key = query || window.location.hash.slice(1);
+    var params = window.location.search.slice(1).split("&");
+    var key = params[0].replace(/^step=/, "") || window.location.hash.slice(1);
+    var seedParam = /^order=([0-9]+)$/.exec(params[1] || "");
+    var seed = seedParam ? Number(seedParam[1]) : 0;
+    if (seed >= 2147483647) seed = 0;
+    var restarting = !key || isReload();
+    if (restarting) {
+      seed = freshOrder(628, Number(key.slice(1)));
+      key = "q" + makeOrder(seed, 628)[0];
+      window.history.replaceState(null, "", "simple.html?step=" + key + "&order=" + seed);
+    }
     var current = sections[key] || first;
     while (main.firstChild) main.removeChild(main.firstChild);
     main.appendChild(current);
     current.style.display = "block";
+    if (instructions.parentNode) instructions.parentNode.removeChild(instructions);
+    if (!params[0]) current.insertBefore(instructions, current.firstChild);
+    var choices = current.querySelectorAll("a[data-spelling-correct]");
+    for (var i = 0; i < choices.length; i++) {
+      var href = choices[i].getAttribute("href").split("&")[0];
+      choices[i].setAttribute("href", href + (seed ? "&order=" + seed : ""));
+    }
   }
   showCurrentSection();
   window.addEventListener("hashchange", showCurrentSection);

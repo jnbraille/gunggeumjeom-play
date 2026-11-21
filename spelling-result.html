@@ -1282,13 +1282,58 @@ main:has(section:target) section:not(:target) { display: none; }
   for (var section = first; section; section = section.nextElementSibling) {
     sections[section.id] = section;
   }
+  function makeOrder(seed, count) {
+    var order = [];
+    for (var i = 1; i <= count; i++) order.push(i);
+    for (var i = count - 1; i > 0; i--) {
+      seed = (seed * 16807) % 2147483647;
+      var j = seed % (i + 1);
+      var value = order[i];
+      order[i] = order[j];
+      order[j] = value;
+    }
+    return order;
+  }
+  function freshOrder(count, avoid) {
+    var seed = Math.floor(Math.random() * 2147483646) + 1;
+    while (makeOrder(seed, count)[0] === avoid) seed = seed % 2147483646 + 1;
+    return seed;
+  }
+  function isReload() {
+    var timing = window.performance;
+    if (!timing) return false;
+    var entries = timing.getEntriesByType && timing.getEntriesByType("navigation");
+    return entries && entries.length ? entries[0].type === "reload" :
+      Boolean(timing.navigation && timing.navigation.type === 1);
+  }
   function showCurrentSection() {
-    var query = window.location.search.slice(1).replace(/^step=/, "");
-    var key = query || window.location.hash.slice(1);
+    var params = window.location.search.slice(1).split("&");
+    var key = params[0].replace(/^step=/, "") || window.location.hash.slice(1);
+    var seedParam = /^order=([0-9]+)$/.exec(params[1] || "");
+    var seed = seedParam ? Number(seedParam[1]) : 0;
+    if (seed >= 2147483647) seed = 0;
+    if (isReload()) {
+      var previous = /^r([0-9]+)-[12]$/.exec(key);
+      var newSeed = freshOrder(628, previous ? Number(previous[1]) : 0);
+      window.location.replace("simple.html?step=q" + makeOrder(newSeed, 628)[0] + "&order=" + newSeed);
+      return;
+    }
     var current = sections[key] || first;
     while (main.firstChild) main.removeChild(main.firstChild);
     main.appendChild(current);
     current.style.display = "block";
+    if (seed) {
+      var order = makeOrder(seed, 628);
+      var answered = Number(current.id.slice(1).split("-")[0]);
+      var position = order.indexOf(answered);
+      if (position === order.length - 1) {
+        seed = freshOrder(628, answered);
+        order = makeOrder(seed, 628);
+        position = -1;
+      }
+      current.querySelector("a[href]").setAttribute("href",
+        "simple.html?step=q" + order[position + 1] + "&order=" + seed);
+    }
   }
   showCurrentSection();
   window.addEventListener("hashchange", showCurrentSection);
