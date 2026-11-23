@@ -709,10 +709,8 @@ main:has(section:target) section:not(:target) { display: none; }
 <section id="r345-2"><p>오답입니다.</p><p><a href="simple.html?step=q346">다음 문제</a></p></section>
 <section id="r346-1"><p>정답입니다.</p><p><a href="simple.html?step=q347">다음 문제</a></p></section>
 <section id="r346-2"><p>오답입니다.</p><p><a href="simple.html?step=q347">다음 문제</a></p></section>
-<section id="r347-1"><p>정답입니다.</p><p><a href="simple.html?step=q348">다음 문제</a></p></section>
-<section id="r347-2"><p>오답입니다.</p><p><a href="simple.html?step=q348">다음 문제</a></p></section>
-<section id="r348-1"><p>오답입니다.</p><p><a href="simple.html?step=q349">다음 문제</a></p></section>
-<section id="r348-2"><p>정답입니다.</p><p><a href="simple.html?step=q349">다음 문제</a></p></section>
+<section id="r347-1"><p>정답입니다.</p><p><a href="simple.html?step=q349">다음 문제</a></p></section>
+<section id="r347-2"><p>오답입니다.</p><p><a href="simple.html?step=q349">다음 문제</a></p></section>
 <section id="r349-1"><p>오답입니다.</p><p><a href="simple.html?step=q350">다음 문제</a></p></section>
 <section id="r349-2"><p>정답입니다.</p><p><a href="simple.html?step=q350">다음 문제</a></p></section>
 <section id="r350-1"><p>오답입니다.</p><p><a href="simple.html?step=q351">다음 문제</a></p></section>
@@ -1292,7 +1290,7 @@ main:has(section:target) section:not(:target) { display: none; }
       order[i] = order[j];
       order[j] = value;
     }
-    return order;
+    return order.filter(function (number) { return number !== 348; });
   }
   function freshOrder(count, avoid) {
     var seed = Math.floor(Math.random() * 2147483646) + 1;
@@ -1312,7 +1310,7 @@ main:has(section:target) section:not(:target) { display: none; }
     var seedParam = /^order=([0-9]+)$/.exec(params[1] || "");
     var seed = seedParam ? Number(seedParam[1]) : 0;
     if (seed >= 2147483647) seed = 0;
-    if (isReload()) {
+    if (key === "r348-1" || key === "r348-2" || isReload()) {
       var previous = /^r([0-9]+)-[12]$/.exec(key);
       var newSeed = freshOrder(628, previous ? Number(previous[1]) : 0);
       window.location.replace("simple.html?step=q" + makeOrder(newSeed, 628)[0] + "&order=" + newSeed);

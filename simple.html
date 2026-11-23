@@ -364,7 +364,6 @@ main:has(section:target) section:not(:target) { display: none; }
 <section id="q345"><p>제시어: 안내 사항이 ___ 끝까지 읽어 주십시오.</p><ol style="list-style:none;padding:0"><li><a href="spelling-result.html?step=r345-1" data-spelling-correct="true">1. 있사오니</a></li><li><a href="spelling-result.html?step=r345-2" data-spelling-correct="false">2. 있아오니</a></li></ol></section>
 <section id="q346"><p>제시어: 지도에서 목적지를 손가락으로 ___.</p><ol style="list-style:none;padding:0"><li><a href="spelling-result.html?step=r346-1" data-spelling-correct="true">1. 가리키다</a></li><li><a href="spelling-result.html?step=r346-2" data-spelling-correct="false">2. 가르키다</a></li></ol></section>
 <section id="q347"><p>제시어: 시장 식당에서 ___ 구이를 먹었다.</p><ol style="list-style:none;padding:0"><li><a href="spelling-result.html?step=r347-1" data-spelling-correct="true">1. 곰장어</a></li><li><a href="spelling-result.html?step=r347-2" data-spelling-correct="false">2. 꼼장어</a></li></ol></section>
-<section id="q348"><p>제시어: 가족이 ___ 둘러앉아 저녁을 먹었다.</p><ol style="list-style:none;padding:0"><li><a href="spelling-result.html?step=r348-1" data-spelling-correct="false">1. 오손도손</a></li><li><a href="spelling-result.html?step=r348-2" data-spelling-correct="true">2. 오순도순</a></li></ol></section>
 <section id="q349"><p>제시어: 공사가 ___ 주변이 분주해졌다.</p><ol style="list-style:none;padding:0"><li><a href="spelling-result.html?step=r349-1" data-spelling-correct="false">1. 시작돼자</a></li><li><a href="spelling-result.html?step=r349-2" data-spelling-correct="true">2. 시작되자</a></li></ol></section>
 <section id="q350"><p>제시어: 규칙을 어기고 큰 잘못을 ___ 후회했다.</p><ol style="list-style:none;padding:0"><li><a href="spelling-result.html?step=r350-1" data-spelling-correct="false">1. 저질르다</a></li><li><a href="spelling-result.html?step=r350-2" data-spelling-correct="true">2. 저지르다</a></li></ol></section>
 <section id="q351"><p>제시어: 방을 어질러 놓은 ___를 보고 놀랐다.</p><ol style="list-style:none;padding:0"><li><a href="spelling-result.html?step=r351-1" data-spelling-correct="true">1. 꼬락서니</a></li><li><a href="spelling-result.html?step=r351-2" data-spelling-correct="false">2. 꼴라시</a></li></ol></section>
@@ -664,7 +663,7 @@ main:has(section:target) section:not(:target) { display: none; }
       order[i] = order[j];
       order[j] = value;
     }
-    return order;
+    return order.filter(function (number) { return number !== 348; });
   }
   function freshOrder(count, avoid) {
     var seed = Math.floor(Math.random() * 2147483646) + 1;
@@ -685,7 +684,7 @@ main:has(section:target) section:not(:target) { display: none; }
     var seedParam = /^order=([0-9]+)$/.exec(params[1] || "");
     var seed = seedParam ? Number(seedParam[1]) : 0;
     if (seed >= 2147483647) seed = 0;
-    var restarting = !key || isReload();
+    var restarting = !key || key === "q348" || isReload();
     if (restarting) {
       seed = freshOrder(628, Number(key.slice(1)));
       key = "q" + makeOrder(seed, 628)[0];
